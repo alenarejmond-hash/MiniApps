@@ -38,9 +38,30 @@
 
         /* --- ТЕКСТУРА БУМАГИ --- */
         .bg-paper {
-            background-color: #F2E8CF; /* Более теплый бежевый */
+            background-color: #F2E8CF; /* Теплый бежевый */
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.22'/%3E%3C/svg%3E");
             box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
+        }
+
+        /* --- СТИЛЬ ПОЧТОВОЙ МАРКИ --- */
+        .postage-stamp {
+            background: white;
+            padding: 4px;
+            filter: drop-shadow(2px 3px 5px rgba(0,0,0,0.2));
+            /* Классический эффект зазубренных краев марки через маску */
+            --g: radial-gradient(4px at 4px 4px, #0000 98%, #000 101%);
+            -webkit-mask: 
+                var(--g) 0 0 / 100% 8px repeat-x,
+                var(--g) 0 0 / 8px 100% repeat-y,
+                var(--g) 100% 100% / 100% 8px repeat-x,
+                var(--g) 100% 100% / 8px 100% repeat-y,
+                linear-gradient(#000 0 0) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
+            mask: 
+                var(--g) 0 0 / 100% 8px repeat-x,
+                var(--g) 0 0 / 8px 100% repeat-y,
+                var(--g) 100% 100% / 100% 8px repeat-x,
+                var(--g) 100% 100% / 8px 100% repeat-y,
+                linear-gradient(#000 0 0) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
         }
 
         /* --- СИМУЛЯТОР ТЕЛЕФОНА ДЛЯ ПРЕДПРОСМОТРА --- */
@@ -63,7 +84,6 @@
                 box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
             }
         }
-        /* Чтобы внутренние экраны правильно тянулись по высоте симулятора */
         .mobile-simulator > div {
             min-height: 100% !important;
         }
@@ -183,11 +203,15 @@
                         {activeScreen === 'home' && (
                             <div className="relative min-h-screen flex flex-col items-center p-4 animate-fade">
                                 <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-80">
-                                    <Polaroid src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=300" className="top-10 -left-6" tilt={-12} />
-                                    <Polaroid src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&q=80&w=300" className="top-32 -right-10" tilt={15} />
-                                    <Polaroid src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=300" className="bottom-20 -right-8" tilt={-8} />
+                                    {/* Верхнее левое фото: сдвинуто дальше влево (-left-16) */}
+                                    <Polaroid src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=300" className="top-10 -left-16" tilt={-12} />
                                     
-                                    {/* Стамбул в левом нижнем углу */}
+                                    {/* Почтовая марка: нормальное фото внутри и зазубренные края */}
+                                    <div className="absolute top-32 -right-6 transform rotate-[15deg] postage-stamp w-24 h-24 flex items-center justify-center">
+                                        <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=300" alt="Stamp" className="w-full h-full object-cover" />
+                                    </div>
+
+                                    <Polaroid src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=300" className="bottom-20 -right-8" tilt={-8} />
                                     <Polaroid src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&q=80&w=300" className="bottom-10 -left-10" tilt={12} />
 
                                     <div className="absolute top-8 right-12 opacity-40 rotate-12">
@@ -219,19 +243,19 @@
                                     </div>
 
                                     <div className="relative w-full flex justify-center items-center mt-6 mb-2 h-60 animate-item" style={{animationDelay: '0.15s'}}>
-                                        {/* Левый */}
-                                        <div className="absolute z-10 p-1.5 pb-10 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] transform -rotate-[14deg] -translate-x-[90px] translate-y-6" style={{ boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
+                                        {/* Левый: Наклон вправо, выше, правый край под средним */}
+                                        <div className="absolute z-10 p-1.5 pb-10 bg-[#fdfdfd] border border-gray-200/50 rounded-[2px] transform rotate-[8deg] -translate-x-[85px] -translate-y-[10px]" style={{ boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
                                             <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=300" alt="Rome" className="w-32 h-32 object-cover border border-gray-300/50" />
                                         </div>
                                         
-                                        {/* Правый (Тайланд) */}
-                                        <div className="absolute z-10 p-1.5 pb-10 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] transform rotate-[16deg] translate-x-[90px] translate-y-4" style={{ boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
+                                        {/* Правый: Вынесен вперед (z-30), наклон влево */}
+                                        <div className="absolute z-30 p-1.5 pb-10 bg-[#fdfdfd] border border-gray-200/50 rounded-[2px] transform -rotate-[6deg] translate-x-[95px] translate-y-4" style={{ boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
                                             <img src="https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=300" alt="Тайланд" className="w-32 h-32 object-cover border border-gray-300/50" />
-                                            <div className="absolute bottom-2 left-0 right-0 text-center font-serif italic text-[11px] text-gray-700 -rotate-1">Тайланд 2026!</div>
+                                            <div className="absolute bottom-2 left-0 right-0 text-center font-serif italic text-[11px] text-gray-700 rotate-1">Тайланд 2026!</div>
                                         </div>
 
-                                        {/* Центральный (сверху) */}
-                                        <div className="absolute z-20 p-1.5 pb-10 bg-[#fdfdfd] shadow-[4px_15px_25px_rgba(0,0,0,0.4)] border border-gray-200/50 rounded-[2px] transform -rotate-2" style={{ boxShadow: 'inset 0 0 6px rgba(0,0,0,0.1), 4px_15px_25px_rgba(0,0,0,0.4)' }}>
+                                        {/* Центральный: Как есть */}
+                                        <div className="absolute z-20 p-2 pb-10 bg-[#fdfdfd] border border-gray-200/50 rounded-[2px] transform -rotate-2" style={{ boxShadow: 'inset 0 0 6px rgba(0,0,0,0.1), 4px_15px_25px_rgba(0,0,0,0.4)' }}>
                                             <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=400" alt="Paris" className="w-32 h-32 object-cover border border-gray-300/50" />
                                         </div>
                                     </div>
