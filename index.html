@@ -35,6 +35,31 @@
         .animate-fade {
             animation: fadeIn 0.5s ease-out forwards;
         }
+
+        /* --- СИМУЛЯТОР ТЕЛЕФОНА ДЛЯ ПРЕДПРОСМОТРА --- */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .mobile-simulator {
+            height: 100dvh;
+            width: 100%;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+        @media (min-width: 640px) {
+            .mobile-simulator {
+                height: 800px;
+                max-width: 400px;
+                border-radius: 45px;
+                border: 12px solid #121212;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            }
+        }
+        /* Чтобы внутренние экраны правильно тянулись по высоте симулятора */
+        .mobile-simulator > div {
+            min-height: 100% !important;
+        }
     </style>
 </head>
 <body>
@@ -49,16 +74,18 @@
         // ============================================================================
 
         const CONFIG = {
-            brandName: "TROBETROTTER",
+            brandName: "Ольга Иванова",
+            slogan: "Твой личный тревел-эксперт", // <-- Твой слоган здесь!
+            avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200", // Ссылка на твое фото в кружочке
 
             // --- 🔥 НАСТРОЙКИ FIREBASE ---
             firebaseConfig: {
                 apiKey: "AIzaSyDrraU_Y3l8B9_R6Dl3PgKVucEluG_Bacw",
-  authDomain: "mini-apps-d5096.firebaseapp.com",
-  projectId: "mini-apps-d5096",
-  storageBucket: "mini-apps-d5096.firebasestorage.app",
-  messagingSenderId: "625952325109",
-  appId: "1:625952325109:web:a0de707bc19b50005574bc"
+                authDomain: "mini-apps-d5096.firebaseapp.com",
+                projectId: "mini-apps-d5096",
+                storageBucket: "mini-apps-d5096.firebasestorage.app",
+                messagingSenderId: "625952325109",
+                appId: "1:625952325109:web:a0de707bc19b50005574bc"
             },
 
             about: {
@@ -157,15 +184,15 @@
             );
 
             return (
-                <div className="min-h-screen bg-[#F2E8D9] text-[#2C2C2C] font-sans relative overflow-x-hidden selection:bg-amber-200">
-                    
-                    {/* --- ГЛАВНЫЙ ЭКРАН --- */}
-                    {activeScreen === 'home' && (
-                        <div className="relative min-h-screen flex flex-col items-center justify-center p-6 animate-fade">
-                            
-                            <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-80">
-                                <Polaroid src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=200" className="top-10 -left-6" tilt={-12} />
-                                <Polaroid src="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&q=80&w=200" className="bottom-20 -left-8" tilt={10} />
+                <div className="min-h-screen sm:bg-zinc-800 flex justify-center sm:py-8 sm:items-center">
+                    {/* --- МОБИЛЬНЫЙ КОНТЕЙНЕР (СИМУЛЯТОР ТЕЛЕФОНА) --- */}
+                    <div className="mobile-simulator bg-[#F2E8D9] text-[#2C2C2C] font-sans selection:bg-amber-200 hide-scrollbar">
+                        
+                        {/* --- ГЛАВНЫЙ ЭКРАН --- */}
+                        {activeScreen === 'home' && (
+                            <div className="relative min-h-screen flex flex-col items-center p-6 animate-fade">
+                                <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-80">
+                                    <Polaroid src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=200" className="top-10 -left-6" tilt={-12} />
                                 <Polaroid src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&q=80&w=200" className="top-32 -right-8" tilt={15} />
                                 <Polaroid src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=200" className="bottom-10 -right-4" tilt={-8} />
                                 
@@ -186,17 +213,37 @@
                                 </div>
                             </div>
 
-                            <div className="z-10 w-full max-w-sm flex flex-col items-center">
-                                <div className="mb-12 flex flex-col items-center animate-item" style={{animationDelay: '0.1s'}}>
-                                    <div className="bg-[#E7D6BD] p-3 rounded-full border-2 border-black mb-3 shadow-md">
-                                        <IconGlobe size={40} className="text-black" />
-                                    </div>
-                                    <h1 className="text-2xl font-bold tracking-widest text-black drop-shadow-sm uppercase text-center">
+                            <div className="z-10 w-full max-w-sm flex flex-col items-center flex-1 mt-8">
+                                <div className="flex flex-col items-center animate-item" style={{animationDelay: '0.1s'}}>
+                                    <img src={CONFIG.avatarUrl} alt="Аватар" className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-xl mb-4" />
+                                    <h1 className="text-3xl font-serif font-bold text-[#2C2C2C] text-center">
                                         {CONFIG.brandName}
                                     </h1>
+                                    <p className="text-sm font-serif italic text-[#5c5c5c] mt-1 text-center px-4">
+                                        {CONFIG.slogan}
+                                    </p>
                                 </div>
 
-                                <div className="w-full flex flex-col gap-4 px-4">
+                                {/* ТРИ ЦЕНТРАЛЬНЫХ ПОЛАРОИДА */}
+                                <div className="relative w-full flex justify-center items-center mt-12 mb-10 h-56 animate-item" style={{animationDelay: '0.15s'}}>
+                                    {/* Левый */}
+                                    <div className="absolute z-10 p-3 pb-14 bg-[#FAFAFA] shadow-[0_8px_15px_-3px_rgba(0,0,0,0.2)] rounded-sm transform -rotate-[12deg] -translate-x-24 translate-y-6">
+                                        <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=300" alt="Rome" className="w-32 h-32 object-cover border border-gray-200" />
+                                    </div>
+                                    
+                                    {/* Правый */}
+                                    <div className="absolute z-10 p-3 pb-14 bg-[#FAFAFA] shadow-[0_8px_15px_-3px_rgba(0,0,0,0.2)] rounded-sm transform rotate-[15deg] translate-x-24 translate-y-6">
+                                        <img src="https://images.unsplash.com/photo-1518182170546-076616fdfaaf?auto=format&fit=crop&q=80&w=300" alt="Pyramid" className="w-32 h-32 object-cover border border-gray-200" />
+                                        <div className="absolute bottom-4 left-0 right-0 text-center font-serif italic text-[11px] text-gray-500 -rotate-2">Famous Polaroid</div>
+                                    </div>
+
+                                    {/* Центральный (сверху) */}
+                                    <div className="absolute z-20 p-3.5 pb-16 bg-[#FAFAFA] shadow-[0_15px_30px_-5px_rgba(0,0,0,0.3)] rounded-sm transform -rotate-2">
+                                        <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=400" alt="Paris" className="w-36 h-36 object-cover border border-gray-200" />
+                                    </div>
+                                </div>
+
+                                <div className="w-full flex flex-col gap-4 px-4 mt-auto mb-6">
                                     <button onClick={() => navigateTo('about')} className="animate-item bg-[#F8F1E5]/90 backdrop-blur-sm border-2 border-black rounded-full py-4 text-lg font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.2s'}}>Обо мне</button>
                                     <button onClick={() => navigateTo('tours')} className="animate-item bg-[#F8F1E5]/90 backdrop-blur-sm border-2 border-black rounded-full py-4 text-lg font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.3s'}}>Горящие туры</button>
                                     <button onClick={() => navigateTo('booking')} className="animate-item bg-[#F8F1E5]/90 backdrop-blur-sm border-2 border-black rounded-full py-4 text-lg font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.4s'}}>Бронирование</button>
@@ -204,10 +251,10 @@
                                 </div>
                             </div>
                         </div>
-                    )}
+                        )}
 
-                    {/* --- ЭКРАН "ОБО МНЕ" --- */}
-                    {activeScreen === 'about' && (
+                        {/* --- ЭКРАН "ОБО МНЕ" --- */}
+                        {activeScreen === 'about' && (
                         <div className="min-h-screen p-6 animate-fade bg-[#FAF4ED]">
                             <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70 hover:text-black">
                                 <IconArrowLeft size={20} /> Назад
@@ -293,6 +340,7 @@
                             </div>
                         </div>
                     )}
+                    </div>
                 </div>
             );
         }
