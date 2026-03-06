@@ -38,9 +38,9 @@
 
         /* --- ТЕКСТУРА БУМАГИ --- */
         .bg-paper {
-            background-color: #Eae0c8;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
-            box-shadow: inset 0 0 80px rgba(0,0,0,0.08);
+            background-color: #F2E8CF; /* Более теплый бежевый */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.22'/%3E%3C/svg%3E");
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
         }
 
         /* --- СИМУЛЯТОР ТЕЛЕФОНА ДЛЯ ПРЕДПРОСМОТРА --- */
@@ -171,8 +171,8 @@
             };
 
             const Polaroid = ({ src, className, tilt }) => (
-                <div className={`absolute p-1.5 pb-7 bg-[#fdfdfd] shadow-[2px_6px_12px_rgba(0,0,0,0.25)] ring-1 ring-black/5 rounded-sm ${className}`} style={{ transform: `rotate(${tilt}deg)`, boxShadow: 'inset 0 0 4px rgba(0,0,0,0.1), 2px 6px 12px rgba(0,0,0,0.25)' }}>
-                    <img src={src} alt="Travel" className="w-24 h-24 object-cover border border-gray-200/50" />
+                <div className={`absolute p-2 pb-10 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] ${className}`} style={{ transform: `rotate(${tilt}deg)`, boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
+                    <img src={src} alt="Travel" className="w-32 h-32 object-cover border border-gray-300/50" />
                 </div>
             );
 
@@ -183,10 +183,13 @@
                         {activeScreen === 'home' && (
                             <div className="relative min-h-screen flex flex-col items-center p-4 animate-fade">
                                 <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-80">
-                                    <Polaroid src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=200" className="top-10 -left-6" tilt={-12} />
-                                    <Polaroid src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&q=80&w=200" className="top-32 -right-8" tilt={15} />
-                                    <Polaroid src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=200" className="bottom-10 -right-4" tilt={-8} />
+                                    <Polaroid src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=300" className="top-10 -left-6" tilt={-12} />
+                                    <Polaroid src="https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&q=80&w=300" className="top-32 -right-10" tilt={15} />
+                                    <Polaroid src="https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&q=80&w=300" className="bottom-20 -right-8" tilt={-8} />
                                     
+                                    {/* Стамбул в левом нижнем углу */}
+                                    <Polaroid src="https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&q=80&w=300" className="bottom-10 -left-10" tilt={12} />
+
                                     <div className="absolute top-8 right-12 opacity-40 rotate-12">
                                         <svg width="80" height="80" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="2">
                                             <circle cx="50" cy="50" r="45" strokeDasharray="5 5" />
@@ -217,19 +220,19 @@
 
                                     <div className="relative w-full flex justify-center items-center mt-6 mb-2 h-60 animate-item" style={{animationDelay: '0.15s'}}>
                                         {/* Левый */}
-                                        <div className="absolute z-10 p-1.5 pb-8 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] transform -rotate-[14deg] -translate-x-[90px] translate-y-6" style={{ boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
+                                        <div className="absolute z-10 p-1.5 pb-10 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] transform -rotate-[14deg] -translate-x-[90px] translate-y-6" style={{ boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
                                             <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=300" alt="Rome" className="w-32 h-32 object-cover border border-gray-300/50" />
                                         </div>
                                         
                                         {/* Правый (Тайланд) */}
-                                        <div className="absolute z-10 p-1.5 pb-8 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] transform rotate-[16deg] translate-x-[90px] translate-y-4" style={{ boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
+                                        <div className="absolute z-10 p-1.5 pb-10 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] transform rotate-[16deg] translate-x-[90px] translate-y-4" style={{ boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
                                             <img src="https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=300" alt="Тайланд" className="w-32 h-32 object-cover border border-gray-300/50" />
                                             <div className="absolute bottom-2 left-0 right-0 text-center font-serif italic text-[11px] text-gray-700 -rotate-1">Тайланд 2026!</div>
                                         </div>
 
                                         {/* Центральный (сверху) */}
-                                        <div className="absolute z-20 p-2 pb-10 bg-[#fdfdfd] shadow-[4px_15px_25px_rgba(0,0,0,0.4)] border border-gray-200/50 rounded-[2px] transform -rotate-2" style={{ boxShadow: 'inset 0 0 6px rgba(0,0,0,0.1), 4px_15px_25px_rgba(0,0,0,0.4)' }}>
-                                            <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=400" alt="Paris" className="w-36 h-36 object-cover border border-gray-300/50" />
+                                        <div className="absolute z-20 p-1.5 pb-10 bg-[#fdfdfd] shadow-[4px_15px_25px_rgba(0,0,0,0.4)] border border-gray-200/50 rounded-[2px] transform -rotate-2" style={{ boxShadow: 'inset 0 0 6px rgba(0,0,0,0.1), 4px_15px_25px_rgba(0,0,0,0.4)' }}>
+                                            <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=400" alt="Paris" className="w-32 h-32 object-cover border border-gray-300/50" />
                                         </div>
                                     </div>
 
