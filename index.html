@@ -17,6 +17,9 @@
 
     <!-- Подключаем Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Подключаем рукописный шрифт для подписи на фото -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&display=swap" rel="stylesheet">
 
     <style>
         body { margin: 0; padding: 0; font-family: sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -38,8 +41,8 @@
 
         /* --- ТЕКСТУРА БУМАГИ --- */
         .bg-paper {
-            background-color: #F2E8CF; /* Теплый бежевый */
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.22'/%3E%3C/svg%3E");
+            background-color: #fce2b1; /* Обновленный теплый бежевый */
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.35'/%3E%3C/svg%3E");
             box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
         }
 
@@ -203,10 +206,8 @@
                         {activeScreen === 'home' && (
                             <div className="relative min-h-screen flex flex-col items-center p-4 animate-fade">
                                 <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-80">
-                                    {/* Верхнее левое фото: сдвинуто дальше влево (-left-16) */}
                                     <Polaroid src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=300" className="top-10 -left-16" tilt={-12} />
                                     
-                                    {/* Почтовая марка: нормальное фото внутри и зазубренные края */}
                                     <div className="absolute top-32 -right-6 transform rotate-[15deg] postage-stamp w-24 h-24 flex items-center justify-center">
                                         <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=300" alt="Stamp" className="w-full h-full object-cover" />
                                     </div>
@@ -243,28 +244,29 @@
                                     </div>
 
                                     <div className="relative w-full flex justify-center items-center mt-6 mb-2 h-60 animate-item" style={{animationDelay: '0.15s'}}>
-                                        {/* Левый: Наклон вправо, выше, правый край под средним */}
                                         <div className="absolute z-10 p-1.5 pb-10 bg-[#fdfdfd] border border-gray-200/50 rounded-[2px] transform rotate-[8deg] -translate-x-[85px] -translate-y-[10px]" style={{ boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
                                             <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=300" alt="Rome" className="w-32 h-32 object-cover border border-gray-300/50" />
                                         </div>
                                         
-                                        {/* Правый: Вынесен вперед (z-30), наклон влево */}
                                         <div className="absolute z-30 p-1.5 pb-10 bg-[#fdfdfd] border border-gray-200/50 rounded-[2px] transform -rotate-[6deg] translate-x-[95px] translate-y-4" style={{ boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
                                             <img src="https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=300" alt="Тайланд" className="w-32 h-32 object-cover border border-gray-300/50" />
-                                            <div className="absolute bottom-2 left-0 right-0 text-center font-serif italic text-[11px] text-gray-700 rotate-1">Тайланд 2026!</div>
+                                            {/* Обновленная рукописная подпись */}
+                                            <div className="absolute bottom-1 left-0 right-0 text-center text-[#0033aa] text-2xl" style={{ fontFamily: "'Caveat', cursive", transform: "rotate(-2deg)" }}>
+                                                Тайланд 2026!
+                                            </div>
                                         </div>
 
-                                        {/* Центральный: Как есть */}
                                         <div className="absolute z-20 p-2 pb-10 bg-[#fdfdfd] border border-gray-200/50 rounded-[2px] transform -rotate-2" style={{ boxShadow: 'inset 0 0 6px rgba(0,0,0,0.1), 4px_15px_25px_rgba(0,0,0,0.4)' }}>
                                             <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=400" alt="Paris" className="w-32 h-32 object-cover border border-gray-300/50" />
                                         </div>
                                     </div>
 
+                                    {/* Кнопки с повышенной прозрачностью (/70) */}
                                     <div className="w-full flex flex-col gap-3 px-4 mt-auto mb-4">
-                                        <button onClick={() => navigateTo('about')} className="animate-item bg-[#F8F1E5]/90 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.2s'}}>Обо мне</button>
-                                        <button onClick={() => navigateTo('tours')} className="animate-item bg-[#F8F1E5]/90 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.3s'}}>Горящие туры</button>
-                                        <button onClick={() => navigateTo('booking')} className="animate-item bg-[#F8F1E5]/90 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.4s'}}>Бронирование</button>
-                                        <button onClick={() => navigateTo('contacts')} className="animate-item bg-[#F8F1E5]/90 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.5s'}}>Контакты</button>
+                                        <button onClick={() => navigateTo('about')} className="animate-item bg-[#F8F1E5]/70 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.2s'}}>Обо мне</button>
+                                        <button onClick={() => navigateTo('tours')} className="animate-item bg-[#F8F1E5]/70 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.3s'}}>Горящие туры</button>
+                                        <button onClick={() => navigateTo('booking')} className="animate-item bg-[#F8F1E5]/70 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.4s'}}>Бронирование</button>
+                                        <button onClick={() => navigateTo('contacts')} className="animate-item bg-[#F8F1E5]/70 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.5s'}}>Контакты</button>
                                     </div>
                                 </div>
                             </div>
