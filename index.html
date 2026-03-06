@@ -152,6 +152,7 @@
         const IconSend = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>;
         const IconPhone = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>;
         const IconMapPin = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
+        const IconFire = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className}><path d="M11.25 22.5c-4.142 0-7.5-3.358-7.5-7.5 0-4.053 2.583-8.082 5.679-11.439a.75.75 0 0 1 1.258.287c.365 1.305.89 2.553 1.559 3.731.399.702 1.139 1.118 1.954 1.118h.08a.75.75 0 0 0 .584-1.218 10.323 10.323 0 0 0-1.802-1.832.75.75 0 0 1 .42-1.328 10.038 10.038 0 0 1 5.462 2.115c2.31 1.874 3.806 4.673 3.806 7.816 0 4.142-3.358 7.5-7.5 7.5Z" /></svg>;
 
         function App() {
             const [activeScreen, setActiveScreen] = useState('home');
@@ -209,9 +210,10 @@
                 window.scrollTo(0, 0);
             };
 
-            const Polaroid = ({ src, className, tilt }) => (
+            const Polaroid = ({ src, className, tilt, children }) => (
                 <div className={`absolute p-2 pb-10 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] ${className}`} style={{ transform: `rotate(${tilt}deg)`, boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
                     <img src={src} alt="Travel" className="w-32 h-32 object-cover border border-gray-300/50" />
+                    {children}
                 </div>
             );
 
@@ -222,7 +224,45 @@
                         {activeScreen === 'home' && (
                             <div className="relative min-h-screen flex flex-col items-center p-4 animate-fade">
                                 <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-80">
-                                    <Polaroid src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=300" className="top-10 -left-16" tilt={-12} />
+                                    
+                                    {/* Почтовый конверт (слева, выглядывает из-за края) */}
+                                    <div className="absolute top-[140px] -left-[140px] w-56 h-40 bg-[#FAF6EE] shadow-[4px_6px_15px_rgba(0,0,0,0.12)] border border-[#E8DFD1] transform rotate-[14deg] z-0">
+                                        <div className="absolute top-3 right-4 w-10 h-12 postage-stamp flex items-center justify-center bg-white shadow-sm">
+                                            <img src="https://images.unsplash.com/photo-1517036662492-7f939e6a2bdf?auto=format&fit=crop&q=80&w=100" alt="Stamp" className="w-full h-full object-cover grayscale opacity-80" />
+                                        </div>
+                                        <div className="absolute top-2 right-10 opacity-50 rotate-[-12deg] pointer-events-none">
+                                            <svg width="60" height="30" viewBox="0 0 100 50" fill="none" stroke="#2C2C2C" strokeWidth="1.5">
+                                                <circle cx="20" cy="25" r="16" />
+                                                <circle cx="20" cy="25" r="10" />
+                                                <text x="20" y="27" textAnchor="middle" fontSize="5" fill="#2C2C2C" strokeWidth="0">POSTAGE</text>
+                                                <path d="M 40 15 Q 50 10, 60 15 T 80 15 T 100 15" />
+                                                <path d="M 40 22 Q 50 17, 60 22 T 80 22 T 100 22" />
+                                                <path d="M 40 29 Q 50 24, 60 29 T 80 29 T 100 29" />
+                                                <path d="M 40 36 Q 50 31, 60 36 T 80 36 T 100 36" />
+                                            </svg>
+                                        </div>
+                                        <div className="mt-16 ml-24 flex flex-col gap-1">
+                                            <div className="text-[#333] text-xl opacity-90" style={{ fontFamily: "'Caveat', cursive", transform: "rotate(-3deg)" }}>To my dear</div>
+                                            <div className="text-[#333] text-sm opacity-80 ml-2" style={{ fontFamily: "'Caveat', cursive", transform: "rotate(-1deg)" }}>friend...</div>
+                                        </div>
+                                    </div>
+
+                                    <Polaroid src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=300" className="top-10 -left-16 z-10" tilt={-12}>
+                                        {/* Добавленный почтовый штамп */}
+                                        <div className="absolute top-2 left-4 opacity-50 text-[#1a1a1a] pointer-events-none rotate-[20deg]">
+                                            <svg width="100" height="40" viewBox="0 0 120 50" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                                                <circle cx="25" cy="25" r="20" />
+                                                <circle cx="25" cy="25" r="14" />
+                                                <text x="25" y="23" textAnchor="middle" fontSize="6" fill="currentColor" strokeWidth="0" className="font-sans font-bold">PARIS</text>
+                                                <text x="25" y="32" textAnchor="middle" fontSize="5" fill="currentColor" strokeWidth="0" className="font-sans">24 OCT</text>
+                                                <path d="M 50 15 Q 55 10, 60 15 T 70 15 T 80 15 T 90 15 T 100 15 T 110 15" />
+                                                <path d="M 50 20 Q 55 15, 60 20 T 70 20 T 80 20 T 90 20 T 100 20 T 110 20" />
+                                                <path d="M 50 25 Q 55 20, 60 25 T 70 25 T 80 25 T 90 25 T 100 25 T 110 25" />
+                                                <path d="M 50 30 Q 55 25, 60 30 T 70 30 T 80 30 T 90 30 T 100 30 T 110 30" />
+                                                <path d="M 50 35 Q 55 30, 60 35 T 70 35 T 80 35 T 90 35 T 100 35 T 110 35" />
+                                            </svg>
+                                        </div>
+                                    </Polaroid>
                                     
                                     <div className="absolute top-32 -right-6 transform rotate-[15deg] postage-stamp w-24 h-24 flex items-center justify-center">
                                         <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=300" alt="Stamp" className="w-full h-full object-cover" />
@@ -323,7 +363,9 @@
                                                 <div className="relative h-48">
                                                     {/* Если картинки нет, подставляем заглушку */}
                                                     <img src={tour.imageUrl || "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400"} alt={tour.title} className="w-full h-full object-cover" />
-                                                    <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">HOT</div>
+                                                    <div className="absolute top-3 right-3 text-red-500 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+                                                        <IconFire size={28} />
+                                                    </div>
                                                 </div>
                                                 <div className="p-5">
                                                     <h3 className="text-xl font-bold mb-2">{tour.title}</h3>
@@ -333,7 +375,7 @@
                                                     <p className="text-gray-600 text-sm mb-4">{tour.dates}</p>
                                                     <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
                                                         <span className="text-2xl font-bold text-amber-600">{tour.price}</span>
-                                                        <button onClick={() => navigateTo('booking')} className="bg-black text-white px-5 py-2 rounded-full font-medium active:scale-95 transition-transform">Хочу!</button>
+                                                        <button onClick={() => navigateTo('booking')} className="bg-black text-white px-5 py-2 rounded-full font-medium active:scale-95 transition-transform">Бронировать</button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -349,7 +391,7 @@
                                     <IconArrowLeft size={20} /> Назад
                                 </button>
                                 <div className="flex-1 flex flex-col items-center justify-center max-w-sm mx-auto w-full">
-                                    <h2 className="text-3xl font-serif font-bold mb-8 text-center text-gray-800">Давайте на связи!</h2>
+                                    <h2 className="text-3xl font-serif font-bold mb-8 text-center text-gray-800">Всегда на связи</h2>
                                     <div className="w-full flex flex-col gap-4">
                                         <a href={CONFIG.contacts.telegram} target="_blank" rel="noreferrer" onClick={triggerHaptic} className="flex items-center gap-4 bg-white/70 backdrop-blur-md p-4 rounded-3xl border border-white shadow-sm active:scale-95 transition-all text-gray-800 hover:bg-white">
                                             <div className="bg-white p-3 rounded-full shadow-[0_2px_8px_rgba(0,0,0,0.08)] text-[#0088cc]">
