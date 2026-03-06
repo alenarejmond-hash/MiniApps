@@ -36,6 +36,13 @@
             animation: fadeIn 0.5s ease-out forwards;
         }
 
+        /* --- ТЕКСТУРА БУМАГИ --- */
+        .bg-paper {
+            background-color: #Eae0c8;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.15'/%3E%3C/svg%3E");
+            box-shadow: inset 0 0 80px rgba(0,0,0,0.08);
+        }
+
         /* --- СИМУЛЯТОР ТЕЛЕФОНА ДЛЯ ПРЕДПРОСМОТРА --- */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -186,7 +193,7 @@
             return (
                 <div className="min-h-screen sm:bg-zinc-800 flex justify-center sm:py-8 sm:items-center">
                     {/* --- МОБИЛЬНЫЙ КОНТЕЙНЕР (СИМУЛЯТОР ТЕЛЕФОНА) --- */}
-                    <div className="mobile-simulator bg-[#F2E8D9] text-[#2C2C2C] font-sans selection:bg-amber-200 hide-scrollbar">
+                    <div className="mobile-simulator bg-paper text-[#2C2C2C] font-sans selection:bg-amber-200 hide-scrollbar">
                         
                         {/* --- ГЛАВНЫЙ ЭКРАН --- */}
                         {activeScreen === 'home' && (
@@ -225,21 +232,21 @@
                                 </div>
 
                                 {/* ТРИ ЦЕНТРАЛЬНЫХ ПОЛАРОИДА */}
-                                <div className="relative w-full flex justify-center items-center mt-6 mb-2 h-48 animate-item" style={{animationDelay: '0.15s'}}>
+                                <div className="relative w-full flex justify-center items-center mt-6 mb-2 h-60 animate-item" style={{animationDelay: '0.15s'}}>
                                     {/* Левый */}
-                                    <div className="absolute z-10 p-2 pb-10 bg-[#FAFAFA] shadow-[0_8px_15px_-3px_rgba(0,0,0,0.2)] rounded-sm transform -rotate-[12deg] -translate-x-20 translate-y-3">
-                                        <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=300" alt="Rome" className="w-24 h-24 object-cover border border-gray-200" />
+                                    <div className="absolute z-10 p-3 pb-12 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] transform -rotate-[14deg] -translate-x-[90px] translate-y-6">
+                                        <img src="https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=300" alt="Rome" className="w-32 h-32 object-cover border border-gray-300/50" />
                                     </div>
                                     
-                                    {/* Правый */}
-                                    <div className="absolute z-10 p-2 pb-10 bg-[#FAFAFA] shadow-[0_8px_15px_-3px_rgba(0,0,0,0.2)] rounded-sm transform rotate-[15deg] translate-x-20 translate-y-3">
-                                        <img src="https://images.unsplash.com/photo-1527842891421-42eec6e703ea?auto=format&fit=crop&q=80&w=300" alt="Travel" className="w-24 h-24 object-cover border border-gray-200" />
-                                        <div className="absolute bottom-2.5 left-0 right-0 text-center font-serif italic text-[10px] text-gray-500 -rotate-2">Famous Polaroid</div>
+                                    {/* Правый (Тайланд) */}
+                                    <div className="absolute z-10 p-3 pb-12 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] transform rotate-[16deg] translate-x-[90px] translate-y-4">
+                                        <img src="https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=300" alt="Тайланд" className="w-32 h-32 object-cover border border-gray-300/50" />
+                                        <div className="absolute bottom-4 left-0 right-0 text-center font-serif italic text-xs text-gray-700 -rotate-1">Тайланд 2026!</div>
                                     </div>
 
                                     {/* Центральный (сверху) */}
-                                    <div className="absolute z-20 p-2.5 pb-12 bg-[#FAFAFA] shadow-[0_15px_30px_-5px_rgba(0,0,0,0.3)] rounded-sm transform -rotate-2">
-                                        <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=400" alt="Paris" className="w-28 h-28 object-cover border border-gray-200" />
+                                    <div className="absolute z-20 p-3.5 pb-14 bg-[#fdfdfd] shadow-[4px_15px_25px_rgba(0,0,0,0.4)] border border-gray-200/50 rounded-[2px] transform -rotate-2">
+                                        <img src="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=400" alt="Paris" className="w-36 h-36 object-cover border border-gray-300/50" />
                                     </div>
                                 </div>
 
@@ -255,7 +262,7 @@
 
                         {/* --- ЭКРАН "ОБО МНЕ" --- */}
                         {activeScreen === 'about' && (
-                        <div className="min-h-screen p-6 animate-fade bg-[#FAF4ED]">
+                        <div className="min-h-screen p-6 animate-fade bg-paper">
                             <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70 hover:text-black">
                                 <IconArrowLeft size={20} /> Назад
                             </button>
@@ -275,7 +282,7 @@
 
                     {/* --- ЭКРАН "ГОРЯЩИЕ ТУРЫ" --- */}
                     {activeScreen === 'tours' && (
-                        <div className="min-h-screen p-6 animate-fade bg-[#FAF4ED]">
+                        <div className="min-h-screen p-6 animate-fade bg-paper">
                             <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70 hover:text-black">
                                 <IconArrowLeft size={20} /> Назад
                             </button>
@@ -309,7 +316,7 @@
 
                     {/* --- ЭКРАН "КОНТАКТЫ" --- */}
                     {activeScreen === 'contacts' && (
-                        <div className="min-h-screen p-6 animate-fade bg-[#FAF4ED] flex flex-col">
+                        <div className="min-h-screen p-6 animate-fade bg-paper flex flex-col">
                             <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70 hover:text-black">
                                 <IconArrowLeft size={20} /> Назад
                             </button>
