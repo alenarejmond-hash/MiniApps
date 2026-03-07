@@ -158,6 +158,7 @@
             const [activeScreen, setActiveScreen] = useState('home');
             const [tours, setTours] = useState([]);
             const [isLoadingTours, setIsLoadingTours] = useState(true);
+            const [dynamicBookingLink, setDynamicBookingLink] = useState(""); // Убрали дефолтный Телеграм отсюда
 
             useEffect(() => {
                 // Инициализация Telegram
@@ -173,8 +174,22 @@
                         header: true,
                         skipEmptyLines: true,
                         complete: function(results) {
-                            // Берем только те строки, где есть название и цена
-                            const validTours = results.data.filter(row => row.title && row.price);
+                            // 🔍 Ищем динамическую ссылку (даже если случайно добавили пробел в заголовок)
+                            let foundGlobalLink = "";
+                            
+                            const validTours = results.data.map(row => {
+                                // Находим ключ колонки, похожий на bookinglink
+                                const linkKey = Object.keys(row).find(k => k.trim().toLowerCase() === 'bookinglink');
+                                const rowLink = linkKey ? row[linkKey].trim() : '';
+                                
+                                if (rowLink && !foundGlobalLink) {
+                                    foundGlobalLink = rowLink;
+                                }
+                                
+                                return { ...row, _actualLink: rowLink };
+                            }).filter(row => row.title && row.price);
+                            
+                            setDynamicBookingLink(foundGlobalLink);
                             setTours(validTours);
                             setIsLoadingTours(false);
                         },
@@ -196,16 +211,32 @@
                 }
             };
 
-            const navigateTo = (screen) => {
+            const navigateTo = (screen, customLink = null) => {
                 triggerHaptic();
+                
                 if (screen === 'booking') {
-                    if (window.Telegram?.WebApp?.openLink) {
-                        window.Telegram.WebApp.openLink(CONFIG.bookingLink);
-                    } else {
-                        window.open(CONFIG.bookingLink, '_blank');
-                    }
+                    // Главная кнопка "Бронирование" - всегда ведет в Телеграм (из CONFIG)
+                    const linkToOpen = CONFIG.bookingLink;
+                    if (window.Telegram?.WebApp?.openLink) window.Telegram.WebApp.openLink(linkToOpen);
+                    else window.open(linkToOpen, '_blank');
                     return;
                 }
+                
+                if (screen === 'quiQuo') {
+                    // Кнопки "Подробнее" в турах - ведут на ссылку Кви-Кво
+                    // Берем ссылку из конкретного тура, либо общую ссылку из таблицы
+                    const linkToOpen = customLink || dynamicBookingLink;
+                    
+                    if (!linkToOpen) {
+                        alert("Ссылка на подборку еще не добавлена в таблицу!");
+                        return;
+                    }
+                    
+                    if (window.Telegram?.WebApp?.openLink) window.Telegram.WebApp.openLink(linkToOpen);
+                    else window.open(linkToOpen, '_blank');
+                    return;
+                }
+
                 setActiveScreen(screen);
                 window.scrollTo(0, 0);
             };
@@ -397,7 +428,7 @@
                                     <div className="flex flex-col gap-4 w-full">
                                         {tours.map((tour, index) => (
                                             /* 📦 БЛОК: Отдельная карточка тура (Новый горизонтальный дизайн) */
-                                            <div key={tour.id || index} onClick={() => navigateTo('booking')} className="relative bg-white p-3 rounded-2xl shadow-md flex gap-4 border border-[#E7D6BD] transition-transform active:scale-95 cursor-pointer">
+                                            <div key={tour.id || index} onClick={() => navigateTo('quiQuo', tour._actualLink)} className="relative bg-white p-3 rounded-2xl shadow-md flex gap-4 border border-[#E7D6BD] transition-transform active:scale-95 cursor-pointer">
                                                 
                                                 {/* ⭐ Салатовый квадратик рейтинга в верхнем правом углу */}
                                                 <div className="absolute top-2 right-2 w-6 h-6 bg-[#84cc16] text-white text-[10px] font-bold rounded shadow-sm flex items-center justify-center z-10">
@@ -434,7 +465,7 @@
                                                             <span className="font-bold text-[15px] text-[#2C2C2C] leading-none">{tour.price}</span>
                                                         </div>
                                                         <button 
-                                                            onClick={(e) => { e.stopPropagation(); navigateTo('booking'); }} 
+                                                            onClick={(e) => { e.stopPropagation(); navigateTo('quiQuo', tour._actualLink); }} 
                                                             className="bg-black text-white text-[11px] font-semibold py-1.5 px-3 rounded-lg hover:bg-gray-800 transition-colors shrink-0 ml-2"
                                                         >
                                                             Подробнее
