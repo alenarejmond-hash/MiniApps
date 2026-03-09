@@ -107,9 +107,9 @@
 
         const CONFIG = {
             // --- 1. ГЛАВНЫЙ ЭКРАН ---
-            brandName: "Елена Сотникова", 
+            brandName: "Ольга Иванова", 
             slogan: "Твой личный тревел-эксперт", 
-            avatarUrl: "https://i.postimg.cc/TPZMgvr9/unnamed.jpg",
+            avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200",
 
             // --- 2. БАЗА ДАННЫХ ТУРОВ (Ссылка на твою Google Таблицу CSV) ---
             googleSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=0&single=true&output=csv",
@@ -118,29 +118,26 @@
             about: {
                 title: "Обо мне",
                 text: "Привет! Я твой личный тревел-эксперт. Я помогаю людям находить идеальные места для отдыха, организую незабываемые туры и беру всю рутину с документами на себя. Моя цель — сделать так, чтобы ты просто собрал чемодан и наслаждался отпуском!",
-                photoUrl: "https://i.postimg.cc/9MpbVGF6/unnamed-12.jpg",
+                photoUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400",
             },
 
             // --- 4. ССЫЛКА ДЛЯ КНОПКИ "БРОНИРОВАНИЕ" ---
-            bookingLink: "https://t.me/elenlime", 
+            bookingLink: "https://t.me/telegram", 
 
             // --- 5. КОНТАКТЫ ---
             contacts: {
-                telegram: "https://t.me/elenlime",
-                instagram: "https://instagram.com/blond_way",
+                telegram: "https://t.me/telegram",
+                instagram: "https://instagram.com/instagram",
                 whatsapp: "https://wa.me/1234567890",
-                phone: "+7 (999) 999-99-99"
+                phone: "+7 (999) 123-45-67"
             },
 
-            // --- 6. ТЕХНИЧЕСКИЕ НАСТРОЙКИ FIREBASE (Пока не трогаем) ---
-            firebaseConfig: {
-                apiKey: "AIzaSyDrraU_Y3l8B9_R6Dl3PgKVucEluG_Bacw",
-                authDomain: "mini-apps-d5096.firebaseapp.com",
-                projectId: "mini-apps-d5096",
-                storageBucket: "mini-apps-d5096.firebasestorage.app",
-                messagingSenderId: "625952325109",
-                appId: "1:625952325109:web:a0de707bc19b50005574bc"
-            }
+            // --- 7. ОТЗЫВЫ ТУРИСТОВ ---
+            reviews: [
+                { id: 1, name: "Екатерина С.", date: "Март 2026", rating: 5, text: "Ольга — просто волшебница! Организовала нам идеальный тур на Мальдивы. Все документы были готовы вовремя, отель превзошел все ожидания. Теперь летать будем только с ней!" },
+                { id: 2, name: "Семья Ивановых", date: "Февраль 2026", rating: 5, text: "Спасибо за чудесный отдых в Турции. Отличный семейный отель, шикарное питание и чистый пляж. Ребенок в восторге!" },
+                { id: 3, name: "Анна и Михаил", date: "Январь 2026", rating: 5, text: "Всё было на высшем уровне! От подбора тура до возвращения домой мы чувствовали заботу и поддержку." }
+            ]
         };
 
         // =========================================================================================
@@ -153,12 +150,19 @@
         const IconPhone = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>;
         const IconMapPin = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
         const IconFire = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className}><path d="M11.25 22.5c-4.142 0-7.5-3.358-7.5-7.5 0-4.053 2.583-8.082 5.679-11.439a.75.75 0 0 1 1.258.287c.365 1.305.89 2.553 1.559 3.731.399.702 1.139 1.118 1.954 1.118h.08a.75.75 0 0 0 .584-1.218 10.323 10.323 0 0 0-1.802-1.832.75.75 0 0 1 .42-1.328 10.038 10.038 0 0 1 5.462 2.115c2.31 1.874 3.806 4.673 3.806 7.816 0 4.142-3.358 7.5-7.5 7.5Z" /></svg>;
+        const IconStar = ({size=24, filled=true, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>;
+        const IconEdit = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
 
         function App() {
             const [activeScreen, setActiveScreen] = useState('home');
             const [tours, setTours] = useState([]);
             const [isLoadingTours, setIsLoadingTours] = useState(true);
             const [dynamicBookingLink, setDynamicBookingLink] = useState(""); // Убрали дефолтный Телеграм отсюда
+
+            // Состояния для модального окна отзывов
+            const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+            const [reviewForm, setReviewForm] = useState({ name: '', text: '', rating: 5 });
+            const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
 
             useEffect(() => {
                 // Инициализация Telegram
@@ -239,6 +243,17 @@
 
                 setActiveScreen(screen);
                 window.scrollTo(0, 0);
+            };
+
+            const handleSubmitReview = (e) => {
+                e.preventDefault();
+                // Визуальная симуляция успешной отправки (в будущем здесь будет связь с Таблицей)
+                setIsReviewSubmitted(true);
+                setTimeout(() => {
+                    setIsReviewModalOpen(false);
+                    setIsReviewSubmitted(false);
+                    setReviewForm({ name: '', text: '', rating: 5 });
+                }, 3000);
             };
 
             // Компонент декоративного Полароида
@@ -363,10 +378,10 @@
                                         <button onClick={() => navigateTo('about')} className="animate-item bg-[#F8F1E5]/70 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.2s'}}>Обо мне</button>
                                         {/* Кнопка: Переход на экран "Горящие туры" */}
                                         <button onClick={() => navigateTo('tours')} className="animate-item bg-[#F8F1E5]/70 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.3s'}}>Горящие туры</button>
-                                        {/* Кнопка: Переход по внешней ссылке "Бронирование" */}
-                                        <button onClick={() => navigateTo('booking')} className="animate-item bg-[#F8F1E5]/70 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.4s'}}>Бронирование</button>
                                         {/* Кнопка: Переход на экран "Контакты" */}
-                                        <button onClick={() => navigateTo('contacts')} className="animate-item bg-[#F8F1E5]/70 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.5s'}}>Контакты</button>
+                                        <button onClick={() => navigateTo('contacts')} className="animate-item bg-[#F8F1E5]/70 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.4s'}}>Контакты</button>
+                                        {/* Кнопка: Переход на экран "Отзывы" (Последняя кнопка) */}
+                                        <button onClick={() => navigateTo('reviews')} className="animate-item bg-[#F8F1E5]/70 backdrop-blur-sm border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all" style={{animationDelay: '0.5s'}}>Отзывы</button>
                                     </div>
                                 </div>
                             </div>
@@ -525,6 +540,124 @@
                                             <span className="text-lg font-medium">{CONFIG.contacts.phone}</span>
                                         </a>
                                     </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* -------------------- ⭐️ ЭКРАН "ОТЗЫВЫ" -------------------- */}
+                        {activeScreen === 'reviews' && (
+                            <div className="min-h-screen pt-6 px-6 animate-fade bg-paper flex flex-col relative">
+                                {/* Кнопка: Возврат на главную страницу */}
+                                <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70 hover:text-black shrink-0 relative z-10">
+                                    <IconArrowLeft size={20} /> Назад
+                                </button>
+                                
+                                <h2 className="text-3xl font-serif font-bold mb-8 text-center text-[#2C2C2C]">Отзывы туристов</h2>
+                                
+                                {/* Список отзывов (Карточки) */}
+                                <div className="flex flex-col gap-6 w-full max-w-sm mx-auto relative z-10">
+                                    {CONFIG.reviews.map(review => (
+                                        <div key={review.id} className="relative bg-[#FFFcf5] p-5 rounded-sm shadow-[2px_4px_15px_rgba(0,0,0,0.06)] border border-[#e8dcc7] flex flex-col gap-3">
+                                            {/* Имитация полупрозрачного скотча сверху карточки */}
+                                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/40 backdrop-blur-md rotate-[-2deg] shadow-sm"></div>
+                                            
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <h3 className="font-bold text-[#2C2C2C] text-lg font-serif">{review.name}</h3>
+                                                    <div className="text-[11px] text-gray-400 font-sans tracking-wide uppercase mt-0.5">{review.date}</div>
+                                                </div>
+                                                {/* Звездочки рейтинга */}
+                                                <div className="flex gap-0.5 text-amber-400">
+                                                    {[...Array(5)].map((_, i) => (
+                                                        <IconStar key={i} size={14} filled={i < review.rating} />
+                                                    ))}
+                                                </div>
+                                            </div>
+                                            <p className="text-[#5c5c5c] font-serif italic text-sm leading-relaxed mt-1">"{review.text}"</p>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Плавающая кнопка "Написать отзыв" в самом низу */}
+                                <div className="sticky bottom-0 w-full pb-6 pt-10 mt-auto bg-gradient-to-t from-[#fce2b1] via-[#fce2b1]/90 to-transparent flex justify-center z-20">
+                                    <button 
+                                        onClick={() => setIsReviewModalOpen(true)}
+                                        className="w-full max-w-sm flex justify-center items-center gap-2 bg-[#F8F1E5]/90 backdrop-blur-md border-2 border-black rounded-full py-3 text-base font-medium shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 active:shadow-none transition-all"
+                                    >
+                                        <IconEdit size={18} /> Написать отзыв
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* -------------------- 🪟 МОДАЛЬНОЕ ОКНО ДЛЯ НАПИСАНИЯ ОТЗЫВА -------------------- */}
+                        {isReviewModalOpen && (
+                            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade">
+                                {/* Само окно */}
+                                <div className="bg-[#FFFcf5] w-full max-w-sm rounded-3xl p-6 shadow-2xl relative animate-item border border-[#e8dcc7]">
+                                    
+                                    {/* Кнопка-крестик (Закрыть) */}
+                                    <button onClick={() => setIsReviewModalOpen(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    </button>
+
+                                    {/* Состояние "Отправлено" */}
+                                    {isReviewSubmitted ? (
+                                        <div className="py-10 flex flex-col items-center text-center animate-fade">
+                                            <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4 shadow-sm">
+                                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            </div>
+                                            <h3 className="text-2xl font-serif font-bold text-[#2C2C2C] mb-2">Спасибо!</h3>
+                                            <p className="text-[#5c5c5c] font-serif text-sm">Ваш отзыв отправлен и скоро появится в приложении.</p>
+                                        </div>
+                                    ) : (
+                                        /* Форма для заполнения */
+                                        <form onSubmit={handleSubmitReview} className="flex flex-col gap-6">
+                                            <h3 className="text-2xl font-serif font-bold text-[#2C2C2C] mb-1">Ваш отзыв</h3>
+                                            
+                                            {/* Блок выбора звезд */}
+                                            <div className="flex flex-col gap-2">
+                                                <label className="text-xs font-sans text-gray-500 uppercase tracking-wide">Оценка</label>
+                                                <div className="flex gap-2 text-amber-400">
+                                                    {[1, 2, 3, 4, 5].map((star) => (
+                                                        <button type="button" key={star} onClick={() => setReviewForm({...reviewForm, rating: star})} className="transition-transform active:scale-75">
+                                                            <IconStar size={36} filled={star <= reviewForm.rating} />
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            </div>
+
+                                            {/* Поле Имя */}
+                                            <div className="flex flex-col gap-1">
+                                                <label className="text-xs font-sans text-gray-500 uppercase tracking-wide">Ваше имя</label>
+                                                <input 
+                                                    type="text" 
+                                                    required
+                                                    value={reviewForm.name}
+                                                    onChange={(e) => setReviewForm({...reviewForm, name: e.target.value})}
+                                                    className="w-full bg-transparent border-b-2 border-[#d4af37]/30 py-2 focus:border-[#d4af37] outline-none transition-colors font-serif text-lg text-[#2C2C2C] placeholder-gray-300"
+                                                    placeholder="Например: Мария"
+                                                />
+                                            </div>
+
+                                            {/* Поле Текст */}
+                                            <div className="flex flex-col gap-1">
+                                                <label className="text-xs font-sans text-gray-500 uppercase tracking-wide">Впечатления</label>
+                                                <textarea 
+                                                    required
+                                                    rows="3"
+                                                    value={reviewForm.text}
+                                                    onChange={(e) => setReviewForm({...reviewForm, text: e.target.value})}
+                                                    className="w-full bg-transparent border-b-2 border-[#d4af37]/30 py-2 focus:border-[#d4af37] outline-none transition-colors font-serif text-base text-[#2C2C2C] resize-none placeholder-gray-300"
+                                                    placeholder="Напишите пару слов о вашем отдыхе..."
+                                                ></textarea>
+                                            </div>
+
+                                            <button type="submit" className="w-full bg-[#d4af37] text-white py-4 rounded-xl font-bold mt-2 shadow-[0_4px_15px_rgba(212,175,55,0.4)] hover:bg-[#c49f27] transition-colors active:scale-95 text-[15px] tracking-wide">
+                                                Отправить отзыв
+                                            </button>
+                                        </form>
+                                    )}
                                 </div>
                             </div>
                         )}
