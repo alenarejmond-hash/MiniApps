@@ -51,7 +51,15 @@
 
       philosophyTitle: "Философия",
       philosophySub: "Смысл пути",
-      philosophyLink: "https://t.me/durov", // Ссылка на пост с философией
+
+      // --- 8. ПОПАП "МОЯ ФИЛОСОФИЯ" (ОБО МНЕ) ---
+      philosophyPopupImage: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop", // Фото гида крупным планом
+      philosophyPopupTitle: "Мой подход",
+      philosophyPopupBullets: [
+        "Только мини-группы (до 8 человек).",
+        "Никаких автобусов — передвигаемся на джипах.",
+        "Секретные локации, которых нет в путеводителях."
+      ],
 
       // --- 3. АКТУАЛЬНЫЙ ТУР (НА ГЛАВНОМ ЭКРАНЕ) ---
       mainTourImage: "https://i.postimg.cc/9QM60kVV/ib7.webp",
@@ -206,14 +214,14 @@
               <span id="cfg-archive-sub" class="text-[10px] text-[#8C8C8C] mt-1"></span>
             </div>
 
-            <!-- Карточка 3: Моя философия -->
-            <a id="cfg-philosophy-link" href="#" target="_blank" class="bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow">
+            <!-- Карточка 3: Моя философия (ТЕПЕРЬ ОТКРЫВАЕТ ПОПАП) -->
+            <div onclick="openPhilosophy()" class="bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow cursor-pointer">
               <div class="w-12 h-12 rounded-full bg-[#F9F8F6] flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
               </div>
               <span id="cfg-philosophy-title" class="text-sm font-medium tracking-wide"></span>
               <span id="cfg-philosophy-sub" class="text-[10px] text-[#8C8C8C] mt-1"></span>
-            </a>
+            </div>
           </div>
         </section>
 
@@ -335,6 +343,30 @@
     </div>
   </div>
 
+  <!-- НОВАЯ: Всплывающее окно (Попап) "Моя философия" -->
+  <div id="philosophy-popup" class="fixed inset-0 z-[120] flex items-center justify-center pointer-events-none p-5">
+    <div id="philosophy-backdrop" class="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closePhilosophy()"></div>
+    
+    <div id="philosophy-content" class="relative bg-white w-full max-w-sm mx-auto rounded-[20px] shadow-2xl scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col pointer-events-auto overflow-hidden">
+      
+      <button onclick="closePhilosophy()" class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+
+      <div class="w-full h-[220px] relative">
+        <img id="cfg-philosophy-popup-img" src="" alt="Guide" class="w-full h-full object-cover" />
+        <div class="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
+      </div>
+
+      <div class="px-6 pb-8 pt-2">
+        <h3 id="cfg-philosophy-popup-title" class="font-serif text-2xl text-[#1A1A1A] mb-5 text-center"></h3>
+        <ul id="cfg-philosophy-bullets" class="space-y-4">
+          <!-- Буллиты генерируются из скрипта -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <!-- Скрипт применения настроек (Не требует редактирования) -->
   <script>
     function applyVibeConfig() {
@@ -351,7 +383,6 @@
       
       document.getElementById('cfg-philosophy-title').textContent = APP_DATA.philosophyTitle;
       document.getElementById('cfg-philosophy-sub').textContent = APP_DATA.philosophySub;
-      document.getElementById('cfg-philosophy-link').href = APP_DATA.philosophyLink;
 
       // 3. Применяем Актуальный тур
       document.getElementById('cfg-main-tour-image').src = APP_DATA.mainTourImage;
@@ -366,6 +397,24 @@
       // 4. Применяем Главную кнопку
       document.getElementById('cfg-bottom-btn').textContent = APP_DATA.bottomBtnText;
       document.getElementById('cfg-bottom-btn').href = APP_DATA.bottomBtnLink;
+
+      // Применяем настройки для попапа "Моя философия"
+      document.getElementById('cfg-philosophy-popup-img').src = APP_DATA.philosophyPopupImage;
+      document.getElementById('cfg-philosophy-popup-title').textContent = APP_DATA.philosophyPopupTitle;
+      
+      const bulletsContainer = document.getElementById('cfg-philosophy-bullets');
+      bulletsContainer.innerHTML = '';
+      APP_DATA.philosophyPopupBullets.forEach(text => {
+        const html = `
+          <li class="flex items-start gap-3">
+            <div class="mt-0.5 w-5 h-5 rounded-full bg-[#F9F8F6] flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]"><path d="M20 6 9 17l-5-5"/></svg>
+            </div>
+            <span class="text-[13px] text-[#6B6B6B] leading-snug">${text}</span>
+          </li>
+        `;
+        bulletsContainer.insertAdjacentHTML('beforeend', html);
+      });
 
       // 5. Применяем настройки для шторки "Архив" (Как это было)
       document.getElementById('cfg-archive-sheet-text').textContent = `«${APP_DATA.archiveSheetText}»`;
@@ -524,6 +573,31 @@
         document.getElementById('archive-sheet').classList.add('pointer-events-none');
         document.body.style.overflow = '';
       }, 500); 
+    }
+
+    // Моя философия (Попап)
+    function openPhilosophy() {
+      document.getElementById('philosophy-popup').classList.remove('pointer-events-none');
+      document.getElementById('philosophy-backdrop').classList.replace('opacity-0', 'opacity-100');
+      
+      const content = document.getElementById('philosophy-content');
+      content.classList.replace('scale-95', 'scale-100');
+      content.classList.replace('opacity-0', 'opacity-100');
+      
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePhilosophy() {
+      document.getElementById('philosophy-backdrop').classList.replace('opacity-100', 'opacity-0');
+      
+      const content = document.getElementById('philosophy-content');
+      content.classList.replace('scale-100', 'scale-95');
+      content.classList.replace('opacity-100', 'opacity-0');
+      
+      setTimeout(() => {
+        document.getElementById('philosophy-popup').classList.add('pointer-events-none');
+        document.body.style.overflow = '';
+      }, 300); 
     }
   </script>
 </body>
