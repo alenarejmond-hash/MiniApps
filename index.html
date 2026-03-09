@@ -20,15 +20,29 @@
 </head>
 <body class="bg-[#F9F8F6]">
 
+  <!-- Прелоадер (Экран загрузки) -->
+  <div id="preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center transition-opacity duration-700 bg-cover bg-center" style="background-image: url('https://i.postimg.cc/9QM60kVV/ib7.webp');">
+    <div class="absolute inset-0 bg-[#F9F8F6]/80 backdrop-blur-md"></div>
+    <div class="relative z-10 flex flex-col items-center">
+      <!-- Спиннер -->
+      <svg class="animate-spin h-12 w-12 text-[#B85C47] mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      </svg>
+      <p class="font-serif text-[#1A1A1A] text-lg tracking-widest uppercase animate-pulse">Загрузка...</p>
+    </div>
+  </div>
+
   <div class="min-h-screen bg-[#F9F8F6] text-[#242424] font-sans pb-32 relative selection:bg-[#B85C47] selection:text-white">
     
-    <!-- Ограничитель ширины для симуляции мобильного вида на десктопе -->
-    <div class="max-w-md mx-auto bg-[#F9F8F6] min-h-screen relative shadow-2xl shadow-black/5">
+    <!-- Ограничитель ширины для адаптации на всех устройствах -->
+    <div class="w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto bg-[#F9F8F6] min-h-screen relative shadow-2xl md:shadow-none shadow-black/5">
       
+      <!-- БЛОК 1: Hero-секция -->
       <!-- БЛОК 1: Hero-секция -->
       <header class="relative w-full flex flex-col items-center">
         <!-- Фото -->
-        <div class="w-full h-[35vh] min-h-[280px] relative">
+        <div class="w-full h-[35vh] md:h-[45vh] lg:h-[55vh] min-h-[280px] relative">
           <img 
             src="https://i.postimg.cc/9QM60kVV/ib7.webp" 
             alt="Atmospheric landscape" 
@@ -39,8 +53,8 @@
         </div>
 
         <!-- Заголовок (наплывает на фото) -->
-        <div class="relative -mt-10 flex flex-col items-center px-4 text-center z-10 w-full">
-          <div class="bg-[#F9F8F6]/80 backdrop-blur-md px-8 py-6 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] w-[90%] border border-white/50">
+        <div class="relative -mt-10 md:-mt-16 flex flex-col items-center px-4 text-center z-10 w-full">
+          <div class="bg-[#F9F8F6]/80 backdrop-blur-md px-8 py-6 md:py-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] w-[90%] md:w-[70%] lg:w-[50%] border border-white/50">
             <h1 class="font-serif text-3xl font-medium tracking-wide mb-3 text-[#1A1A1A]">
               Кристина Вейс
             </h1>
@@ -59,13 +73,13 @@
       </header>
 
       <!-- Основной контент -->
-      <main class="px-5 py-8">
+      <main class="px-5 md:px-10 lg:px-16 py-8 md:py-12">
         
         <!-- БЛОК 2: Bento-Grid -->
         <section>
-          <div class="grid grid-cols-2 gap-3">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
             <!-- Карточка 1: Ближайшие экспедиции -->
-            <div class="col-span-2 relative aspect-[21/9] rounded-[10px] overflow-hidden shadow-sm group cursor-pointer">
+            <div class="col-span-2 md:col-span-2 relative aspect-[21/9] md:aspect-auto md:h-full rounded-[10px] overflow-hidden shadow-sm group cursor-pointer">
               <img 
                 src="https://i.postimg.cc/mkjn2Y5Y/1554794717-1541585748427874764.jpg" 
                 alt="Expeditions" 
@@ -112,9 +126,9 @@
             Скоро отправляемся
           </h2>
           
-          <div class="bg-white rounded-[12px] overflow-hidden shadow-[0_8px_25px_-8px_rgba(0,0,0,0.06)] border border-[#F0EFEA]">
+          <div class="bg-white rounded-[12px] overflow-hidden shadow-[0_8px_25px_-8px_rgba(0,0,0,0.06)] border border-[#F0EFEA] md:flex md:items-stretch">
             <!-- Фото тура -->
-            <div class="relative h-[220px]">
+            <div class="relative h-[220px] md:h-auto md:w-1/2 md:shrink-0 md:min-h-[300px]">
               <img 
                 src="https://i.postimg.cc/9QM60kVV/ib7.webp" 
                 alt="Patagonia" 
@@ -128,7 +142,7 @@
             </div>
             
             <!-- Описание тура -->
-            <div class="p-6">
+            <div class="p-6 md:p-8 lg:p-10 md:w-1/2 md:flex md:flex-col md:justify-center">
               <div class="flex justify-between items-start mb-3">
                 <h3 class="font-serif text-2xl text-[#1A1A1A]">Тайна Патагонии</h3>
               </div>
@@ -159,8 +173,8 @@
       </main>
 
       <!-- БЛОК 4: Sticky CTA -->
-      <div class="fixed bottom-0 left-0 right-0 p-5 pt-16 bg-gradient-to-t from-[#F9F8F6] via-[#F9F8F6]/95 to-transparent z-50 pointer-events-none">
-        <div class="max-w-md mx-auto pointer-events-auto">
+      <div class="fixed bottom-0 left-0 right-0 p-5 md:p-8 pt-16 md:pt-24 bg-gradient-to-t from-[#F9F8F6] via-[#F9F8F6]/95 to-transparent z-50 pointer-events-none">
+        <div class="w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto pointer-events-auto">
           <button class="w-full bg-[#B85C47] text-white py-4 px-6 rounded-[10px] text-xs uppercase tracking-[0.15em] font-medium shadow-[0_8px_20px_-6px_rgba(184,92,71,0.5)] hover:bg-[#A3503D] hover:-translate-y-0.5 transition-all duration-300 active:scale-[0.98] active:translate-y-0 flex items-center justify-center gap-2">
             Заполнить анкету
           </button>
@@ -170,5 +184,20 @@
     </div>
   </div>
 
+  <script>
+    // Скрипт для исчезновения экрана загрузки
+    window.addEventListener('load', function() {
+      const preloader = document.getElementById('preloader');
+      if (preloader) {
+        // Небольшая задержка 0.8с, чтобы пользователь успел заметить красивый экран загрузки
+        setTimeout(() => {
+          preloader.style.opacity = '0';
+          setTimeout(() => {
+            preloader.style.display = 'none';
+          }, 700); // время задержки совпадает с классом duration-700
+        }, 800);
+      }
+    });
+  </script>
 </body>
 </html>
