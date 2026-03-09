@@ -5,13 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Tracks & Stories</title>
   
-  <!-- Подключение Tailwind CSS для стилей -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Подключение скрипта Telegram Web App (рекомендуется для Mini Apps) -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <!-- Подключение шрифтов -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
     .font-serif { font-family: 'Playfair Display', serif; }
@@ -20,8 +16,89 @@
 </head>
 <body class="bg-[#F9F8F6]">
 
+  <!-- 
+  =======================================================================
+  ✨✨✨ БЛОК ДЛЯ ВАЙБКОДЕРА (НАСТРОЙКИ ПРИЛОЖЕНИЯ) ✨✨✨
+  Привет! Это твоя панель управления. Тебе больше не нужно копаться 
+  в сложном коде ниже. Просто меняй текст и ссылки внутри кавычек "", 
+  и дизайн обновится сам!
+  =======================================================================
+  -->
+  <script>
+    const APP_DATA = {
+      // --- 1. ГЛАВНЫЙ ЭКРАН (ШАПКА) ---
+      preloaderImage: "https://i.postimg.cc/9QM60kVV/ib7.webp", // Фото на экране загрузки
+      heroImage: "https://i.postimg.cc/9QM60kVV/ib7.webp",      // Главное фото сверху
+      authorName: "Кристина Вейс",
+      authorSubtitle: "Авторские путешествия",
+
+      // --- 2. МЕНЮ (ПЛИТКИ) ---
+      expeditionsImage: "https://i.postimg.cc/mkjn2Y5Y/1554794717-1541585748427874764.jpg",
+      
+      archiveTitle: "Как это было",
+      archiveSub: "Архив эмоций",
+      archiveLink: "https://t.me/durov", // Ссылка на пост-архив
+
+      philosophyTitle: "Философия",
+      philosophySub: "Смысл пути",
+      philosophyLink: "https://t.me/durov", // Ссылка на пост с философией
+
+      // --- 3. АКТУАЛЬНЫЙ ТУР (НА ГЛАВНОМ ЭКРАНЕ) ---
+      mainTourImage: "https://i.postimg.cc/9QM60kVV/ib7.webp",
+      mainTourBadge: "Осталось 2 места",
+      mainTourTitle: "Тайна Патагонии",
+      mainTourDates: "12 — 24 Ноября 2024",
+      mainTourLocation: "Чили, Аргентина",
+      mainTourDesc: "Погружение в дикую природу на краю света. Ледник Перито-Морено, треккинг к башням Фицрой и уютные вечера у камина с бокалом мальбека.",
+      mainTourBtnText: "Программа тура",
+      mainTourLink: "https://t.me/durov", // Куда ведет кнопка актуального тура
+
+      // --- 4. ГЛАВНАЯ КНОПКА ВНИЗУ (STICKY) ---
+      bottomBtnText: "Заполнить анкету",
+      bottomBtnLink: "https://t.me/durov",
+
+      // --- 6. ПРЯМАЯ ССЫЛКА НА ГУГЛ ТАБЛИЦУ (CSV) ---
+      // Вставь сюда свою ссылку! Формат: публикация в интернете -> CSV.
+      googleSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWTsKdTeviytAVN625NFks2VNZg6CKSXsC7sf8zhoih6T20yKCKM1qQ-RaNYFzwVv6cYmS2waj2iAV/pub?gid=0&single=true&output=csv",
+
+      // --- 5. СПИСОК ТУРОВ В ШТОРКЕ (МОЖНО ДОБАВЛЯТЬ И УДАЛЯТЬ БЛОКИ) ---
+      tours: [
+        {
+          image: "https://images.unsplash.com/photo-1542640244-7e672d6cb466?q=80&w=400&auto=format&fit=crop",
+          title: "Дагестан: Горы и Вино",
+          dates: "15 — 20 Мая",
+          price: "85 000 ₽",
+          badge: "Осталось 2 места",
+          link: "https://t.me/durov",
+          isSoldOut: false // false - обычный тур
+        },
+        {
+          image: "https://images.unsplash.com/photo-1540150993950-705a8b79b5c7?q=80&w=400&auto=format&fit=crop",
+          title: "Алтай: Место Силы",
+          dates: "10 — 18 Июля",
+          price: "120 000 ₽",
+          badge: "Осталось 4 места",
+          link: "https://t.me/durov",
+          isSoldOut: false
+        },
+        {
+          image: "https://images.unsplash.com/photo-1640854611598-e4b95d9aab54?q=80&w=400&auto=format&fit=crop",
+          title: "Каппадокия: Небо",
+          dates: "5 — 10 Октября",
+          price: "150 000 ₽",
+          badge: "Sold Out",
+          link: "https://t.me/durov",
+          isSoldOut: true, // true - делает тур черно-белым и перечеркивает цену
+          soldOutText: "Запись в резерв"
+        }
+      ]
+    };
+  </script>
+  <!-- ================= КОНЕЦ БЛОКА НАСТРОЕК ================= -->
+
+
   <!-- Прелоадер (Экран загрузки) -->
-  <div id="preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center transition-opacity duration-700 bg-cover bg-center" style="background-image: url('https://i.postimg.cc/9QM60kVV/ib7.webp');">
+  <div id="preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center transition-opacity duration-700 bg-cover bg-center">
     <div class="absolute inset-0 bg-[#F9F8F6]/80 backdrop-blur-md"></div>
     <div class="relative z-10 flex flex-col items-center">
       <!-- Спиннер -->
@@ -39,12 +116,12 @@
     <div class="w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto bg-[#F9F8F6] min-h-screen relative shadow-2xl md:shadow-none shadow-black/5">
       
       <!-- БЛОК 1: Hero-секция -->
-      <!-- БЛОК 1: Hero-секция -->
       <header class="relative w-full flex flex-col items-center">
         <!-- Фото -->
         <div class="w-full h-[35vh] md:h-[45vh] lg:h-[55vh] min-h-[280px] relative">
           <img 
-            src="https://i.postimg.cc/9QM60kVV/ib7.webp" 
+            id="cfg-hero-image"
+            src="" 
             alt="Atmospheric landscape" 
             class="w-full h-full object-cover"
           />
@@ -55,9 +132,7 @@
         <!-- Заголовок (наплывает на фото) -->
         <div class="relative -mt-10 md:-mt-16 flex flex-col items-center px-4 text-center z-10 w-full">
           <div class="bg-[#F9F8F6]/80 backdrop-blur-md px-8 py-6 md:py-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] w-[90%] md:w-[70%] lg:w-[50%] border border-white/50">
-            <h1 class="font-serif text-3xl font-medium tracking-wide mb-3 text-[#1A1A1A]">
-              Кристина Вейс
-            </h1>
+            <h1 id="cfg-author-name" class="font-serif text-3xl font-medium tracking-wide mb-3 text-[#1A1A1A]"></h1>
             <div class="flex items-center justify-center gap-3">
               <div class="h-[1px] w-8 bg-[#B85C47]/40"></div>
               <p class="font-sans uppercase tracking-[0.2em] text-[9px] font-medium text-[#6B6B6B]">
@@ -65,9 +140,7 @@
               </p>
               <div class="h-[1px] w-8 bg-[#B85C47]/40"></div>
             </div>
-            <p class="font-serif italic text-sm text-[#8C8C8C] mt-2">
-              Авторские путешествия
-            </p>
+            <p id="cfg-author-sub" class="font-serif italic text-sm text-[#8C8C8C] mt-2"></p>
           </div>
         </div>
       </header>
@@ -81,7 +154,8 @@
             <!-- Карточка 1: Ближайшие экспедиции -->
             <div onclick="openExpeditions()" class="col-span-2 md:col-span-2 relative aspect-[21/9] md:aspect-auto md:h-full rounded-[10px] overflow-hidden shadow-sm group cursor-pointer">
               <img 
-                src="https://i.postimg.cc/mkjn2Y5Y/1554794717-1541585748427874764.jpg" 
+                id="cfg-expeditions-image"
+                src="" 
                 alt="Expeditions" 
                 class="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
               />
@@ -100,22 +174,22 @@
             </div>
 
             <!-- Карточка 2: Как это было -->
-            <div class="bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] cursor-pointer hover:shadow-md transition-shadow">
+            <a id="cfg-archive-link" href="#" target="_blank" class="bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow">
               <div class="w-12 h-12 rounded-full bg-[#F9F8F6] flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
               </div>
-              <span class="text-sm font-medium tracking-wide">Как это было</span>
-              <span class="text-[10px] text-[#8C8C8C] mt-1">Архив эмоций</span>
-            </div>
+              <span id="cfg-archive-title" class="text-sm font-medium tracking-wide"></span>
+              <span id="cfg-archive-sub" class="text-[10px] text-[#8C8C8C] mt-1"></span>
+            </a>
 
             <!-- Карточка 3: Моя философия -->
-            <div class="bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] cursor-pointer hover:shadow-md transition-shadow">
+            <a id="cfg-philosophy-link" href="#" target="_blank" class="bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow">
               <div class="w-12 h-12 rounded-full bg-[#F9F8F6] flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
               </div>
-              <span class="text-sm font-medium tracking-wide">Философия</span>
-              <span class="text-[10px] text-[#8C8C8C] mt-1">Смысл пути</span>
-            </div>
+              <span id="cfg-philosophy-title" class="text-sm font-medium tracking-wide"></span>
+              <span id="cfg-philosophy-sub" class="text-[10px] text-[#8C8C8C] mt-1"></span>
+            </a>
           </div>
         </section>
 
@@ -130,42 +204,39 @@
             <!-- Фото тура -->
             <div class="relative h-[220px] md:h-auto md:w-1/2 md:shrink-0 md:min-h-[300px]">
               <img 
-                src="https://i.postimg.cc/9QM60kVV/ib7.webp" 
-                alt="Patagonia" 
+                id="cfg-main-tour-image"
+                src="" 
+                alt="Main Tour" 
                 class="w-full h-full object-cover" 
               />
               <div class="absolute top-4 right-4 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-[6px] shadow-sm">
-                <p class="text-[11px] font-semibold text-[#B85C47] tracking-wide uppercase">
-                  Осталось 2 места
-                </p>
+                <p id="cfg-main-tour-badge" class="text-[11px] font-semibold text-[#B85C47] tracking-wide uppercase"></p>
               </div>
             </div>
             
             <!-- Описание тура -->
             <div class="p-6 md:p-8 lg:p-10 md:w-1/2 md:flex md:flex-col md:justify-center">
               <div class="flex justify-between items-start mb-3">
-                <h3 class="font-serif text-2xl text-[#1A1A1A]">Тайна Патагонии</h3>
+                <h3 id="cfg-main-tour-title" class="font-serif text-2xl text-[#1A1A1A]"></h3>
               </div>
               
               <div class="flex flex-col gap-2 mb-5">
                 <div class="flex items-center text-sm text-[#6B6B6B]">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-[#B85C47]/70"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                  <span class="tracking-wide">12 — 24 Ноября 2024</span>
+                  <span id="cfg-main-tour-dates" class="tracking-wide"></span>
                 </div>
                 <div class="flex items-center text-sm text-[#6B6B6B]">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mr-3 text-[#B85C47]/70"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                  <span class="tracking-wide">Чили, Аргентина</span>
+                  <span id="cfg-main-tour-location" class="tracking-wide"></span>
                 </div>
               </div>
               
-              <p class="text-[13px] text-[#6B6B6B] leading-relaxed mb-6 font-light">
-                Погружение в дикую природу на краю света. Ледник Перито-Морено, треккинг к башням Фицрой и уютные вечера у камина с бокалом мальбека.
-              </p>
+              <p id="cfg-main-tour-desc" class="text-[13px] text-[#6B6B6B] leading-relaxed mb-6 font-light"></p>
               
-              <button class="w-full py-3.5 border border-[#E5E5E5] text-[#242424] rounded-[8px] text-xs uppercase tracking-[0.15em] font-medium hover:bg-[#F9F8F6] transition-colors flex items-center justify-center gap-2">
-                Программа тура
+              <a id="cfg-main-tour-btn" href="#" target="_blank" class="w-full py-3.5 border border-[#E5E5E5] text-[#242424] rounded-[8px] text-xs uppercase tracking-[0.15em] font-medium hover:bg-[#F9F8F6] transition-colors flex items-center justify-center gap-2">
+                <span id="cfg-main-tour-btn-text"></span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </button>
+              </a>
             </div>
           </div>
         </section>
@@ -175,9 +246,8 @@
       <!-- БЛОК 4: Sticky CTA -->
       <div class="fixed bottom-0 left-0 right-0 p-5 md:p-8 pt-16 md:pt-24 bg-gradient-to-t from-[#F9F8F6] via-[#F9F8F6]/95 to-transparent z-50 pointer-events-none">
         <div class="w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto pointer-events-auto">
-          <button class="w-full bg-[#B85C47] text-white py-4 px-6 rounded-[10px] text-xs uppercase tracking-[0.15em] font-medium shadow-[0_8px_20px_-6px_rgba(184,92,71,0.5)] hover:bg-[#A3503D] hover:-translate-y-0.5 transition-all duration-300 active:scale-[0.98] active:translate-y-0 flex items-center justify-center gap-2">
-            Заполнить анкету
-          </button>
+          <a id="cfg-bottom-btn" href="#" target="_blank" class="w-full bg-[#B85C47] text-white py-4 px-6 rounded-[10px] text-xs uppercase tracking-[0.15em] font-medium shadow-[0_8px_20px_-6px_rgba(184,92,71,0.5)] hover:bg-[#A3503D] hover:-translate-y-0.5 transition-all duration-300 active:scale-[0.98] active:translate-y-0 flex items-center justify-center gap-2 text-center block">
+          </a>
         </div>
       </div>
 
@@ -186,13 +256,10 @@
 
   <!-- Всплывающая шторка (Bottom Sheet) "Экспедиции" -->
   <div id="expeditions-sheet" class="fixed inset-0 z-[110] flex flex-col justify-end pointer-events-none transition-all duration-500">
-    <!-- Темный фон (Backdrop) -->
     <div id="expeditions-backdrop" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-500 backdrop-blur-[2px]" onclick="closeExpeditions()"></div>
     
-    <!-- Панель с контентом -->
     <div id="expeditions-content" class="relative bg-[#F9F8F6] w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] translate-y-full transition-transform duration-500 ease-out flex flex-col pointer-events-auto max-h-[85vh]">
       
-      <!-- Шапка шторки (зафиксирована) -->
       <div class="flex-shrink-0 pt-4 pb-3 px-6 flex flex-col items-center bg-[#F9F8F6]/95 backdrop-blur-md rounded-t-[24px] z-10 sticky top-0 border-b border-[#E5E5E5]/50">
         <div class="w-12 h-1 bg-[#D4D4D4] rounded-full mb-5"></div>
         <div class="w-full flex justify-between items-center mb-1">
@@ -203,115 +270,146 @@
         </div>
       </div>
 
-      <!-- Список туров (прокручиваемый) -->
-      <div class="overflow-y-auto p-5 pb-10 space-y-4 md:grid md:grid-cols-2 md:space-y-0 md:gap-5">
-        
-        <!-- ТУР 1 -->
-        <a href="https://t.me/durov" target="_blank" class="block bg-white rounded-[12px] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#F0EFEA] hover:shadow-md transition-all group flex gap-4 items-center">
-          <!-- Фото -->
-          <div class="relative w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-[8px] overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1542640244-7e672d6cb466?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Дагестан">
-            <div class="absolute top-1.5 left-1.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-[4px] shadow-sm">
-              <p class="text-[9px] font-semibold text-[#B85C47] uppercase tracking-wider">Осталось 2 места</p>
-            </div>
-          </div>
-          <!-- Информация -->
-          <div class="flex-1 py-1">
-            <h3 class="font-serif text-[16px] md:text-lg text-[#1A1A1A] mb-1 leading-tight group-hover:text-[#B85C47] transition-colors">Дагестан: Горы и Вино</h3>
-            <p class="text-[12px] text-[#6B6B6B] mb-2 flex items-center gap-1.5 font-light">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]/70"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-              15 — 20 Мая
-            </p>
-            <div class="flex items-center justify-between mt-auto pt-1">
-              <span class="text-[14px] font-medium text-[#242424]">85 000 ₽</span>
-              <span class="w-7 h-7 rounded-full border border-[#E5E5E5] flex items-center justify-center text-[#B85C47] group-hover:bg-[#B85C47] group-hover:text-white transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </span>
-            </div>
-          </div>
-        </a>
-
-        <!-- ТУР 2 -->
-        <a href="https://t.me/durov" target="_blank" class="block bg-white rounded-[12px] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#F0EFEA] hover:shadow-md transition-all group flex gap-4 items-center">
-          <div class="relative w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-[8px] overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1540150993950-705a8b79b5c7?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Алтай">
-            <div class="absolute top-1.5 left-1.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-[4px] shadow-sm">
-              <p class="text-[9px] font-semibold text-[#B85C47] uppercase tracking-wider">Осталось 4 места</p>
-            </div>
-          </div>
-          <div class="flex-1 py-1">
-            <h3 class="font-serif text-[16px] md:text-lg text-[#1A1A1A] mb-1 leading-tight group-hover:text-[#B85C47] transition-colors">Алтай: Место Силы</h3>
-            <p class="text-[12px] text-[#6B6B6B] mb-2 flex items-center gap-1.5 font-light">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]/70"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-              10 — 18 Июля
-            </p>
-            <div class="flex items-center justify-between mt-auto pt-1">
-              <span class="text-[14px] font-medium text-[#242424]">120 000 ₽</span>
-              <span class="w-7 h-7 rounded-full border border-[#E5E5E5] flex items-center justify-center text-[#B85C47] group-hover:bg-[#B85C47] group-hover:text-white transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-              </span>
-            </div>
-          </div>
-        </a>
-
-        <!-- ТУР 3 (Пример проданного/ожидаемого тура) -->
-        <a href="https://t.me/durov" target="_blank" class="block bg-white rounded-[12px] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#F0EFEA] hover:shadow-md transition-all group flex gap-4 items-center opacity-80 hover:opacity-100">
-          <div class="relative w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-[8px] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-500">
-            <img src="https://images.unsplash.com/photo-1640854611598-e4b95d9aab54?q=80&w=400&auto=format&fit=crop" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="Каппадокия">
-            <div class="absolute top-1.5 left-1.5 bg-[#242424]/90 backdrop-blur-md px-2 py-0.5 rounded-[4px] shadow-sm">
-              <p class="text-[9px] font-semibold text-white uppercase tracking-wider">Sold Out</p>
-            </div>
-          </div>
-          <div class="flex-1 py-1">
-            <h3 class="font-serif text-[16px] md:text-lg text-[#1A1A1A] mb-1 leading-tight group-hover:text-[#B85C47] transition-colors">Каппадокия: Небо</h3>
-            <p class="text-[12px] text-[#6B6B6B] mb-2 flex items-center gap-1.5 font-light">
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]/70"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-              5 — 10 Октября
-            </p>
-            <div class="flex items-center justify-between mt-auto pt-1">
-              <span class="text-[14px] font-medium text-[#242424] opacity-50 line-through">150 000 ₽</span>
-              <span class="text-[#8C8C8C] text-[10px] uppercase tracking-wider font-medium">Запись в резерв</span>
-            </div>
-          </div>
-        </a>
-
+      <!-- Контейнер для туров (генерируется автоматически из настроек) -->
+      <div id="cfg-tours-container" class="overflow-y-auto p-5 pb-10 space-y-4 md:grid md:grid-cols-2 md:space-y-0 md:gap-5">
       </div>
     </div>
   </div>
 
+  <!-- Скрипт применения настроек (Не требует редактирования) -->
   <script>
-    // Скрипт для исчезновения экрана загрузки
-    window.addEventListener('load', function() {
+    function applyVibeConfig() {
+      // 1. Применяем Главный экран
+      document.getElementById('preloader').style.backgroundImage = `url('${APP_DATA.preloaderImage}')`;
+      document.getElementById('cfg-hero-image').src = APP_DATA.heroImage;
+      document.getElementById('cfg-author-name').textContent = APP_DATA.authorName;
+      document.getElementById('cfg-author-sub').textContent = APP_DATA.authorSubtitle;
+
+      // 2. Применяем Меню
+      document.getElementById('cfg-expeditions-image').src = APP_DATA.expeditionsImage;
+      document.getElementById('cfg-archive-title').textContent = APP_DATA.archiveTitle;
+      document.getElementById('cfg-archive-sub').textContent = APP_DATA.archiveSub;
+      document.getElementById('cfg-archive-link').href = APP_DATA.archiveLink;
+      document.getElementById('cfg-philosophy-title').textContent = APP_DATA.philosophyTitle;
+      document.getElementById('cfg-philosophy-sub').textContent = APP_DATA.philosophySub;
+      document.getElementById('cfg-philosophy-link').href = APP_DATA.philosophyLink;
+
+      // 3. Применяем Актуальный тур
+      document.getElementById('cfg-main-tour-image').src = APP_DATA.mainTourImage;
+      document.getElementById('cfg-main-tour-badge').textContent = APP_DATA.mainTourBadge;
+      document.getElementById('cfg-main-tour-title').textContent = APP_DATA.mainTourTitle;
+      document.getElementById('cfg-main-tour-dates').textContent = APP_DATA.mainTourDates;
+      document.getElementById('cfg-main-tour-location').textContent = APP_DATA.mainTourLocation;
+      document.getElementById('cfg-main-tour-desc').textContent = APP_DATA.mainTourDesc;
+      document.getElementById('cfg-main-tour-btn-text').textContent = APP_DATA.mainTourBtnText;
+      document.getElementById('cfg-main-tour-btn').href = APP_DATA.mainTourLink;
+
+      // 4. Применяем Главную кнопку
+      document.getElementById('cfg-bottom-btn').textContent = APP_DATA.bottomBtnText;
+      document.getElementById('cfg-bottom-btn').href = APP_DATA.bottomBtnLink;
+
+      // 5. Генерируем карточки туров
+      const toursContainer = document.getElementById('cfg-tours-container');
+      toursContainer.innerHTML = ''; // Очищаем контейнер перед добавлением (чтобы не двоилось при загрузке из таблицы)
+      
+      APP_DATA.tours.forEach(tour => {
+        const isSold = tour.isSoldOut;
+        const html = `
+          <a href="${tour.link}" target="_blank" class="block bg-white rounded-[12px] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#F0EFEA] hover:shadow-md transition-all group flex gap-4 items-center ${isSold ? 'opacity-80 hover:opacity-100' : ''}">
+            <div class="relative w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-[8px] overflow-hidden ${isSold ? 'grayscale group-hover:grayscale-0 transition-all duration-500' : ''}">
+              <img src="${tour.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="${tour.title}">
+              <div class="absolute top-1.5 left-1.5 ${isSold ? 'bg-[#242424]/90' : 'bg-white/95'} backdrop-blur-md px-2 py-0.5 rounded-[4px] shadow-sm">
+                <p class="text-[9px] font-semibold ${isSold ? 'text-white' : 'text-[#B85C47]'} uppercase tracking-wider">${tour.badge}</p>
+              </div>
+            </div>
+            <div class="flex-1 py-1">
+              <h3 class="font-serif text-[16px] md:text-lg text-[#1A1A1A] mb-1 leading-tight group-hover:text-[#B85C47] transition-colors">${tour.title}</h3>
+              <p class="text-[12px] text-[#6B6B6B] mb-2 flex items-center gap-1.5 font-light">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]/70"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                ${tour.dates}
+              </p>
+              <div class="flex items-center justify-between mt-auto pt-1">
+                <span class="text-[14px] font-medium text-[#242424] ${isSold ? 'opacity-50 line-through' : ''}">${tour.price}</span>
+                ${isSold 
+                  ? `<span class="text-[#8C8C8C] text-[10px] uppercase tracking-wider font-medium">${tour.soldOutText || "Запись в резерв"}</span>`
+                  : `<span class="w-7 h-7 rounded-full border border-[#E5E5E5] flex items-center justify-center text-[#B85C47] group-hover:bg-[#B85C47] group-hover:text-white transition-colors">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </span>`
+                }
+              </div>
+            </div>
+          </a>
+        `;
+        toursContainer.insertAdjacentHTML('beforeend', html);
+      });
+    }
+
+    // Запуск приложения и загрузка из Гугл Таблицы
+    window.addEventListener('load', async function() {
+      // 1. Сначала показываем дизайн с хардкодными данными
+      applyVibeConfig();
+
+      // 2. Невидимо загружаем данные из Гугл Таблицы (в формате CSV)
+      if (APP_DATA.googleSheetUrl) {
+        try {
+          const response = await fetch(APP_DATA.googleSheetUrl);
+          const csvText = await response.text(); // Получаем текст, так как это CSV
+
+          // Превращаем CSV в список туров
+          const rows = csvText.split('\n');
+          const fetchedTours = [];
+          
+          for (let i = 1; i < rows.length; i++) { // Пропускаем строку с заголовками (i=1)
+            const row = rows[i].trim();
+            if (!row) continue;
+            
+            // Умная разбивка по запятым (не трогает запятые внутри кавычек)
+            const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(col => col.replace(/^"|"$/g, '').trim());
+            
+            fetchedTours.push({
+              title: cols[0] || "",
+              dates: cols[1] || "",
+              price: cols[2] || "",
+              badge: cols[3] || "",
+              image: cols[4] || "",
+              link: cols[5] || "",
+              isSoldOut: (cols[6] && cols[6].toLowerCase() === 'да'),
+              soldOutText: "Запись в резерв"
+            });
+          }
+
+          // Если туры успешно скачались, заменяем стандартные на новые
+          if (fetchedTours && fetchedTours.length > 0) {
+            APP_DATA.tours = fetchedTours;
+            applyVibeConfig(); // Перерисовываем новые туры
+          }
+        } catch (error) {
+          console.error("Ошибка загрузки из Гугл Таблицы:", error);
+        }
+      }
+
+      // 3. Только после загрузки данных плавно скрываем красивый прелоадер
       const preloader = document.getElementById('preloader');
       if (preloader) {
-        // Небольшая задержка 0.8с, чтобы пользователь успел заметить красивый экран загрузки
         setTimeout(() => {
           preloader.style.opacity = '0';
           setTimeout(() => {
             preloader.style.display = 'none';
-          }, 700); // время задержки совпадает с классом duration-700
+          }, 700);
         }, 800);
       }
     });
 
-    // Управление шторкой "Экспедиции"
+    // Управление шторкой
     function openExpeditions() {
       const sheet = document.getElementById('expeditions-sheet');
       const backdrop = document.getElementById('expeditions-backdrop');
       const content = document.getElementById('expeditions-content');
-      
-      // Показываем блок
       sheet.classList.remove('pointer-events-none');
-      
-      // Анимируем фон
       backdrop.classList.remove('opacity-0');
       backdrop.classList.add('opacity-100');
-      
-      // Выдвигаем шторку
       content.classList.remove('translate-y-full');
       content.classList.add('translate-y-0');
-      
-      // Блокируем скролл основной страницы
       document.body.style.overflow = 'hidden';
     }
 
@@ -319,16 +417,10 @@
       const sheet = document.getElementById('expeditions-sheet');
       const backdrop = document.getElementById('expeditions-backdrop');
       const content = document.getElementById('expeditions-content');
-      
-      // Скрываем фон
       backdrop.classList.remove('opacity-100');
       backdrop.classList.add('opacity-0');
-      
-      // Задвигаем шторку
       content.classList.remove('translate-y-0');
       content.classList.add('translate-y-full');
-      
-      // Возвращаем скролл и скрываем блок после завершения анимации
       setTimeout(() => {
         sheet.classList.add('pointer-events-none');
         document.body.style.overflow = '';
