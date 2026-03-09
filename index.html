@@ -48,7 +48,6 @@
       
       archiveTitle: "Как это было",
       archiveSub: "Архив эмоций",
-      archiveLink: "https://t.me/durov", // Ссылка на пост-архив
 
       philosophyTitle: "Философия",
       philosophySub: "Смысл пути",
@@ -68,9 +67,23 @@
       bottomBtnText: "Заполнить анкету",
       bottomBtnLink: "https://t.me/durov",
 
-      // --- 6. ПРЯМАЯ ССЫЛКА НА ГУГЛ ТАБЛИЦУ (CSV) ---
-      // Вставь сюда свою ссылку! Формат: публикация в интернете -> CSV.
+      // --- 6. ПРЯМАЯ ССЫЛКА НА ГУГЛ ТАБЛИЦУ ТУРОВ (CSV) ---
       googleSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWTsKdTeviytAVN625NFks2VNZg6CKSXsC7sf8zhoih6T20yKCKM1qQ-RaNYFzwVv6cYmS2waj2iAV/pub?gid=0&single=true&output=csv",
+
+      // --- 7. ЭКРАН "КАК ЭТО БЫЛО" (АРХИВ И КОЛЛАЖ) ---
+      // Вставь сюда ссылку на хэштег #наши_туры или канал!
+      archiveSheetBtnLink: "https://t.me/durov", 
+      archiveSheetBtnText: "Смотреть больше...",
+      archiveSheetText: "Мы не просто смотрим достопримечательности, мы создаем истории.",
+      // Ссылка на Гугл Таблицу с фотками для коллажа (CSV)
+      googleSheetArchiveUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWTsKdTeviytAVN625NFks2VNZg6CKSXsC7sf8zhoih6T20yKCKM1qQ-RaNYFzwVv6cYmS2waj2iAV/pub?gid=1427517511&single=true&output=csv",
+      // Дефолтные фото (если таблица пустая или недоступна)
+      archivePhotos: [
+        "https://images.unsplash.com/photo-1469334025828-f279d1153d6c?q=80&w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1542640244-7e672d6cb466?q=80&w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1506905925246-21f4c31f08f4?q=80&w=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop"
+      ],
 
       // --- 5. СПИСОК ТУРОВ В ШТОРКЕ (МОЖНО ДОБАВЛЯТЬ И УДАЛЯТЬ БЛОКИ) ---
       tours: [
@@ -81,7 +94,7 @@
           price: "85 000 ₽",
           badge: "Осталось 2 места",
           link: "https://t.me/durov",
-          isSoldOut: false // false - обычный тур
+          isSoldOut: false
         },
         {
           image: "https://images.unsplash.com/photo-1540150993950-705a8b79b5c7?q=80&w=400&auto=format&fit=crop",
@@ -99,7 +112,7 @@
           price: "150 000 ₽",
           badge: "Sold Out",
           link: "https://t.me/durov",
-          isSoldOut: true, // true - делает тур черно-белым и перечеркивает цену
+          isSoldOut: true,
           soldOutText: "Запись в резерв"
         }
       ]
@@ -184,14 +197,14 @@
               </div>
             </div>
 
-            <!-- Карточка 2: Как это было -->
-            <a id="cfg-archive-link" href="#" target="_blank" class="bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow">
+            <!-- Карточка 2: Как это было (ТЕПЕРЬ ОТКРЫВАЕТ НОВУЮ ШТОРКУ) -->
+            <div onclick="openArchive()" class="bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow cursor-pointer">
               <div class="w-12 h-12 rounded-full bg-[#F9F8F6] flex items-center justify-center mb-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
               </div>
               <span id="cfg-archive-title" class="text-sm font-medium tracking-wide"></span>
               <span id="cfg-archive-sub" class="text-[10px] text-[#8C8C8C] mt-1"></span>
-            </a>
+            </div>
 
             <!-- Карточка 3: Моя философия -->
             <a id="cfg-philosophy-link" href="#" target="_blank" class="bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow">
@@ -281,8 +294,43 @@
         </div>
       </div>
 
-      <!-- Контейнер для туров (генерируется автоматически из настроек) -->
+      <!-- Контейнер для туров -->
       <div id="cfg-tours-container" class="overflow-y-auto p-5 pb-10 space-y-4 md:grid md:grid-cols-2 md:space-y-0 md:gap-5">
+      </div>
+    </div>
+  </div>
+
+  <!-- НОВАЯ: Всплывающая шторка (Bottom Sheet) "Как это было" -->
+  <div id="archive-sheet" class="fixed inset-0 z-[110] flex flex-col justify-end pointer-events-none transition-all duration-500">
+    <div id="archive-backdrop" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-500 backdrop-blur-[2px]" onclick="closeArchive()"></div>
+    
+    <div id="archive-content" class="relative bg-[#F9F8F6] w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] translate-y-full transition-transform duration-500 ease-out flex flex-col pointer-events-auto max-h-[90vh]">
+      
+      <div class="flex-shrink-0 pt-4 pb-3 px-6 flex flex-col items-center bg-[#F9F8F6]/95 backdrop-blur-md rounded-t-[24px] z-10 sticky top-0 border-b border-[#E5E5E5]/50">
+        <div class="w-12 h-1 bg-[#D4D4D4] rounded-full mb-5"></div>
+        <div class="w-full flex justify-between items-center mb-1">
+          <h2 class="font-serif text-2xl text-[#1A1A1A]">Наши истории</h2>
+          <button onclick="closeArchive()" class="p-2 -mr-2 text-[#8C8C8C] hover:text-[#242424] transition-colors rounded-full bg-white/50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Контент архива: Цитата + Журнальный коллаж -->
+      <div class="overflow-y-auto p-5 pb-12 flex flex-col">
+        <!-- Красивый текст -->
+        <p id="cfg-archive-sheet-text" class="font-serif text-[18px] italic text-center text-[#242424] leading-relaxed mb-8 px-2 tracking-wide border-l-2 border-r-2 border-[#B85C47]/20 mx-4"></p>
+        
+        <!-- Сетка фоток (генерируется из скрипта) -->
+        <div id="cfg-archive-gallery" class="grid grid-cols-2 gap-3 mb-8">
+          <!-- Фото будут вставлены сюда -->
+        </div>
+
+        <!-- Кнопка "Смотреть больше" -->
+        <a id="cfg-archive-sheet-btn" href="#" target="_blank" class="w-full py-4 border border-[#B85C47] text-[#B85C47] rounded-[10px] text-xs uppercase tracking-[0.15em] font-medium hover:bg-[#B85C47] hover:text-white transition-colors flex items-center justify-center gap-2 mt-auto">
+          <span id="cfg-archive-sheet-btn-text"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
       </div>
     </div>
   </div>
@@ -300,7 +348,7 @@
       document.getElementById('cfg-expeditions-image').src = APP_DATA.expeditionsImage;
       document.getElementById('cfg-archive-title').textContent = APP_DATA.archiveTitle;
       document.getElementById('cfg-archive-sub').textContent = APP_DATA.archiveSub;
-      document.getElementById('cfg-archive-link').href = APP_DATA.archiveLink;
+      
       document.getElementById('cfg-philosophy-title').textContent = APP_DATA.philosophyTitle;
       document.getElementById('cfg-philosophy-sub').textContent = APP_DATA.philosophySub;
       document.getElementById('cfg-philosophy-link').href = APP_DATA.philosophyLink;
@@ -319,9 +367,27 @@
       document.getElementById('cfg-bottom-btn').textContent = APP_DATA.bottomBtnText;
       document.getElementById('cfg-bottom-btn').href = APP_DATA.bottomBtnLink;
 
-      // 5. Генерируем карточки туров
+      // 5. Применяем настройки для шторки "Архив" (Как это было)
+      document.getElementById('cfg-archive-sheet-text').textContent = `«${APP_DATA.archiveSheetText}»`;
+      document.getElementById('cfg-archive-sheet-btn-text').textContent = APP_DATA.archiveSheetBtnText;
+      document.getElementById('cfg-archive-sheet-btn').href = APP_DATA.archiveSheetBtnLink;
+
+      const galleryContainer = document.getElementById('cfg-archive-gallery');
+      galleryContainer.innerHTML = '';
+      APP_DATA.archivePhotos.forEach((photoUrl, index) => {
+        // Делаем красивую журнальную асимметрию: первая или каждая 3-я картинка - широкая
+        const isWide = index % 3 === 0; 
+        const html = `
+          <div class="${isWide ? 'col-span-2 aspect-[16/9]' : 'aspect-square'} rounded-[8px] overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.05)] border border-[#F0EFEA]">
+            <img src="${photoUrl}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-700" alt="Archive Story">
+          </div>
+        `;
+        galleryContainer.insertAdjacentHTML('beforeend', html);
+      });
+
+      // 6. Генерируем карточки туров
       const toursContainer = document.getElementById('cfg-tours-container');
-      toursContainer.innerHTML = ''; // Очищаем контейнер перед добавлением (чтобы не двоилось при загрузке из таблицы)
+      toursContainer.innerHTML = ''; 
       
       APP_DATA.tours.forEach(tour => {
         const isSold = tour.isSoldOut;
@@ -329,8 +395,8 @@
           <a href="${tour.link}" target="_blank" class="block bg-white rounded-[12px] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#F0EFEA] hover:shadow-md transition-all group flex gap-4 items-center ${isSold ? 'opacity-80 hover:opacity-100' : ''}">
             <div class="relative w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-[8px] overflow-hidden ${isSold ? 'grayscale group-hover:grayscale-0 transition-all duration-500' : ''}">
               <img src="${tour.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="${tour.title}">
-              <div class="absolute top-1.5 left-1.5 ${isSold ? 'bg-[#242424]/90' : 'bg-white/95'} backdrop-blur-md px-2 py-0.5 rounded-[4px] shadow-sm">
-                <p class="text-[9px] font-semibold ${isSold ? 'text-white' : 'text-[#B85C47]'} uppercase tracking-wider">${tour.badge}</p>
+              <div class="absolute top-2 left-2 ${isSold ? 'bg-black/40 border-white/20' : 'bg-white/50 border-white/60'} backdrop-blur-md border px-2 py-0.5 rounded-[4px]">
+                <p class="text-[9px] font-medium ${isSold ? 'text-white/90' : 'text-[#242424]'} uppercase tracking-wider">${tour.badge}</p>
               </div>
             </div>
             <div class="flex-1 py-1">
@@ -357,49 +423,62 @@
 
     // Запуск приложения и загрузка из Гугл Таблицы
     window.addEventListener('load', async function() {
-      // 1. Сначала показываем дизайн с хардкодными данными
       applyVibeConfig();
 
-      // 2. Невидимо загружаем данные из Гугл Таблицы (в формате CSV)
+      // Массив промисов для параллельной загрузки двух таблиц
+      const fetches = [];
+
+      // Запрос на туры
       if (APP_DATA.googleSheetUrl) {
-        try {
-          const response = await fetch(APP_DATA.googleSheetUrl);
-          const csvText = await response.text(); // Получаем текст, так как это CSV
-
-          // Превращаем CSV в список туров
-          const rows = csvText.split('\n');
-          const fetchedTours = [];
-          
-          for (let i = 1; i < rows.length; i++) { // Пропускаем строку с заголовками (i=1)
-            const row = rows[i].trim();
-            if (!row) continue;
-            
-            // Умная разбивка по запятым (не трогает запятые внутри кавычек)
-            const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(col => col.replace(/^"|"$/g, '').trim());
-            
-            fetchedTours.push({
-              title: cols[0] || "",
-              dates: cols[1] || "",
-              price: cols[2] || "",
-              badge: cols[3] || "",
-              image: cols[4] || "",
-              link: cols[5] || "",
-              isSoldOut: (cols[6] && cols[6].toLowerCase() === 'да'),
-              soldOutText: "Запись в резерв"
-            });
-          }
-
-          // Если туры успешно скачались, заменяем стандартные на новые
-          if (fetchedTours && fetchedTours.length > 0) {
-            APP_DATA.tours = fetchedTours;
-            applyVibeConfig(); // Перерисовываем новые туры
-          }
-        } catch (error) {
-          console.error("Ошибка загрузки из Гугл Таблицы:", error);
-        }
+        fetches.push(
+          fetch(APP_DATA.googleSheetUrl).then(res => res.text()).then(csvText => {
+            const rows = csvText.split('\n');
+            const fetchedTours = [];
+            for (let i = 1; i < rows.length; i++) { 
+              const row = rows[i].trim();
+              if (!row) continue;
+              const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(col => col.replace(/^"|"$/g, '').trim());
+              fetchedTours.push({
+                title: cols[0] || "",
+                dates: cols[1] || "",
+                price: cols[2] || "",
+                badge: cols[3] || "",
+                image: cols[4] || "",
+                link: cols[5] || "",
+                isSoldOut: (cols[6] && cols[6].toLowerCase() === 'да'),
+                soldOutText: "Запись в резерв"
+              });
+            }
+            if (fetchedTours.length > 0) APP_DATA.tours = fetchedTours;
+          }).catch(e => console.error("Ошибка загрузки туров:", e))
+        );
       }
 
-      // 3. Только после загрузки данных плавно скрываем красивый прелоадер
+      // Запрос на фото для архива
+      if (APP_DATA.googleSheetArchiveUrl) {
+        fetches.push(
+          fetch(APP_DATA.googleSheetArchiveUrl).then(res => res.text()).then(csvText => {
+            const rows = csvText.split('\n');
+            const fetchedPhotos = [];
+            for (let i = 1; i < rows.length; i++) { 
+              const row = rows[i].trim();
+              if (!row) continue;
+              // Берем первую колонку (ссылку на фото)
+              const cols = row.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/).map(col => col.replace(/^"|"$/g, '').trim());
+              if (cols[0]) fetchedPhotos.push(cols[0]); 
+            }
+            if (fetchedPhotos.length > 0) APP_DATA.archivePhotos = fetchedPhotos;
+          }).catch(e => console.error("Ошибка загрузки фото архива:", e))
+        );
+      }
+
+      // Ждем загрузки обеих таблиц
+      await Promise.allSettled(fetches);
+      
+      // Перерисовываем с новыми данными
+      applyVibeConfig();
+
+      // Скрываем прелоадер
       const preloader = document.getElementById('preloader');
       if (preloader) {
         setTimeout(() => {
@@ -411,29 +490,38 @@
       }
     });
 
-    // Управление шторкой
+    // --- УПРАВЛЕНИЕ ШТОРКАМИ ---
+    
+    // Экспедиции
     function openExpeditions() {
-      const sheet = document.getElementById('expeditions-sheet');
-      const backdrop = document.getElementById('expeditions-backdrop');
-      const content = document.getElementById('expeditions-content');
-      sheet.classList.remove('pointer-events-none');
-      backdrop.classList.remove('opacity-0');
-      backdrop.classList.add('opacity-100');
-      content.classList.remove('translate-y-full');
-      content.classList.add('translate-y-0');
+      document.getElementById('expeditions-sheet').classList.remove('pointer-events-none');
+      document.getElementById('expeditions-backdrop').classList.replace('opacity-0', 'opacity-100');
+      document.getElementById('expeditions-content').classList.replace('translate-y-full', 'translate-y-0');
       document.body.style.overflow = 'hidden';
     }
 
     function closeExpeditions() {
-      const sheet = document.getElementById('expeditions-sheet');
-      const backdrop = document.getElementById('expeditions-backdrop');
-      const content = document.getElementById('expeditions-content');
-      backdrop.classList.remove('opacity-100');
-      backdrop.classList.add('opacity-0');
-      content.classList.remove('translate-y-0');
-      content.classList.add('translate-y-full');
+      document.getElementById('expeditions-backdrop').classList.replace('opacity-100', 'opacity-0');
+      document.getElementById('expeditions-content').classList.replace('translate-y-0', 'translate-y-full');
       setTimeout(() => {
-        sheet.classList.add('pointer-events-none');
+        document.getElementById('expeditions-sheet').classList.add('pointer-events-none');
+        document.body.style.overflow = '';
+      }, 500); 
+    }
+
+    // Как это было (Архив)
+    function openArchive() {
+      document.getElementById('archive-sheet').classList.remove('pointer-events-none');
+      document.getElementById('archive-backdrop').classList.replace('opacity-0', 'opacity-100');
+      document.getElementById('archive-content').classList.replace('translate-y-full', 'translate-y-0');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeArchive() {
+      document.getElementById('archive-backdrop').classList.replace('opacity-100', 'opacity-0');
+      document.getElementById('archive-content').classList.replace('translate-y-0', 'translate-y-full');
+      setTimeout(() => {
+        document.getElementById('archive-sheet').classList.add('pointer-events-none');
         document.body.style.overflow = '';
       }, 500); 
     }
