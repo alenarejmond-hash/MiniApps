@@ -504,8 +504,9 @@
                                                              alt={tour.title} 
                                                              className="w-full h-full object-cover" />
                                                         
-                                                        <div className="absolute top-3 right-3 px-3 py-1.5 glass-effect text-[#1d1d1f] text-[12px] font-bold rounded-full flex items-center gap-1 shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
-                                                            <IconStar size={12} filled={true} className="text-[#1d1d1f]" />
+                                                        {/* ИЗМЕНЕНО: Светло-зеленая плашка рейтинга */}
+                                                        <div className="absolute top-3 right-3 px-3 py-1.5 bg-green-100 text-green-800 text-[12px] font-bold rounded-full flex items-center gap-1 shadow-[0_4px_12px_rgba(0,0,0,0.08)]">
+                                                            <IconStar size={12} filled={true} className="text-green-800" />
                                                             {tour.rating || "5.0"}
                                                         </div>
                                                     </div>
