@@ -409,7 +409,7 @@
                         <div className="min-h-screen pt-6 px-6 animate-fade bg-paper flex flex-col relative">
                             <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70 shrink-0"><IconArrowLeft size={20} /> Назад</button>
                             <h2 className="text-3xl font-serif font-bold mb-8 text-center">Отзывы туристов</h2>
-                            <div className="flex flex-col gap-6 w-full max-w-sm mx-auto">
+                            <div className="flex flex-col gap-6 w-full max-w-sm mx-auto pb-32">
                                 {isLoadingReviews ? (<div className="flex justify-center h-40 items-center"><div className="w-8 h-8 border-4 border-black/20 border-t-black rounded-full animate-spin"></div></div>) : (
                                     reviews.map(review => (
                                         <div key={review.id} className="relative bg-[#FFFcf5] p-5 rounded-sm shadow-sm border border-[#e8dcc7] flex flex-col gap-3">
@@ -423,8 +423,8 @@
                                     ))
                                 )}
                             </div>
-                            <div className="sticky bottom-0 w-full pb-6 pt-10 mt-auto bg-gradient-to-t from-[#fce2b1] to-transparent flex justify-center">
-                                <button onClick={() => setIsReviewModalOpen(true)} className="w-full max-w-sm flex justify-center items-center gap-2 bg-[#F8F1E5]/90 border-2 border-black rounded-full py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 transition-all">
+                            <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[500px] pb-6 pt-16 px-6 bg-gradient-to-t from-[#fce2b1] via-[#fce2b1] to-transparent flex justify-center z-20 pointer-events-none">
+                                <button onClick={() => setIsReviewModalOpen(true)} className="w-full max-w-sm flex justify-center items-center gap-2 bg-[#F8F1E5]/90 border-2 border-black rounded-full py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 transition-all pointer-events-auto">
                                     <IconEdit size={18} /> Написать отзыв
                                 </button>
                             </div>
