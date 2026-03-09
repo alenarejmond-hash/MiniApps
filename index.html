@@ -95,7 +95,7 @@
 
       // --- 9. НАСТРОЙКИ ФОРМЫ ЗАЯВКИ (ИНТЕГРАЦИЯ С GOOGLE SHEETS) ---
       // Вставь сюда Web App URL из твоего Google Apps Script (шаг 3 из инструкции)
-      googleSheetSubmitUrl: "", // Пока пусто, форма будет просто показывать красивую галочку "Отправлено"
+      googleSheetSubmitUrl: "https://script.google.com/macros/s/AKfycbxQf5CCOCH3jrbCl96J8xiqofggTIgZkxnqae8TlBiId6n9lKiXoat0afgNpyuqvZkXhw/exec", // Пока пусто, форма будет просто показывать красивую галочку "Отправлено"
       formTitle: "Оставить заявку",
       formSubtitle: "Заполните форму, и мы свяжемся с вами для обсуждения деталей вашего идеального путешествия.",
       formSubmitBtnText: "Отправить заявку",
@@ -285,8 +285,8 @@
 
       <!-- БЛОК 4: Sticky CTA -->
       <div class="fixed bottom-0 left-0 right-0 p-5 md:p-8 pt-16 md:pt-24 bg-gradient-to-t from-[#F9F8F6] via-[#F9F8F6]/95 to-transparent z-50 pointer-events-none">
-        <div class="w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto pointer-events-auto">
-          <button id="cfg-bottom-btn" onclick="openForm()" class="w-full bg-[#B85C47] text-white py-4 px-6 rounded-[10px] text-xs uppercase tracking-[0.15em] font-medium shadow-[0_8px_20px_-6px_rgba(184,92,71,0.5)] hover:bg-[#A3503D] hover:-translate-y-0.5 transition-all duration-300 active:scale-[0.98] active:translate-y-0 flex items-center justify-center gap-2 text-center block">
+        <div class="w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto">
+          <button id="cfg-bottom-btn" onclick="openForm()" class="pointer-events-auto w-full bg-[#B85C47] text-white py-4 px-6 rounded-[10px] text-xs uppercase tracking-[0.15em] font-medium shadow-[0_8px_20px_-6px_rgba(184,92,71,0.5)] hover:bg-[#A3503D] hover:-translate-y-0.5 transition-all duration-300 active:scale-[0.98] active:translate-y-0 flex items-center justify-center gap-2 text-center block">
           </button>
         </div>
       </div>
@@ -298,7 +298,7 @@
   <div id="expeditions-sheet" class="fixed inset-0 z-[110] flex flex-col justify-end pointer-events-none transition-all duration-500">
     <div id="expeditions-backdrop" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-500 backdrop-blur-[2px]" onclick="closeExpeditions()"></div>
     
-    <div id="expeditions-content" class="relative bg-[#F9F8F6] w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] translate-y-full transition-transform duration-500 ease-out flex flex-col pointer-events-auto max-h-[85vh]">
+    <div id="expeditions-content" class="relative bg-[#F9F8F6] w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] translate-y-full transition-transform duration-500 ease-out flex flex-col max-h-[85vh]">
       
       <div class="flex-shrink-0 pt-4 pb-3 px-6 flex flex-col items-center bg-[#F9F8F6]/95 backdrop-blur-md rounded-t-[24px] z-10 sticky top-0 border-b border-[#E5E5E5]/50">
         <div class="w-12 h-1 bg-[#D4D4D4] rounded-full mb-5"></div>
@@ -320,7 +320,7 @@
   <div id="archive-sheet" class="fixed inset-0 z-[110] flex flex-col justify-end pointer-events-none transition-all duration-500">
     <div id="archive-backdrop" class="absolute inset-0 bg-black/50 opacity-0 transition-opacity duration-500 backdrop-blur-[2px]" onclick="closeArchive()"></div>
     
-    <div id="archive-content" class="relative bg-[#F9F8F6] w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] translate-y-full transition-transform duration-500 ease-out flex flex-col pointer-events-auto max-h-[90vh]">
+    <div id="archive-content" class="relative bg-[#F9F8F6] w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] translate-y-full transition-transform duration-500 ease-out flex flex-col max-h-[90vh]">
       
       <div class="flex-shrink-0 pt-4 pb-3 px-6 flex flex-col items-center bg-[#F9F8F6]/95 backdrop-blur-md rounded-t-[24px] z-10 sticky top-0 border-b border-[#E5E5E5]/50">
         <div class="w-12 h-1 bg-[#D4D4D4] rounded-full mb-5"></div>
@@ -355,7 +355,7 @@
   <div id="philosophy-popup" class="fixed inset-0 z-[120] flex items-center justify-center pointer-events-none p-5">
     <div id="philosophy-backdrop" class="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 backdrop-blur-sm" onclick="closePhilosophy()"></div>
     
-    <div id="philosophy-content" class="relative bg-white w-full max-w-sm mx-auto rounded-[20px] shadow-2xl scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col pointer-events-auto overflow-hidden">
+    <div id="philosophy-content" class="relative bg-white w-full max-w-sm mx-auto rounded-[20px] shadow-2xl scale-95 opacity-0 transition-all duration-300 ease-out flex flex-col overflow-hidden">
       
       <button onclick="closePhilosophy()" class="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
@@ -379,7 +379,7 @@
   <div id="form-sheet" class="fixed inset-0 z-[130] flex flex-col justify-end pointer-events-none transition-all duration-500">
     <div id="form-backdrop" class="absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-500 backdrop-blur-[2px]" onclick="closeForm()"></div>
     
-    <div id="form-content" class="relative bg-[#F9F8F6] w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] translate-y-full transition-transform duration-500 ease-out flex flex-col pointer-events-auto max-h-[90vh]">
+    <div id="form-content" class="relative bg-[#F9F8F6] w-full max-w-md md:max-w-3xl lg:max-w-5xl mx-auto rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] translate-y-full transition-transform duration-500 ease-out flex flex-col max-h-[90vh]">
       
       <div class="flex-shrink-0 pt-4 pb-3 px-6 flex flex-col items-center bg-[#F9F8F6]/95 backdrop-blur-md rounded-t-[24px] z-10 sticky top-0 border-b border-[#E5E5E5]/50">
         <div class="w-12 h-1 bg-[#D4D4D4] rounded-full mb-5"></div>
