@@ -116,12 +116,12 @@
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         .app-container {
-            min-height: 100dvh;
+            height: 100dvh; /* 💖 ЖЕСТКАЯ ВЫСОТА: теперь экран вообще не будет ездить вверх-вниз! */
             width: 100%;
             max-width: 500px;
             margin: 0 auto;
             position: relative;
-            overflow: hidden;
+            overflow: hidden; /* 💖 ЖЕСТКО СКРЫВАЕМ СКРОЛЛ */
             box-shadow: 0 0 60px rgba(0,0,0,0.5);
         }
         
@@ -385,12 +385,12 @@
                         {/* --- КАРУСЕЛЬ: ОКНА ИЛЛЮМИНАТОРОВ --- */}
                         {/* ========================================================= */}
                         {/* 💖 КАК ПОДНЯТЬ ИЛЛЮМИНАТОРЫ ВЫШЕ/НИЖЕ: */}
-                        {/* В строке ниже найди класс "-mt-10" (это отступ вверх). */}
-                        {/* Если хочешь поднять ЕЩЕ ВЫШЕ, сделай -mt-16 или -mt-20. */}
-                        {/* Если хочешь опустить, удали минус или сделай mt-10. */}
+                        {/* В строке ниже найди класс "-mt-24" (это отступ вверх). */}
+                        {/* Если хочешь поднять ЕЩЕ ВЫШЕ, сделай -mt-32 или -mt-40. */}
+                        {/* Если хочешь опустить, сделай -mt-10 или удали минус. */}
                         {/* ========================================================= */}
-                        <div className="flex-1 flex flex-col justify-center animate-item -mt-20 relative z-20" style={{animationDelay: '0.3s'}}>
-                            <div className="text-center mb-6 mt-20">
+                        <div className="flex-1 flex flex-col justify-center animate-item -mt-24 relative z-20" style={{animationDelay: '0.3s'}}>
+                            <div className="text-center mb-6 mt-10">
                                 <p className="text-white text-sm font-bold tracking-widest uppercase animate-pulse drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Проведи пальцем, чтобы перелистнуть &larr; &rarr;</p>
                             </div>
                             {/* ========================================================= */}
