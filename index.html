@@ -380,19 +380,24 @@
                                     <div className="flex flex-col text-right"><span className="text-[9px] text-gray-400 font-bold uppercase">To</span><span className="font-heading font-bold text-lg">REALITY</span></div>
                                 </div>
                             </div>
+                            
+                            {/* ========================================================= */}
+                            {/* 💖 НАДПИСЬ ТЕПЕРЬ ОТВЯЗАНА ОТ ИЛЛЮМИНАТОРОВ И СИДИТ ПОД БИЛЕТОМ! */}
+                            {/* Если хочешь опустить её ниже от билета, меняй "mt-6" на "mt-10" или "mt-12" */}
+                            {/* ========================================================= */}
+                            <div className="text-center mt-2 relative z-30">
+                                <p className="text-white text-sm font-bold tracking-widest uppercase animate-pulse drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Смахни, чтобы перелистнуть &larr; &rarr;</p>
+                            </div>
                         </div>
 
                         {/* --- КАРУСЕЛЬ: ОКНА ИЛЛЮМИНАТОРОВ --- */}
                         {/* ========================================================= */}
                         {/* 💖 КАК ПОДНЯТЬ ИЛЛЮМИНАТОРЫ ВЫШЕ/НИЖЕ: */}
-                        {/* В строке ниже найди класс "-mt-24" (это отступ вверх). */}
-                        {/* Если хочешь поднять ЕЩЕ ВЫШЕ, сделай -mt-32 или -mt-40. */}
-                        {/* Если хочешь опустить, сделай -mt-10 или удали минус. */}
+                        {/* В строке ниже найди класс "-mt-16" (это отступ вверх). */}
+                        {/* Если хочешь поднять ЕЩЕ ВЫШЕ, сделай -mt-24 или -mt-32. */}
+                        {/* ТЕПЕРЬ ОНИ ДВИГАЮТСЯ СОВЕРШЕННО НЕЗАВИСИМО ОТ НАДПИСИ! */}
                         {/* ========================================================= */}
-                        <div className="flex-1 flex flex-col justify-center animate-item -mt-24 relative z-20" style={{animationDelay: '0.3s'}}>
-                            <div className="text-center mb-6 mt-24">
-                                <p className="text-white text-sm font-bold tracking-widest uppercase animate-pulse drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">Проведи пальцем, чтобы перелистнуть &larr; &rarr;</p>
-                            </div>
+                        <div className="flex-1 flex flex-col justify-center animate-item -mt-16 relative z-20" style={{animationDelay: '0.3s'}}>
                             {/* ========================================================= */}
                             {/* 💖 КАК ИЗМЕНИТЬ РАССТОЯНИЕ МЕЖДУ ИЛЛЮМИНАТОРАМИ: */}
                             {/* В строке ниже найди класс "gap-3" (было gap-6). Он отвечает за отступ. */}
