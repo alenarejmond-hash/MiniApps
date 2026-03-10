@@ -556,8 +556,8 @@
                 ` : ''}
               </div>
 
-              <!-- ВЕСЬ ТЕКСТ описания -->
-              ${tour.desc ? `<p class="text-[14px] text-[#6B6B6B] leading-relaxed mb-6 font-light">${tour.desc}</p>` : ''}
+              <!-- ТЕКСТ описания (Ограничен 4 строками) -->
+              ${tour.desc ? `<p class="text-[14px] text-[#6B6B6B] leading-relaxed mb-6 font-light line-clamp-4">${tour.desc}</p>` : ''}
               
               <div class="flex items-center justify-between mt-auto pt-5 border-t border-[#F0EFEA]">
                 <span class="text-[18px] font-semibold text-[#1A1A1A] ${isSold ? 'opacity-50 line-through' : ''}">${tour.price}</span>
