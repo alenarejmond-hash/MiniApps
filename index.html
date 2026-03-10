@@ -95,7 +95,7 @@
 
       // --- 9. НАСТРОЙКИ ФОРМЫ ЗАЯВКИ (ИНТЕГРАЦИЯ С GOOGLE SHEETS) ---
       // Вставь сюда Web App URL из твоего Google Apps Script (шаг 3 из инструкции)
-      googleSheetSubmitUrl: "https://script.google.com/macros/s/AKfycbwPN58F59TTN69FHKgDuomwU09OkFdt_Brq2m655_fH-neeiH90PvzhcuhD57r4afuzaA/exec", // Пока пусто, форма будет просто показывать красивую галочку "Отправлено"
+      googleSheetSubmitUrl: "https://script.google.com/macros/s/AKfycbwScQlTvTiC3BnCYUrLvdkJR4lTEhDP1lCpJuQxwdpS0sBj9NaR0Uzm6JP38sG4X_kiRw/exec", // Пока пусто, форма будет просто показывать красивую галочку "Отправлено"
       formTitle: "Оставить заявку",
       formSubtitle: "Заполните форму, и мы свяжемся с вами для обсуждения деталей вашего идеального путешествия.",
       formSubmitBtnText: "Отправить заявку",
@@ -107,6 +107,8 @@
           image: "https://images.unsplash.com/photo-1542640244-7e672d6cb466?q=80&w=400&auto=format&fit=crop",
           title: "Дагестан: Горы и Вино",
           dates: "15 — 20 Мая",
+          location: "Россия, Кавказ",
+          desc: "Путешествие по древним аулам, каньонам и винодельням с дегустацией местных вин.",
           price: "85 000 ₽",
           badge: "Осталось 2 места",
           link: "https://t.me/durov",
@@ -116,6 +118,8 @@
           image: "https://images.unsplash.com/photo-1540150993950-705a8b79b5c7?q=80&w=400&auto=format&fit=crop",
           title: "Алтай: Место Силы",
           dates: "10 — 18 Июля",
+          location: "Россия, Сибирь",
+          desc: "Глубокое погружение в дикую природу. Треккинг к горным озерам и ночевки под звездами.",
           price: "120 000 ₽",
           badge: "Осталось 4 места",
           link: "https://t.me/durov",
@@ -125,6 +129,8 @@
           image: "https://images.unsplash.com/photo-1640854611598-e4b95d9aab54?q=80&w=400&auto=format&fit=crop",
           title: "Каппадокия: Небо",
           dates: "5 — 10 Октября",
+          location: "Турция",
+          desc: "Полет на воздушном шаре на рассвете, пещерные отели и марсианские пейзажи.",
           price: "150 000 ₽",
           badge: "Sold Out",
           link: "https://t.me/durov",
@@ -457,15 +463,19 @@
       document.getElementById('cfg-philosophy-title').textContent = APP_DATA.philosophyTitle;
       document.getElementById('cfg-philosophy-sub').textContent = APP_DATA.philosophySub;
 
-      // 3. Применяем Актуальный тур
-      document.getElementById('cfg-main-tour-image').src = APP_DATA.mainTourImage;
-      document.getElementById('cfg-main-tour-badge').textContent = APP_DATA.mainTourBadge;
-      document.getElementById('cfg-main-tour-title').textContent = APP_DATA.mainTourTitle;
-      document.getElementById('cfg-main-tour-dates').textContent = APP_DATA.mainTourDates;
-      document.getElementById('cfg-main-tour-location').textContent = APP_DATA.mainTourLocation;
-      document.getElementById('cfg-main-tour-desc').textContent = APP_DATA.mainTourDesc;
-      document.getElementById('cfg-main-tour-btn-text').textContent = APP_DATA.mainTourBtnText;
-      document.getElementById('cfg-main-tour-btn').href = APP_DATA.mainTourLink;
+      // 3. Применяем Актуальный тур (Автоматически берем ближайший доступный тур из списка)
+      const nearestTour = APP_DATA.tours.find(t => !t.isSoldOut) || APP_DATA.tours[0];
+      
+      if (nearestTour) {
+        document.getElementById('cfg-main-tour-image').src = nearestTour.image || APP_DATA.mainTourImage;
+        document.getElementById('cfg-main-tour-badge').textContent = nearestTour.badge || APP_DATA.mainTourBadge;
+        document.getElementById('cfg-main-tour-title').textContent = nearestTour.title || APP_DATA.mainTourTitle;
+        document.getElementById('cfg-main-tour-dates').textContent = nearestTour.dates || APP_DATA.mainTourDates;
+        document.getElementById('cfg-main-tour-location').textContent = nearestTour.location || APP_DATA.mainTourLocation;
+        document.getElementById('cfg-main-tour-desc').textContent = nearestTour.desc || APP_DATA.mainTourDesc;
+        document.getElementById('cfg-main-tour-btn-text').textContent = APP_DATA.mainTourBtnText;
+        document.getElementById('cfg-main-tour-btn').href = nearestTour.link || APP_DATA.mainTourLink;
+      }
 
       // 4. Применяем Главную кнопку (теперь это открывает форму)
       document.getElementById('cfg-bottom-btn').textContent = APP_DATA.bottomBtnText;
@@ -519,26 +529,46 @@
       APP_DATA.tours.forEach(tour => {
         const isSold = tour.isSoldOut;
         const html = `
-          <a href="${tour.link}" target="_blank" class="block bg-white rounded-[12px] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#F0EFEA] hover:shadow-md transition-all group flex gap-4 items-center ${isSold ? 'opacity-80 hover:opacity-100' : ''}">
-            <div class="relative w-24 h-24 md:w-32 md:h-32 shrink-0 rounded-[8px] overflow-hidden ${isSold ? 'grayscale group-hover:grayscale-0 transition-all duration-500' : ''}">
-              <img src="${tour.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="${tour.title}">
-              <div class="absolute top-2 left-2 ${isSold ? 'bg-black/40 border-white/20' : 'bg-white/50 border-white/60'} backdrop-blur-md border px-2 py-0.5 rounded-[4px]">
-                <p class="text-[9px] font-medium ${isSold ? 'text-white/90' : 'text-[#242424]'} uppercase tracking-wider">${tour.badge}</p>
+          <a href="${tour.link}" target="_blank" class="flex flex-col h-full bg-white rounded-[20px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.08)] border border-[#F0EFEA] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group ${isSold ? 'opacity-85 hover:opacity-100' : ''}">
+            
+            <!-- Фото (ЖЕСТКО ФИКСИРУЕМ ВЫСОТУ, чтобы Telegram не сплющивал карточку) -->
+            <div class="relative w-full h-[200px] md:h-[240px] shrink-0 overflow-hidden bg-[#F9F8F6] ${isSold ? 'grayscale group-hover:grayscale-0 transition-all duration-500' : ''}">
+              <img src="${tour.image}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="${tour.title}">
+              <div class="absolute top-4 left-4 ${isSold ? 'bg-black/60 border-white/20' : 'bg-white/95 border-white/60'} backdrop-blur-md border px-3 py-1.5 rounded-[8px] shadow-sm z-10">
+                <p class="text-[11px] font-bold ${isSold ? 'text-white' : 'text-[#1A1A1A]'} uppercase tracking-wider">${tour.badge}</p>
               </div>
             </div>
-            <div class="flex-1 py-1">
-              <h3 class="font-serif text-[16px] md:text-lg text-[#1A1A1A] mb-1 leading-tight group-hover:text-[#B85C47] transition-colors">${tour.title}</h3>
-              <p class="text-[12px] text-[#6B6B6B] mb-2 flex items-center gap-1.5 font-light">
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]/70"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                ${tour.dates}
-              </p>
-              <div class="flex items-center justify-between mt-auto pt-1">
-                <span class="text-[14px] font-medium text-[#242424] ${isSold ? 'opacity-50 line-through' : ''}">${tour.price}</span>
+            
+            <!-- Информация (Точно под фото, 100% отображение) -->
+            <div class="p-6 md:p-8 flex flex-col flex-1 bg-white">
+              <h3 class="font-serif text-[22px] md:text-[26px] text-[#1A1A1A] mb-4 leading-tight group-hover:text-[#B85C47] transition-colors">${tour.title}</h3>
+              
+              <div class="flex flex-col gap-2.5 mb-5">
+                <p class="text-[14px] text-[#6B6B6B] flex items-center gap-2.5 font-medium">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]/80 shrink-0"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                  ${tour.dates}
+                </p>
+                ${tour.location ? `
+                <p class="text-[14px] text-[#6B6B6B] flex items-center gap-2.5 font-medium">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]/80 shrink-0"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                  ${tour.location}
+                </p>
+                ` : ''}
+              </div>
+
+              <!-- ВЕСЬ ТЕКСТ описания -->
+              ${tour.desc ? `<p class="text-[14px] text-[#6B6B6B] leading-relaxed mb-6 font-light">${tour.desc}</p>` : ''}
+              
+              <div class="flex items-center justify-between mt-auto pt-5 border-t border-[#F0EFEA]">
+                <span class="text-[18px] font-semibold text-[#1A1A1A] ${isSold ? 'opacity-50 line-through' : ''}">${tour.price}</span>
                 ${isSold 
-                  ? `<span class="text-[#8C8C8C] text-[10px] uppercase tracking-wider font-medium">${tour.soldOutText || "Запись в резерв"}</span>`
-                  : `<span class="w-7 h-7 rounded-full border border-[#E5E5E5] flex items-center justify-center text-[#B85C47] group-hover:bg-[#B85C47] group-hover:text-white transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                    </span>`
+                  ? `<span class="text-[#8C8C8C] text-[10px] uppercase tracking-widest font-bold px-4 py-2 bg-[#F9F8F6] rounded-[8px]">${tour.soldOutText || "В резерв"}</span>`
+                  : `<span class="flex items-center gap-2.5 text-[11px] uppercase tracking-widest font-semibold text-[#B85C47] group-hover:text-[#A3503D] transition-colors">
+                      Подробнее
+                      <span class="w-8 h-8 rounded-full bg-[#B85C47]/10 flex items-center justify-center group-hover:bg-[#B85C47] group-hover:text-white transition-all shadow-sm shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                      </span>
+                     </span>`
                 }
               </div>
             </div>
@@ -596,7 +626,9 @@
                 image: cols[4] || "",
                 link: cols[5] || "",
                 isSoldOut: (cols[6] && cols[6].toLowerCase() === 'да'),
-                soldOutText: "Запись в резерв"
+                soldOutText: "Запись в резерв",
+                location: cols[7] || "",
+                desc: cols[8] || ""
               });
             }
             if (fetchedTours.length > 0) APP_DATA.tours = fetchedTours;
