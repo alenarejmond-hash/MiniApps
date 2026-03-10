@@ -160,15 +160,18 @@
                 background: "https://i.postimg.cc/7LttjxTk/1da5657626d43970b017c3d22ec7c7a4.jpg",
                 // Рамка иллюминатора (PNG или JPG с прозрачным окном по центру, размер ~ 500x800px)
                 windowFrame: "https://i.postimg.cc/3NxXhpMv/Remove-background-project.png",
+                // --- НОВАЯ НАСТРОЙКА: Свечение вокруг иллюминатора ---
+                // Увеличь 20px, чтобы светилось сильнее (например, '0px 0px 40px ...').
+                windowGlow: "0px 0px 20px rgba(255, 255, 255, 0.6)",
             },
 
-            // --- 3. ГЛАВНОЕ МЕНЮ (НАДПИСИ В ИЛЛЮМИНАТОРАХ) ---
-            // id трогать не нужно, меняй только title
+            // --- 3. ГЛАВНОЕ МЕНЮ (НАДПИСИ И ФОТО В ИЛЛЮМИНАТОРАХ) ---
+            // id трогать не нужно, меняй только title и ссылку на photo
             menu: [
-                { id: 'tours', title: 'Горящие Туры' },
-                { id: 'about', title: 'Обо Мне' },
-                { id: 'reviews', title: 'Отзывы' },
-                { id: 'contacts', title: 'Связь' }
+                { id: 'tours', title: 'Горящие Туры', photo: 'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=400' },
+                { id: 'about', title: 'Обо Мне', photo: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&q=80&w=400' },
+                { id: 'reviews', title: 'Отзывы', photo: 'https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?auto=format&fit=crop&q=80&w=400' },
+                { id: 'contacts', title: 'Связь', photo: 'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&q=80&w=400' }
             ],
 
             // --- 4. РАЗДЕЛ "ОБО МНЕ" ---
@@ -385,14 +388,38 @@
                                 <p className="text-white/80 text-sm font-medium tracking-widest uppercase animate-pulse">Swipe to choose &larr; &rarr;</p>
                             </div>
                             <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-[20vw] hide-scrollbar pb-10 pt-4">
+                                {/* ========================================================= */}
+                                {/* 💖 КАК ИЗМЕНИТЬ ОБЩИЙ РАЗМЕР САМОГО ИЛЛЮМИНАТОРА (РАМКИ): */}
+                                {/* В строке ниже (где написано className="snap-center...") найди: */}
+                                {/* w-[60vw] max-w-[260px] h-[380px] */}
+                                {/* Чтобы сделать МЕНЬШЕ, уменьши эти цифры. Например, сделай: */}
+                                {/* w-[50vw] max-w-[220px] h-[320px] */}
+                                {/* ========================================================= */}
                                 {CONFIG.menu.map((item) => (
                                     <div 
                                         key={item.id} 
                                         onClick={() => navigateTo(item.id)}
-                                        className="snap-center shrink-0 w-[60vw] max-w-[260px] h-[380px] illuminator cursor-pointer group"
+                                        className="snap-center shrink-0 w-[120vw] max-w-[320px] h-[440px] illuminator cursor-pointer group"
                                     >
-                                        <img src={CONFIG.images.windowFrame} className="absolute inset-0 w-full h-full object-contain pointer-events-none drop-shadow-xl group-hover:scale-105 transition-transform duration-700" alt={item.title} />
-                                        <div className="absolute inset-0 flex flex-col justify-center items-center pointer-events-none z-10">
+                                        {/* ========================================================= */}
+                                        {/* 💖 КАК ИЗМЕНИТЬ РАЗМЕР ФОТО В ИЛЛЮМИНАТОРЕ: */}
+                                        {/* Чтобы сделать фото МЕНЬШЕ: увеличь отступ p-[12%] -> например, напиши p-[18%] или p-[20%] */}
+                                        {/* Также можешь уменьшить высоту h-[85%] -> например, напиши h-[75%] или h-[70%] */}
+                                        {/* ========================================================= */}
+                                        <div className="absolute inset-0 flex items-center justify-center p-[25%] pointer-events-none">
+                                            <img src={item.photo} className="w-full h-[85%] rounded-[80px] object-cover opacity-90 group-hover:scale-110 transition-transform duration-700" alt={item.title} />
+                                        </div>
+                                        
+                                        {/* РАМКА ИЛЛЮМИНАТОРА И СВЕЧЕНИЕ (Поверх фото) */}
+                                        <img 
+                                            src={CONFIG.images.windowFrame} 
+                                            className="absolute inset-0 w-full h-full object-contain pointer-events-none group-hover:scale-105 transition-transform duration-700 z-10" 
+                                            style={{ filter: `drop-shadow(${CONFIG.images.windowGlow})` }}
+                                            alt="Window Frame" 
+                                        />
+                                        
+                                        {/* ТЕКСТ (САМЫЙ ВЕРХНИЙ СЛОЙ) */}
+                                        <div className="absolute inset-0 flex flex-col justify-center items-center pointer-events-none z-20">
                                             <h3 className="text-white text-2xl font-heading font-bold tracking-wider uppercase text-center px-4 leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">{item.title}</h3>
                                         </div>
                                     </div>
