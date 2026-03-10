@@ -61,6 +61,15 @@
         "Секретные локации, которых нет в путеводителях."
       ],
 
+      // --- 10. ДОП КНОПКИ (ОТЗЫВЫ И КОНТАКТЫ) ---
+      reviewsTitle: "Отзывы",
+      reviewsSub: "Слова туристов",
+      reviewsLink: "https://t.me/durov", // Ссылка на канал/пост с отзывами
+
+      contactsTitle: "Контакты",
+      contactsSub: "Связаться",
+      contactsLink: "https://t.me/durov", // Ссылка на личные сообщения (TG/WA)
+
       // --- 3. АКТУАЛЬНЫЙ ТУР (НА ГЛАВНОМ ЭКРАНЕ) ---
       mainTourImage: "https://i.postimg.cc/9QM60kVV/ib7.webp",
       mainTourBadge: "Осталось 2 места",
@@ -236,6 +245,24 @@
               <span id="cfg-philosophy-title" class="text-sm font-medium tracking-wide pointer-events-none"></span>
               <span id="cfg-philosophy-sub" class="text-[10px] text-[#8C8C8C] mt-1 pointer-events-none"></span>
             </button>
+
+            <!-- Карточка 4: Отзывы -->
+            <a id="cfg-reviews-btn" href="#" target="_blank" class="appearance-none focus:outline-none w-full text-left bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow cursor-pointer">
+              <div class="w-12 h-12 rounded-full bg-[#F9F8F6] flex items-center justify-center mb-3 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]"><path d="M12 21a9 9 0 1 0-9-9c0 1.488.36 2.89 1 4.127L3 21l4.873-1c1.236.64 2.64 1 4.127 1Z"/><path d="M9 12h.01"/><path d="M12 12h.01"/><path d="M15 12h.01"/></svg>
+              </div>
+              <span id="cfg-reviews-title" class="text-sm font-medium tracking-wide pointer-events-none"></span>
+              <span id="cfg-reviews-sub" class="text-[10px] text-[#8C8C8C] mt-1 pointer-events-none"></span>
+            </a>
+
+            <!-- Карточка 5: Контакты -->
+            <a id="cfg-contacts-btn" href="#" target="_blank" class="appearance-none focus:outline-none w-full text-left bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow cursor-pointer">
+              <div class="w-12 h-12 rounded-full bg-[#F9F8F6] flex items-center justify-center mb-3 pointer-events-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" class="text-[#B85C47]"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <span id="cfg-contacts-title" class="text-sm font-medium tracking-wide pointer-events-none"></span>
+              <span id="cfg-contacts-sub" class="text-[10px] text-[#8C8C8C] mt-1 pointer-events-none"></span>
+            </a>
           </div>
         </section>
 
@@ -277,7 +304,7 @@
                 </div>
               </div>
               
-              <p id="cfg-main-tour-desc" class="text-[13px] text-[#6B6B6B] leading-relaxed mb-6 font-light"></p>
+              <p id="cfg-main-tour-desc" class="text-[13px] text-[#6B6B6B] leading-relaxed mb-6 font-light line-clamp-4"></p>
               
               <a id="cfg-main-tour-btn" href="#" target="_blank" class="w-full py-3.5 border border-[#E5E5E5] text-[#242424] rounded-[8px] text-xs uppercase tracking-[0.15em] font-medium hover:bg-[#F9F8F6] transition-colors flex items-center justify-center gap-2">
                 <span id="cfg-main-tour-btn-text"></span>
@@ -462,6 +489,14 @@
       
       document.getElementById('cfg-philosophy-title').textContent = APP_DATA.philosophyTitle;
       document.getElementById('cfg-philosophy-sub').textContent = APP_DATA.philosophySub;
+
+      document.getElementById('cfg-reviews-title').textContent = APP_DATA.reviewsTitle;
+      document.getElementById('cfg-reviews-sub').textContent = APP_DATA.reviewsSub;
+      document.getElementById('cfg-reviews-btn').href = APP_DATA.reviewsLink;
+
+      document.getElementById('cfg-contacts-title').textContent = APP_DATA.contactsTitle;
+      document.getElementById('cfg-contacts-sub').textContent = APP_DATA.contactsSub;
+      document.getElementById('cfg-contacts-btn').href = APP_DATA.contactsLink;
 
       // 3. Применяем Актуальный тур (Автоматически берем ближайший доступный тур из списка)
       const nearestTour = APP_DATA.tours.find(t => !t.isSoldOut) || APP_DATA.tours[0];
