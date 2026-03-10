@@ -387,7 +387,13 @@
                             <div className="text-center mb-6">
                                 <p className="text-white/80 text-sm font-medium tracking-widest uppercase animate-pulse">Swipe to choose &larr; &rarr;</p>
                             </div>
-                            <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 px-[20vw] hide-scrollbar pb-10 pt-4">
+                            {/* ========================================================= */}
+                            {/* 💖 КАК ИЗМЕНИТЬ РАССТОЯНИЕ МЕЖДУ ИЛЛЮМИНАТОРАМИ: */}
+                            {/* В строке ниже найди класс "gap-3" (было gap-6). Он отвечает за отступ. */}
+                            {/* - Чтобы прижать их ЕЩЕ БЛИЖЕ: напиши gap-1 или gap-2 */}
+                            {/* - Чтобы ОТОДВИНУТЬ друг от друга: напиши gap-6, gap-8 или gap-10 */}
+                            {/* ========================================================= */}
+                            <div className="flex overflow-x-auto snap-x snap-mandatory gap-3 px-[10vw] hide-scrollbar pb-20 pt-4">
                                 {/* ========================================================= */}
                                 {/* 💖 КАК ИЗМЕНИТЬ ОБЩИЙ РАЗМЕР САМОГО ИЛЛЮМИНАТОРА (РАМКИ): */}
                                 {/* В строке ниже (где написано className="snap-center...") найди: */}
@@ -399,7 +405,7 @@
                                     <div 
                                         key={item.id} 
                                         onClick={() => navigateTo(item.id)}
-                                        className="snap-center shrink-0 w-[180vw] max-w-[380px] h-[500px] illuminator cursor-pointer group"
+                                        className="snap-center shrink-0 w-[260vw] max-w-[480px] h-[600px] illuminator cursor-pointer group"
                                     >
                                         {/* ========================================================= */}
                                         {/* 💖 КАК ИЗМЕНИТЬ РАЗМЕР ФОТО В ИЛЛЮМИНАТОРЕ: */}
@@ -413,7 +419,7 @@
                                         {/* РАМКА ИЛЛЮМИНАТОРА И СВЕЧЕНИЕ (Поверх фото) */}
                                         <img 
                                             src={CONFIG.images.windowFrame} 
-                                            className="absolute inset-0 w-full h-full object-contain pointer-events-none group-hover:scale-105 transition-transform duration-700 z-10" 
+                                            className="absolute inset-0 w-full h-full object-contain pointer-events-none group-hover:scale-105 transition-transform duration-900 z-10" 
                                             style={{ filter: `drop-shadow(${CONFIG.images.windowGlow})` }}
                                             alt="Window Frame" 
                                         />
