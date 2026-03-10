@@ -49,7 +49,8 @@
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 
             /* ✨ НОВОЕ: Плавное появление мутности, как задуманная фишка ✨ */
-            animation: slowGlassBlur 1.5s ease-out forwards;
+            /* 👇 ВРЕМЯ ПОЯВЛЕНИЯ: сейчас 4s (4 секунды). Можно сделать 2s (быстрее) или 6s (еще медленнее) 👇 */
+            animation: slowGlassBlur 4s ease-out forwards;
         }
 
         /* 👇 Если будешь менять мутность (24px) или прозрачность (0.15), поменяй их и здесь в 100% 👇 */
@@ -442,7 +443,7 @@
 
                                     {/* РАЗМЕР ШРИФТА (Главная кнопка внизу "Горящие туры"): text-xl */}
                                     {/* 👇 ВЫСОТА КНОПКИ: сейчас h-20. Можешь поменять на h-16 (меньше), h-24 (больше) или свой размер, например h-[100px] 👇 */}
-                                    <div onClick={() => navigateTo('tours')} className="w-full h-24 rounded-2xl overflow-hidden relative cursor-pointer active:scale-95 transition-all">
+                                    <div onClick={() => navigateTo('tours')} className="w-full h-20 rounded-2xl overflow-hidden relative cursor-pointer active:scale-95 transition-all">
                                         <img src={CONFIG.mainButtonImage} className="w-full h-full object-cover" />
                                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
                                             <span className="text-white text-xl font-bold tracking-wide uppercase">{CONFIG.mainButtonText}</span>
