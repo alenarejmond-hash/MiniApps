@@ -54,8 +54,8 @@
     const APP_DATA = {
       // --- 1. ГЛАВНЫЙ ЭКРАН (ШАПКА) ---
       preloaderImage: "https://i.postimg.cc/9QM60kVV/ib7.webp", // Фото на экране загрузки
-      heroImage: "https://i.postimg.cc/9QM60kVV/ib7.webp",      // Главное фото сверху
-      authorName: "Кристина Вейс",
+      heroImage: "https://i.postimg.cc/yYygLTfL/unnamed-5.jpg",      // Главное фото сверху
+      authorName: "Татьяна Власова",
       authorSubtitle: "Авторские путешествия",
 
       // --- 2. МЕНЮ (ПЛИТКИ) ---
@@ -64,16 +64,20 @@
       archiveTitle: "Как это было",
       archiveSub: "Архив эмоций",
 
-      philosophyTitle: "Философия",
+      philosophyTitle: "Обо мне",
       philosophySub: "Смысл пути",
 
       // --- 8. ПОПАП "МОЯ ФИЛОСОФИЯ" (ОБО МНЕ) ---
-      philosophyPopupImage: "https://i.postimg.cc/d39MXkPW/unnamed-2.jpg", // Фото гида крупным планом
+      philosophyPopupImage: "https://i.postimg.cc/yYygLTfL/unnamed-5.jpg", // Фото гида крупным планом
       philosophyPopupTitle: "Мой подход",
       philosophyPopupBullets: [
         "Только мини-группы (до 8 человек).",
         "Никаких автобусов — передвигаемся на джипах.",
-        "Секретные локации, которых нет в путеводителях."
+        "Секретные локации, которых нет в путеводителях.",
+        "Незабываемые воспоминания.",
+        "Эмоции, которые останутся с вами на всю жизнь!",
+        "Гиды, которые проживут эти моменты вместе с вами.",
+        "Фото, которые запечатлят самые живые моменты.",
       ],
 
       // --- 10. ДОП КНОПКИ (ОТЗЫВЫ И КОНТАКТЫ) ---
@@ -284,7 +288,7 @@
           </button>
         </div>
       </div>
-      <div id="cfg-tours-container" class="overflow-y-auto p-5 pb-10 space-y-4 relative"></div>
+      <div id="cfg-tours-container" class="overflow-y-auto p-5 pb-32 space-y-10 relative"></div>
     </div>
   </div>
 
@@ -301,9 +305,9 @@
           </button>
         </div>
       </div>
-      <div id="archive-scroll-container" class="overflow-y-auto p-5 pb-12 flex flex-col relative">
+      <div id="archive-scroll-container" class="overflow-y-auto p-5 pb-32 flex flex-col relative">
         <p id="cfg-archive-sheet-text" class="font-serif text-[18px] italic text-center text-slate-600 leading-relaxed mb-8 px-2 tracking-wide"></p>
-        <div id="cfg-archive-gallery" class="flex flex-col gap-4 mb-8"></div>
+        <div id="cfg-archive-gallery" class="flex flex-col gap-10 mb-8"></div>
         <a id="cfg-archive-sheet-btn" href="#" target="_blank" class="w-full py-4 bg-sky-50 text-sky-600 rounded-[20px] text-xs uppercase tracking-[0.15em] font-medium hover:bg-sky-100 transition-colors flex items-center justify-center gap-2 mt-auto">
           <span id="cfg-archive-sheet-btn-text"></span>
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -576,7 +580,7 @@
       galleryContainer.innerHTML = '';
       APP_DATA.archivePhotos.forEach((photoUrl, index) => {
         const html = `
-          <div class="stack-card h-[320px] md:h-[400px] w-full rounded-[24px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.08)] border border-white relative group shrink-0" style="top: ${20 + index * 12}px; z-index: ${10 + index};">
+          <div class="stack-card h-[320px] md:h-[400px] w-full rounded-[24px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.08)] border border-white group shrink-0" style="top: ${20 + index * 16}px; z-index: ${10 + index};">
             <img src="${photoUrl}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" alt="Archive Story">
             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
           </div>
@@ -591,7 +595,7 @@
       APP_DATA.tours.forEach((tour, index) => {
         const isSold = tour.isSoldOut;
         const html = `
-          <a href="${tour.link}" target="_blank" class="stack-card flex flex-col h-full bg-white/70 backdrop-blur-2xl rounded-[32px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] border border-white hover:bg-white hover:scale-[1.01] transition-all duration-300 group ${isSold ? 'opacity-85' : ''}" style="top: ${20 + index * 12}px; z-index: ${10 + index};">
+          <a href="${tour.link}" target="_blank" class="stack-card flex flex-col bg-white/70 backdrop-blur-2xl rounded-[32px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] border border-white hover:bg-white hover:scale-[1.01] transition-all duration-300 group ${isSold ? 'opacity-85' : ''}" style="top: ${20 + index * 16}px; z-index: ${10 + index};">
             <div class="relative w-full h-[220px] md:h-[260px] shrink-0 overflow-hidden bg-slate-50 ${isSold ? 'grayscale' : ''}">
               <img src="${tour.image}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="${tour.title}">
               <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
