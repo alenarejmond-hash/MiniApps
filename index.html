@@ -47,6 +47,30 @@
             
             border: 1px solid rgba(255, 255, 255, 0.3);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+
+            /* ✨ НОВОЕ: Плавное появление мутности, как задуманная фишка ✨ */
+            animation: slowGlassBlur 1.5s ease-out forwards;
+        }
+
+        /* 👇 Если будешь менять мутность (24px) или прозрачность (0.15), поменяй их и здесь в 100% 👇 */
+        @keyframes slowGlassBlur {
+            0% {
+                backdrop-filter: blur(0px);
+                -webkit-backdrop-filter: blur(0px);
+                background: rgba(255, 255, 255, 0);
+            }
+            40% {
+                /* Ждем пока карточка выезжает вверх, оставаясь прозрачной */
+                backdrop-filter: blur(0px);
+                -webkit-backdrop-filter: blur(0px);
+                background: rgba(255, 255, 255, 0);
+            }
+            100% {
+                /* Плавно становимся мутными */
+                backdrop-filter: blur(24px);
+                -webkit-backdrop-filter: blur(24px);
+                background: rgba(255, 255, 255, 0.15);
+            }
         }
         
         .glass-dark {
@@ -126,7 +150,8 @@
             brandName: "Елена Майер", // Имя на главном экране
             subtitle: "Незабываемые авторские туры", // ✨ НОВОЕ: Подзаголовок под именем
             avatarUrl: "https://i.postimg.cc/qRP5mKJS/unnamed-6.jpg", // 🖼️ ССЫЛКА НА ФОТО: Большое фото на фоне
-            mainButtonText: "Горящие туры", // Текст на большой белой кнопке
+            mainButtonText: "Горящие туры", // Текст на большой кнопке
+            mainButtonImage: "https://images.unsplash.com/photo-1499678329028-101435549a4e?auto=format&fit=crop&q=80&w=800", // 🖼️ ССЫЛКА НА ФОТО: Фон для кнопки "Горящие туры"
 
             // СТАТИСТИКА (цифры под именем на главной)
             stats: {
@@ -415,10 +440,14 @@
                                         </div>
                                     </div>
 
-                                    {/* РАЗМЕР ШРИФТА (Главная кнопка внизу "Горящие туры"): text-[15px] */}
-                                    <button onClick={() => navigateTo('tours')} className="w-full bg-white text-black font-semibold py-4 rounded-[16px] text-[15px] active:scale-95 transition-transform">
-                                        {CONFIG.mainButtonText}
-                                    </button>
+                                    {/* РАЗМЕР ШРИФТА (Главная кнопка внизу "Горящие туры"): text-xl */}
+                                    {/* 👇 ВЫСОТА КНОПКИ: сейчас h-20. Можешь поменять на h-16 (меньше), h-24 (больше) или свой размер, например h-[100px] 👇 */}
+                                    <div onClick={() => navigateTo('tours')} className="w-full h-24 rounded-2xl overflow-hidden relative cursor-pointer active:scale-95 transition-all">
+                                        <img src={CONFIG.mainButtonImage} className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
+                                            <span className="text-white text-xl font-bold tracking-wide uppercase">{CONFIG.mainButtonText}</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
