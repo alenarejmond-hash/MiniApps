@@ -598,7 +598,7 @@
       APP_DATA.tours.forEach((tour, index) => {
         const isSold = tour.isSoldOut;
         const html = `
-          <a href="${tour.link}" target="_blank" class="stack-card flex flex-col bg-white/70 backdrop-blur-2xl rounded-[32px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] border border-white hover:bg-white transition-colors duration-300 group ${isSold ? 'opacity-85' : ''}" style="top: ${20 + index * 10}px; z-index: ${10 + index};">
+          <a href="${tour.link}" target="_blank" class="stack-card flex flex-col bg-white/70 backdrop-blur-2xl rounded-[32px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] border border-white hover:bg-white transition-colors duration-300 group ${isSold ? 'opacity-85' : ''}" style="top: ${20 + index * 4}px; z-index: ${10 + index};">
             <div class="relative w-full h-[220px] md:h-[260px] shrink-0 overflow-hidden bg-slate-50 ${isSold ? 'grayscale' : ''}">
               <img src="${tour.image}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="${tour.title}">
               <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
