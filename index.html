@@ -153,7 +153,7 @@
         };
         // ================= КОНЕЦ БЛОКА НАСТРОЕК =================
 
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
         function App() {
             // ЛОГИКА СОСТОЯНИЙ
@@ -162,8 +162,7 @@
             const [isLoadingTours, setIsLoadingTours] = useState(true);
             const [dynamicBookingLink, setDynamicBookingLink] = useState("");
             const [sortOrder, setSortOrder] = useState('none');
-            const [touchStart, setTouchStart] = useState(null);
-            const [touchEnd, setTouchEnd] = useState(null);
+            const touchStartRef = useRef(null);
             const [reviews, setReviews] = useState([]);
             const [isLoadingReviews, setIsLoadingReviews] = useState(true);
             const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -223,6 +222,15 @@
                 return () => { clearTimeout(fadeTimer); clearTimeout(removeTimer); };
             }, []);
 
+            useEffect(() => {
+                // Блокируем скролл фона при открытых шторках, чтобы убрать "прыжки"
+                if (activeScreen !== 'home' || isReviewModalOpen) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+            }, [activeScreen, isReviewModalOpen]);
+
             const triggerHaptic = () => {
                 if (window.Telegram?.WebApp?.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
                 else if (navigator.vibrate) navigator.vibrate(50);
@@ -248,16 +256,16 @@
             };
 
             const extractPrice = (priceStr) => { if (!priceStr) return 0; return parseInt(priceStr.replace(/\D/g, ''), 10) || 0; };
-            const onTouchStart = (e) => { setTouchEnd(null); setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }); };
-            const onTouchMove = (e) => { setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }); };
-            const onTouchEnd = () => {
-                if (!touchStart || !touchEnd) return;
-                const distanceX = touchEnd.x - touchStart.x;
-                const distanceY = Math.abs(touchEnd.y - touchStart.y);
-                const isEdgeSwipe = touchStart.x <= 30;
+            const onTouchStart = (e) => { touchStartRef.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }; };
+            const onTouchEnd = (e) => {
+                if (!touchStartRef.current) return;
+                const distanceX = e.changedTouches[0].clientX - touchStartRef.current.x;
+                const distanceY = Math.abs(e.changedTouches[0].clientY - touchStartRef.current.y);
+                const isEdgeSwipe = touchStartRef.current.x <= 30;
                 if (isEdgeSwipe && distanceX > 80 && distanceY < 50) {
                     if (activeScreen !== 'home') navigateTo('home');
                 }
+                touchStartRef.current = null;
             };
 
             const handleSubmitReview = async (e) => {
@@ -303,7 +311,6 @@
                 <div 
                     className="app-container hide-scrollbar"
                     onTouchStart={onTouchStart}
-                    onTouchMove={onTouchMove}
                     onTouchEnd={onTouchEnd}
                 >
                     {/* ЭКРАН ЗАГРУЗКИ */}
