@@ -152,30 +152,34 @@
   </div>
 
   <!-- Плавающая шапка (Header - Glassmorphism) -->
-  <header class="fixed top-4 left-4 right-4 z-[60] max-w-md mx-auto flex items-center justify-between bg-white/70 backdrop-blur-2xl px-4 py-2.5 rounded-full border border-white shadow-[0_8px_30px_-10px_rgba(0,0,0,0.08)]">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-full overflow-hidden shadow-inner bg-slate-100">
+  <header class="fixed top-4 left-4 right-4 z-[60] max-w-md mx-auto flex items-center justify-between bg-white/70 backdrop-blur-2xl px-5 py-3.5 rounded-[2rem] border border-white shadow-[0_8px_30px_-10px_rgba(0,0,0,0.08)]">
+    <div class="flex items-center gap-4">
+      <div class="w-14 h-14 rounded-full overflow-hidden shadow-inner bg-slate-100 shrink-0">
         <img id="cfg-hero-image" src="" alt="Author" class="w-full h-full object-cover">
       </div>
       <div class="flex flex-col">
-        <h1 id="cfg-author-name" class="font-sans font-medium text-[15px] text-slate-800 tracking-tight leading-tight"></h1>
-        <p id="cfg-author-sub" class="font-sans text-[10px] text-slate-500 uppercase tracking-widest mt-0.5"></p>
+        <h1 id="cfg-author-name" class="font-sans font-medium text-[17px] text-slate-800 tracking-tight leading-tight"></h1>
+        <p id="cfg-author-sub" class="font-sans text-[11px] text-slate-500 uppercase tracking-widest mt-0.5"></p>
       </div>
     </div>
-    <div class="w-8 h-8 rounded-full bg-slate-900/5 flex items-center justify-center text-slate-400">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+    <div class="w-10 h-10 rounded-full bg-slate-900/5 flex items-center justify-center text-slate-400 shrink-0">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
     </div>
   </header>
 
   <!-- Основной контейнер со стопкой карточек -->
-  <div class="relative min-h-screen pt-24 pb-36 px-4 max-w-md mx-auto space-y-4">
+  <div class="relative min-h-screen pt-28 pb-36 px-4 max-w-md mx-auto space-y-4">
     
     <!-- Карточка 1: Приветствие -->
-    <div class="bg-white/60 backdrop-blur-3xl rounded-[32px] p-8 border border-white shadow-[0_8px_30px_-10px_rgba(0,0,0,0.05)] flex flex-col items-center text-center">
-      <div class="w-14 h-14 bg-sky-50 rounded-full flex items-center justify-center mb-6 text-sky-500 shadow-inner">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21.5 4c0 0-2-.5-3.5-2L14.5 5.5 6.3 3.7C5.8 3.6 5.3 3.8 5 4.1L3.6 5.5c-.4.4-.4 1.1 0 1.5l5.9 3.5-3.5 3.5-3.1-.8c-.3-.1-.7 0-1 .2L.6 14.7c-.3.3-.3.8 0 1.1l4 4 4 4c.3.3.8.3 1.1 0l1.3-1.3c.2-.3.3-.6.2-1l-.8-3.1 3.5-3.5 3.5 5.9c.4.4 1.1.4 1.5 0l1.4-1.4c.3-.3.5-.8.4-1.2z"/></svg>
+    <div class="bg-white/60 backdrop-blur-3xl rounded-[32px] px-6 py-5 border border-white shadow-[0_8px_30px_-10px_rgba(0,0,0,0.05)] flex flex-col items-center text-center">
+      <div class="w-12 h-12 bg-sky-50 rounded-full flex items-center justify-center mb-3 text-sky-500 shadow-inner shrink-0">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21.5 4c0 0-2-.5-3.5-2L14.5 5.5 6.3 3.7C5.8 3.6 5.3 3.8 5 4.1L3.6 5.5c-.4.4-.4 1.1 0 1.5l5.9 3.5-3.5 3.5-3.1-.8c-.3-.1-.7 0-1 .2L.6 14.7c-.3.3-.3.8 0 1.1l4 4 4 4c.3.3.8.3 1.1 0l1.3-1.3c.2-.3.3-.6.2-1l-.8-3.1 3.5-3.5 3.5 5.9c.4.4 1.1.4 1.5 0l1.4-1.4c.3-.3.5-.8.4-1.2z"/></svg>
       </div>
-      <h2 class="text-3xl font-serif text-slate-800 mb-4 leading-tight">Путешествия,<br>которые <span class="text-sky-500 italic">вдохновляют</span></h2>
+      
+      <!-- === ЗДЕСЬ МОЖНО ИЗМЕНИТЬ ГЛАВНЫЙ ЗАГОЛОВОК === -->
+      <h2 class="text-[26px] font-serif text-slate-800 mb-2.5 leading-tight">Путешествия,<br>которые <span class="text-sky-500 italic">вдохновляют</span></h2>
+      
+      <!-- === ЗДЕСЬ МОЖНО ИЗМЕНИТЬ ТЕКСТ ПОД ЗАГОЛОВКОМ === -->
       <p class="text-[13px] text-slate-500 leading-relaxed font-light mb-0">Тщательно спланированные маршруты, эстетика в каждой детали и абсолютная свобода от забот.</p>
     </div>
 
