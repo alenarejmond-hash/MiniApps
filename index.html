@@ -168,7 +168,7 @@
   <div class="relative min-h-screen pt-24 pb-36 px-4 max-w-md mx-auto space-y-4">
     
     <!-- Карточка 1: Приветствие -->
-    <div class="stack-card z-[10] top-[100px] bg-white/60 backdrop-blur-3xl rounded-[32px] p-8 border border-white shadow-[0_8px_30px_-10px_rgba(0,0,0,0.05)] flex flex-col items-center text-center">
+    <div class="bg-white/60 backdrop-blur-3xl rounded-[32px] p-8 border border-white shadow-[0_8px_30px_-10px_rgba(0,0,0,0.05)] flex flex-col items-center text-center">
       <div class="w-14 h-14 bg-sky-50 rounded-full flex items-center justify-center mb-6 text-sky-500 shadow-inner">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21.5 4c0 0-2-.5-3.5-2L14.5 5.5 6.3 3.7C5.8 3.6 5.3 3.8 5 4.1L3.6 5.5c-.4.4-.4 1.1 0 1.5l5.9 3.5-3.5 3.5-3.1-.8c-.3-.1-.7 0-1 .2L.6 14.7c-.3.3-.3.8 0 1.1l4 4 4 4c.3.3.8.3 1.1 0l1.3-1.3c.2-.3.3-.6.2-1l-.8-3.1 3.5-3.5 3.5 5.9c.4.4 1.1.4 1.5 0l1.4-1.4c.3-.3.5-.8.4-1.2z"/></svg>
       </div>
@@ -176,39 +176,8 @@
       <p class="text-[13px] text-slate-500 leading-relaxed font-light mb-0">Тщательно спланированные маршруты, эстетика в каждой детали и абсолютная свобода от забот.</p>
     </div>
 
-    <!-- Карточка 2: Актуальный тур -->
-    <div class="stack-card z-[20] top-[125px] bg-white rounded-[32px] overflow-hidden border border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] flex flex-col">
-      <div class="relative h-[260px] w-full shrink-0">
-        <img id="cfg-main-tour-image" class="w-full h-full object-cover" />
-        <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/70"></div>
-        <div class="absolute top-5 right-5">
-          <span id="cfg-main-tour-badge" class="px-4 py-1.5 bg-white/20 backdrop-blur-xl border border-white/40 rounded-full text-[10px] uppercase tracking-widest text-white font-medium shadow-sm"></span>
-        </div>
-        <div class="absolute bottom-5 left-6 right-6">
-          <h3 id="cfg-main-tour-title" class="text-[26px] font-serif text-white mb-2 leading-tight"></h3>
-          <div class="flex items-center gap-4 text-white/90 text-[11px] font-medium tracking-wide uppercase">
-            <span class="flex items-center gap-1.5">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-              <span id="cfg-main-tour-dates"></span>
-            </span>
-            <span class="flex items-center gap-1.5">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-              <span id="cfg-main-tour-location"></span>
-            </span>
-          </div>
-        </div>
-      </div>
-      <div class="p-6 bg-white flex flex-col">
-        <p id="cfg-main-tour-desc" class="text-[13px] text-slate-500 font-light leading-relaxed mb-6 line-clamp-3"></p>
-        <a id="cfg-main-tour-btn" href="#" target="_blank" class="w-full py-4 bg-[#F8F9FA] border border-slate-100 rounded-[20px] text-xs uppercase tracking-widest text-slate-800 font-medium flex items-center justify-center gap-2 hover:bg-slate-100 transition-colors">
-          <span id="cfg-main-tour-btn-text"></span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        </a>
-      </div>
-    </div>
-
-    <!-- Карточка 3: Услуги / Меню (Glassmorphism Bento) -->
-    <div class="stack-card z-[30] top-[150px] bg-white/40 backdrop-blur-3xl rounded-[32px] p-2 border border-white/60 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)]">
+    <!-- Карточка 2: Услуги / Меню (Glassmorphism Bento) -->
+    <div class="bg-white/40 backdrop-blur-3xl rounded-[32px] p-2 border border-white/60 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)]">
       <div class="grid grid-cols-2 gap-2">
         <!-- Экспедиции -->
         <button onclick="openExpeditions()" class="col-span-2 relative h-48 rounded-[28px] overflow-hidden shadow-sm group">
@@ -254,6 +223,38 @@
         </button>
       </div>
     </div>
+
+    <!-- Карточка 3: Актуальный тур -->
+    <div class="bg-white rounded-[32px] overflow-hidden border border-white shadow-[0_20px_40px_-15px_rgba(0,0,0,0.08)] flex flex-col">
+      <div class="relative h-[260px] w-full shrink-0">
+        <img id="cfg-main-tour-image" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/70"></div>
+        <div class="absolute top-5 right-5">
+          <span id="cfg-main-tour-badge" class="px-4 py-1.5 bg-white/20 backdrop-blur-xl border border-white/40 rounded-full text-[10px] uppercase tracking-widest text-white font-medium shadow-sm"></span>
+        </div>
+        <div class="absolute bottom-5 left-6 right-6">
+          <h3 id="cfg-main-tour-title" class="text-[26px] font-serif text-white mb-2 leading-tight"></h3>
+          <div class="flex items-center gap-4 text-white/90 text-[11px] font-medium tracking-wide uppercase">
+            <span class="flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <span id="cfg-main-tour-dates"></span>
+            </span>
+            <span class="flex items-center gap-1.5">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+              <span id="cfg-main-tour-location"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="p-6 bg-white flex flex-col">
+        <p id="cfg-main-tour-desc" class="text-[13px] text-slate-500 font-light leading-relaxed mb-6 line-clamp-3"></p>
+        <a id="cfg-main-tour-btn" href="#" target="_blank" class="w-full py-4 bg-[#F8F9FA] border border-slate-100 rounded-[20px] text-xs uppercase tracking-widest text-slate-800 font-medium flex items-center justify-center gap-2 hover:bg-slate-100 transition-colors">
+          <span id="cfg-main-tour-btn-text"></span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+
   </div>
 
   <!-- Плавающая CTA Кнопка (Glassmorphism & Pulse) -->
@@ -283,7 +284,7 @@
           </button>
         </div>
       </div>
-      <div id="cfg-tours-container" class="overflow-y-auto p-5 pb-10 space-y-4"></div>
+      <div id="cfg-tours-container" class="overflow-y-auto p-5 pb-10 space-y-4 relative"></div>
     </div>
   </div>
 
@@ -300,9 +301,9 @@
           </button>
         </div>
       </div>
-      <div class="overflow-y-auto p-5 pb-12 flex flex-col">
+      <div id="archive-scroll-container" class="overflow-y-auto p-5 pb-12 flex flex-col relative">
         <p id="cfg-archive-sheet-text" class="font-serif text-[18px] italic text-center text-slate-600 leading-relaxed mb-8 px-2 tracking-wide"></p>
-        <div id="cfg-archive-gallery" class="grid grid-cols-2 gap-3 mb-8"></div>
+        <div id="cfg-archive-gallery" class="flex flex-col gap-4 mb-8"></div>
         <a id="cfg-archive-sheet-btn" href="#" target="_blank" class="w-full py-4 bg-sky-50 text-sky-600 rounded-[20px] text-xs uppercase tracking-[0.15em] font-medium hover:bg-sky-100 transition-colors flex items-center justify-center gap-2 mt-auto">
           <span id="cfg-archive-sheet-btn-text"></span>
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -574,9 +575,8 @@
       const galleryContainer = document.getElementById('cfg-archive-gallery');
       galleryContainer.innerHTML = '';
       APP_DATA.archivePhotos.forEach((photoUrl, index) => {
-        const isWide = index % 3 === 0; 
         const html = `
-          <div class="${isWide ? 'col-span-2 aspect-[16/9]' : 'aspect-square'} rounded-[24px] overflow-hidden shadow-sm border border-white relative group">
+          <div class="stack-card h-[320px] md:h-[400px] w-full rounded-[24px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.08)] border border-white relative group shrink-0" style="top: ${20 + index * 12}px; z-index: ${10 + index};">
             <img src="${photoUrl}" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-700" alt="Archive Story">
             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500"></div>
           </div>
@@ -588,10 +588,10 @@
       const toursContainer = document.getElementById('cfg-tours-container');
       toursContainer.innerHTML = ''; 
       
-      APP_DATA.tours.forEach(tour => {
+      APP_DATA.tours.forEach((tour, index) => {
         const isSold = tour.isSoldOut;
         const html = `
-          <a href="${tour.link}" target="_blank" class="flex flex-col h-full bg-white/70 backdrop-blur-2xl rounded-[32px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] border border-white hover:bg-white hover:scale-[1.01] transition-all duration-300 group ${isSold ? 'opacity-85' : ''}">
+          <a href="${tour.link}" target="_blank" class="stack-card flex flex-col h-full bg-white/70 backdrop-blur-2xl rounded-[32px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] border border-white hover:bg-white hover:scale-[1.01] transition-all duration-300 group ${isSold ? 'opacity-85' : ''}" style="top: ${20 + index * 12}px; z-index: ${10 + index};">
             <div class="relative w-full h-[220px] md:h-[260px] shrink-0 overflow-hidden bg-slate-50 ${isSold ? 'grayscale' : ''}">
               <img src="${tour.image}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="${tour.title}">
               <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -669,32 +669,40 @@
       });
     }
 
-    // Скрипт для 3D-эффекта стопки (Stack Cards) при скролле
-    document.addEventListener('scroll', () => {
-      const cards = document.querySelectorAll('.stack-card');
-      const scrollY = window.scrollY;
-      
-      cards.forEach((card) => {
-        // Учет padding-top контейнера
-        const cardTop = card.offsetTop;
-        
-        if (scrollY > cardTop - 10) {
-          const distance = scrollY - cardTop;
-          // Плавное уменьшение и затемнение для карточек сзади
-          const scale = Math.max(0.92, 1 - (distance / 3000));
-          const brightness = Math.max(0.85, 1 - (distance / 1500));
-          card.style.transform = `scale(${scale})`;
-          card.style.filter = `brightness(${brightness})`;
-        } else {
-          card.style.transform = `scale(1)`;
-          card.style.filter = `brightness(1)`;
-        }
+    // Скрипт для 3D-эффекта стопки (Stack Cards) внутри шторки
+    function setupStackScrollListeners() {
+      ['cfg-tours-container', 'archive-scroll-container'].forEach(id => {
+        const container = document.getElementById(id);
+        if (!container) return;
+        container.addEventListener('scroll', () => {
+          const cards = container.querySelectorAll('.stack-card');
+          const scrollTop = container.scrollTop;
+          
+          cards.forEach((card) => {
+            if (!card.dataset.origTop) card.dataset.origTop = card.offsetTop;
+            const origTop = parseInt(card.dataset.origTop);
+            const stickyTop = parseInt(window.getComputedStyle(card).top) || 0;
+            
+            const distance = scrollTop - (origTop - stickyTop);
+            
+            if (distance > 0) {
+              const scale = Math.max(0.92, 1 - (distance / 3000));
+              const brightness = Math.max(0.85, 1 - (distance / 1500));
+              card.style.transform = `scale(${scale})`;
+              card.style.filter = `brightness(${brightness})`;
+            } else {
+              card.style.transform = `scale(1)`;
+              card.style.filter = `brightness(1)`;
+            }
+          });
+        }, { passive: true });
       });
-    }, { passive: true });
+    }
 
     // Запуск приложения и загрузка из Гугл Таблицы
     window.addEventListener('load', function() {
       applyVibeConfig();
+      setupStackScrollListeners();
 
       // СРАЗУ убираем экран загрузки, чтобы ничего не зависало!
       const preloader = document.getElementById('preloader');
