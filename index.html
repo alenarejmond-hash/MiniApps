@@ -32,7 +32,6 @@
       position: sticky;
       transform-origin: top center;
       will-change: transform, filter;
-      transition: transform 0.1s ease-out, filter 0.1s ease-out;
     }
 
     @keyframes shimmer {
@@ -595,7 +594,7 @@
       APP_DATA.tours.forEach((tour, index) => {
         const isSold = tour.isSoldOut;
         const html = `
-          <a href="${tour.link}" target="_blank" class="stack-card flex flex-col bg-white/70 backdrop-blur-2xl rounded-[32px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] border border-white hover:bg-white hover:scale-[1.01] transition-all duration-300 group ${isSold ? 'opacity-85' : ''}" style="top: ${20 + index * 16}px; z-index: ${10 + index};">
+          <a href="${tour.link}" target="_blank" class="stack-card flex flex-col bg-white/70 backdrop-blur-2xl rounded-[32px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] border border-white hover:bg-white transition-colors duration-300 group ${isSold ? 'opacity-85' : ''}" style="top: ${20 + index * 16}px; z-index: ${10 + index};">
             <div class="relative w-full h-[220px] md:h-[260px] shrink-0 overflow-hidden bg-slate-50 ${isSold ? 'grayscale' : ''}">
               <img src="${tour.image}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt="${tour.title}">
               <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
@@ -678,27 +677,40 @@
       ['cfg-tours-container', 'archive-scroll-container'].forEach(id => {
         const container = document.getElementById(id);
         if (!container) return;
+        
+        let ticking = false;
+        
         container.addEventListener('scroll', () => {
-          const cards = container.querySelectorAll('.stack-card');
-          const scrollTop = container.scrollTop;
-          
-          cards.forEach((card) => {
-            if (!card.dataset.origTop) card.dataset.origTop = card.offsetTop;
-            const origTop = parseInt(card.dataset.origTop);
-            const stickyTop = parseInt(window.getComputedStyle(card).top) || 0;
-            
-            const distance = scrollTop - (origTop - stickyTop);
-            
-            if (distance > 0) {
-              const scale = Math.max(0.92, 1 - (distance / 3000));
-              const brightness = Math.max(0.85, 1 - (distance / 1500));
-              card.style.transform = `scale(${scale})`;
-              card.style.filter = `brightness(${brightness})`;
-            } else {
-              card.style.transform = `scale(1)`;
-              card.style.filter = `brightness(1)`;
-            }
-          });
+          if (!ticking) {
+            window.requestAnimationFrame(() => {
+              const cards = container.querySelectorAll('.stack-card');
+              const scrollTop = container.scrollTop;
+              
+              cards.forEach((card) => {
+                // Кешируем начальные позиции при первом скролле, чтобы не нагружать процессор (убирает микрофризы)
+                if (!card.dataset.origTop) {
+                  card.dataset.origTop = card.offsetTop;
+                  card.dataset.stickyTop = parseInt(window.getComputedStyle(card).top) || 0;
+                }
+                const origTop = parseInt(card.dataset.origTop);
+                const stickyTop = parseInt(card.dataset.stickyTop);
+                
+                const distance = scrollTop - (origTop - stickyTop);
+                
+                if (distance > 0) {
+                  const scale = Math.max(0.92, 1 - (distance / 3000));
+                  const brightness = Math.max(0.85, 1 - (distance / 1500));
+                  card.style.transform = `scale(${scale})`;
+                  card.style.filter = `brightness(${brightness})`;
+                } else {
+                  card.style.transform = `scale(1)`;
+                  card.style.filter = `brightness(1)`;
+                }
+              });
+              ticking = false;
+            });
+            ticking = true;
+          }
         }, { passive: true });
       });
     }
