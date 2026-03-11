@@ -130,9 +130,8 @@
             },
 
             // 6. GOOGLE SCRIPT (Связь с таблицей)
-            // Вставь сюда URL, который выдаст Google Script (Web App URL)
-            // Если оставить пустым "", отзывы будут браться из defaultReviews ниже.
-            googleScriptUrl: "", 
+            // Ссылка теперь находится внутри кавычек переменной, как и должно быть!
+            googleScriptUrl: "https://script.google.com/macros/s/AKfycbyQrOczx9VyzP8i1sfrAO10zhzFMX_9x-qlsBQS9kx544UppRqXJRo4RY4Q7LW9c8qYCg/exec", 
             
             // 7. Дефолтные отзывы (если таблица не подключена или пустая)
             defaultReviews: [
@@ -161,20 +160,22 @@
             useEffect(() => {
                 if (!CONFIG.googleScriptUrl) {
                     setReviews(CONFIG.defaultReviews);
-                    // Искусственная задержка для красоты загрузочного экрана
                     setTimeout(() => setIsLoading(false), 1200); 
                     return;
                 }
 
                 // Запрашиваем "Одобренные" отзывы из гугл таблицы
-                fetch(CONFIG.googleScriptUrl)
-                    .then(res => res.json())
+                fetch(CONFIG.googleScriptUrl.trim(), { redirect: 'follow' })
+                    .then(res => {
+                        if (!res.ok) throw new Error("Скрипт недоступен");
+                        return res.json();
+                    })
                     .then(data => {
                         if(data && data.length > 0) setReviews(data);
                         else setReviews(CONFIG.defaultReviews);
                     })
                     .catch(err => {
-                        console.error("Ошибка загрузки отзывов", err);
+                        console.warn("⚠️ Таблица пока недоступна. Показываю дефолтные отзывы.");
                         setReviews(CONFIG.defaultReviews);
                     })
                     .finally(() => setIsLoading(false));
@@ -190,12 +191,16 @@
                 
                 setIsSubmitting(true);
                 
-                // mode: 'no-cors' позволяет отправлять POST в Google Script без проблем с CORS
+                // Подготавливаем данные именно так, как ждет твой скрипт (e.parameter)
+                const formData = new URLSearchParams();
+                formData.append('reviewer_name', reviewForm.name);
+                formData.append('reviewer_text', reviewForm.text);
+
                 fetch(CONFIG.googleScriptUrl, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(reviewForm)
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData.toString()
                 })
                 .then(() => {
                     setSubmitStatus('success');
