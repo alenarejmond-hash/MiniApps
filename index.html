@@ -64,12 +64,24 @@
     <style>
         /* 🛠 ВАЙБОВЫЙ ФИКС 2: Жесткая фиксация экрана (убираем "резинку" и прыжки) */
         html, body {
-            overscroll-behavior-y: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            overscroll-behavior: none;
             background-color: #F4F1EA;
             -webkit-tap-highlight-color: transparent;
             -webkit-touch-callout: none;
             -webkit-user-select: none;
             user-select: none;
+        }
+        #root {
+            height: 100%;
+            width: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         /* Оставляем возможность писать текст в форме отзывов */
         input, textarea {
@@ -485,10 +497,10 @@
             return (
                 <div className="max-w-md mx-auto min-h-screen pb-24 relative selection:bg-sage/30">
                     
-                    {/* Кнопка QR-кода (Справа вверху, как ты и просила!) */}
+                    {/* Кнопка QR-кода (Перенесена влево для ВК) */}
                     <button 
                         onClick={() => { triggerHaptic(); setIsQrOpen(true); }}
-                        className="absolute top-6 right-6 glass-panel p-3 rounded-full text-sage hover:text-graphite transition-all active:scale-95 shadow-md z-50"
+                        className="absolute top-6 left-6 glass-panel p-3 rounded-full text-sage hover:text-graphite transition-all active:scale-95 shadow-md z-50"
                     >
                         <QrCode className="w-6 h-6" />
                     </button>
@@ -804,6 +816,82 @@
                                         </button>
                                     </form>
                                 )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Модальное окно "Полезное" */}
+                    {isFreebiesOpen && (
+                        <div 
+                            className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up"
+                            onTouchStart={onTouchStart}
+                            onTouchEnd={(e) => onTouchEnd(e, () => setIsFreebiesOpen(false))}
+                        >
+                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white" onClick={e => e.stopPropagation()}>
+                                <button 
+                                    onClick={() => { triggerHaptic(); setIsFreebiesOpen(false); }}
+                                    className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                                
+                                <h2 className="font-serif text-2xl mb-4 text-graphite">Полезное</h2>
+                                <div className="space-y-3 max-h-[60vh] overflow-y-auto no-scrollbar pr-2 overscroll-contain">
+                                    {CONFIG.freebies.map((item, idx) => (
+                                        <a 
+                                            key={idx}
+                                            href={item.url}
+                                            target="_blank"
+                                            onClick={triggerHaptic}
+                                            className="block p-4 rounded-2xl border border-sage/20 bg-white/60 hover:bg-white/80 transition-colors active:scale-95"
+                                        >
+                                            <h3 className="font-medium text-graphite mb-1">{item.title}</h3>
+                                            <p className="text-xs text-graphite/70 font-light">{item.subtitle}</p>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Модальное окно "Формат и стоимость" */}
+                    {isPricingOpen && (
+                        <div 
+                            className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up"
+                            onTouchStart={onTouchStart}
+                            onTouchEnd={(e) => onTouchEnd(e, () => setIsPricingOpen(false))}
+                        >
+                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white" onClick={e => e.stopPropagation()}>
+                                <button 
+                                    onClick={() => { triggerHaptic(); setIsPricingOpen(false); }}
+                                    className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                                
+                                <h2 className="font-serif text-2xl mb-4 text-graphite">Формат и стоимость</h2>
+                                <div className="space-y-4 max-h-[60vh] overflow-y-auto no-scrollbar pr-2 overscroll-contain">
+                                    {CONFIG.pricing.map((item, idx) => (
+                                        <div key={idx} className="p-4 rounded-2xl border border-sage/20 bg-white/60 flex justify-between items-center">
+                                            <div>
+                                                <h3 className="font-medium text-graphite">{item.title}</h3>
+                                                <p className="text-xs text-graphite/50 mt-1">{item.duration}</p>
+                                            </div>
+                                            <div className="font-serif text-lg text-sage font-medium whitespace-nowrap ml-4">
+                                                {item.price}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                
+                                <a 
+                                    href={CONFIG.links.telegram}
+                                    target="_blank"
+                                    onClick={triggerHaptic}
+                                    className="mt-6 w-full bg-sage text-white py-3 rounded-full font-medium shadow-soft active:scale-95 transition-transform flex items-center justify-center text-sm"
+                                >
+                                    Записаться
+                                </a>
                             </div>
                         </div>
                     )}
