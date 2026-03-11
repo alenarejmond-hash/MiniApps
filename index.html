@@ -113,36 +113,36 @@
 
             // --- 2. ГЛАВНЫЙ ЭКРАН: НАСТРОЙКИ 4-Х КНОПОК НАД САМОЛЕТОМ ---
             fanLayout: {
-                marginTop: "5vh", // Отступ всего веера сверху (двигает все 4 кнопки разом вверх/вниз)
+                marginTop: "12vh", // Отступ всего веера сверху (двигайте, чтобы посадить веер прямо на самолет)
             },
             buttons: {
                 about: { // КНОПКА 1 (КРАЙНЯЯ СЛЕВА)
                     text: "Обо мне", 
                     image: "https://i.postimg.cc/WbcGsSCZ/kartocki-(1).png",
-                    width: "120%", // Размер кнопки
-                    left: "10%",   // Сдвиг слева
-                    top: "0%"    // Сдвиг сверху
+                    width: "100%", // ОГРОМНЫЙ РАЗМЕР
+                    left: "0%",  // Сдвиг влево
+                    top: "0%"    // Сдвиг вниз (формируем арку)
                 },
                 tours: { // КНОПКА 2 (ЦЕНТР-ЛЕВО)
                     text: "Туры", 
                     image: "https://i.postimg.cc/zXwnvKYQ/kartocki-(2).png",
-                    width: "80%", 
-                    left: "10%", 
-                    top: "0%"
+                    width: "100%", // ОГРОМНЫЙ РАЗМЕР
+                    left: "0%",  // НАЛОЖЕНИЕ на первую кнопку, чтобы убить дырку!
+                    top: "0%"     // Выше крайних
                 },
                 contacts: { // КНОПКА 3 (ЦЕНТР-ПРАВО)
                     text: "Контакты", 
                     image: "https://i.postimg.cc/x10Lz80n/kartocki-(3).png",
-                    width: "80%", 
-                    right: "10%", 
-                    top: "0%"
+                    width: "100%", // ОГРОМНЫЙ РАЗМЕР
+                    right: "0%", // НАЛОЖЕНИЕ на четвертую кнопку!
+                    top: "0%"     // Выше крайних
                 },
                 reviews: { // КНОПКА 4 (КРАЙНЯЯ СПРАВА)
                     text: "Отзывы", 
                     image: "https://i.postimg.cc/52x8CyxF/kartocki-(4).png",
-                    width: "80%", 
-                    right: "10%", 
-                    top: "0%"
+                    width: "100%", // ОГРОМНЫЙ РАЗМЕР
+                    right: "0%", // Сдвиг вправо
+                    top: "0%"    // Сдвиг вниз
                 }
             },
 
@@ -359,38 +359,38 @@
                                 <p className="text-sm font-serif italic text-white/90 text-center px-4 mt-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">{CONFIG.slogan}</p>
                             </div>
 
-                            {/* Интерактивные кнопки-веер над самолетом */}
-                            <div className="relative w-full px-2 max-w-[500px] h-[280px] sm:h-[340px] z-20 flex-shrink-0 animate-item mx-auto" style={{animationDelay: '0.3s', marginTop: CONFIG.fanLayout.marginTop}}>
+                            {/* Интерактивные кнопки-веер над самолетом (АБСОЛЮТНОЕ ПОЗИЦИОНИРОВАНИЕ С НАХЛЕСТОМ) */}
+                            <div className="relative w-full px-2 max-w-[500px] h-[260px] sm:h-[350px] z-20 flex-shrink-0 animate-item mx-auto" style={{animationDelay: '0.3s', marginTop: CONFIG.fanLayout.marginTop}}>
                                 
                                 {/* КНОПКА 1: Обо мне */}
                                 <button onClick={() => navigateTo('about')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-10" style={{ width: CONFIG.buttons.about.width, left: CONFIG.buttons.about.left, top: CONFIG.buttons.about.top }}>
                                     <img src={CONFIG.buttons.about.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.about.text} />
-                                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-white font-bold text-[11px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.about.text}</span>
+                                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white font-bold text-[10px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.about.text}</span>
                                     </div>
                                 </button>
                                 
                                 {/* КНОПКА 2: Туры */}
                                 <button onClick={() => navigateTo('tours')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-20" style={{ width: CONFIG.buttons.tours.width, left: CONFIG.buttons.tours.left, top: CONFIG.buttons.tours.top }}>
                                     <img src={CONFIG.buttons.tours.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.tours.text} />
-                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-white font-bold text-[11px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.tours.text}</span>
+                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white font-bold text-[10px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.tours.text}</span>
                                     </div>
                                 </button>
 
                                 {/* КНОПКА 3: Контакты */}
                                 <button onClick={() => navigateTo('contacts')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-20" style={{ width: CONFIG.buttons.contacts.width, right: CONFIG.buttons.contacts.right, top: CONFIG.buttons.contacts.top }}>
                                     <img src={CONFIG.buttons.contacts.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.contacts.text} />
-                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-white font-bold text-[11px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.contacts.text}</span>
+                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white font-bold text-[10px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.contacts.text}</span>
                                     </div>
                                 </button>
 
                                 {/* КНОПКА 4: Отзывы */}
                                 <button onClick={() => navigateTo('reviews')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-10" style={{ width: CONFIG.buttons.reviews.width, right: CONFIG.buttons.reviews.right, top: CONFIG.buttons.reviews.top }}>
                                     <img src={CONFIG.buttons.reviews.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.reviews.text} />
-                                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-white font-bold text-[11px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.reviews.text}</span>
+                                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white font-bold text-[10px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.reviews.text}</span>
                                     </div>
                                 </button>
                             </div>
