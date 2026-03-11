@@ -3,579 +3,454 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Trobetrotter</title>
+    <title>Психолог | Telegram Mini App</title>
     
-    <!-- Подключаем Tailwind для стилей -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Подключаем React -->
+    <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     
-    <!-- Подключаем Babel, чтобы браузер понял React-код внутри HTML -->
+    <!-- Babel for JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <!-- Подключаем Telegram Web App SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
-    <!-- Подключаем парсер для Google Таблиц (магия данных) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Подключаем рукописный шрифт для подписи на фото и основной элегантный шрифт -->
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sage: '#A3B1A6',
+                        'sage-light': '#D6DDD8',
+                        sand: '#F4F1EA',
+                        cream: '#FCFBFA',
+                        graphite: '#363636',
+                    },
+                    fontFamily: {
+                        serif: ['Lora', 'serif'],
+                        sans: ['Montserrat', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'soft': '0 8px 32px -8px rgba(163, 177, 166, 0.3)',
+                        'glass': '0 4px 30px rgba(0, 0, 0, 0.05)',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        html, body { 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Lora', serif; 
-            -webkit-tap-highlight-color: transparent; 
-            overscroll-behavior-y: none;
-            background-color: #fce2b1; /* Цвет фона всей страницы */
+        body {
+            background-color: #F4F1EA;
+            -webkit-tap-highlight-color: transparent;
         }
-        @keyframes slideUpFade {
-            0% { opacity: 0; transform: translateY(30px); }
-            100% { opacity: 1; transform: translateY(0); }
+        /* Убираем скроллбар для эстетики карусели */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-        .animate-item {
-            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            opacity: 0;
-        }
-        .animate-fade {
-            animation: fadeIn 0.5s ease-out forwards;
-        }
-
-        /* --- ТЕКСТУРА БУМАГИ --- */
-        .bg-paper {
-            background-color: #fce2b1; 
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.35'/%3E%3C/svg%3E");
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.05);
-        }
-
-        /* --- СТИЛЬ ПОЧТОВОЙ МАРКИ --- */
-        .postage-stamp {
-            background: white;
-            padding: 4px;
-            filter: drop-shadow(2px 3px 5px rgba(0,0,0,0.2));
-            --g: radial-gradient(4px at 4px 4px, #0000 98%, #000 101%);
-            -webkit-mask: 
-                var(--g) 0 0 / 100% 8px repeat-x,
-                var(--g) 0 0 / 8px 100% repeat-y,
-                var(--g) 100% 100% / 100% 8px repeat-x,
-                var(--g) 100% 100% / 8px 100% repeat-y,
-                linear-gradient(#000 0 0) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
-            mask: 
-                var(--g) 0 0 / 100% 8px repeat-x,
-                var(--g) 0 0 / 8px 100% repeat-y,
-                var(--g) 100% 100% / 100% 8px repeat-x,
-                var(--g) 100% 100% / 8px 100% repeat-y,
-                linear-gradient(#000 0 0) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
-        }
-
-        /* --- АДАПТИВНЫЙ КОНТЕЙНЕР --- */
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
-        .app-container {
-            min-height: 100dvh;
-            width: 100%;
-            max-width: 500px; /* Ограничение ширины для десктопа */
-            margin: 0 auto;   /* Центрирование */
-            position: relative;
-            overflow-x: hidden;
-            overflow-y: auto;
-            background-color: #fce2b1;
-            /* Легкая тень по бокам только на больших экранах */
-            box-shadow: 0 0 60px rgba(0,0,0,0.05);
+        .glass-panel {
+            background: rgba(252, 251, 250, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.8);
         }
     </style>
 </head>
-<body>
+<body class="text-graphite font-sans antialiased overflow-x-hidden">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
-        // ==============================================================================
-        // 🛠️ СУПЕР-БЛОК НАСТРОЕК (ДЛЯ ВАЙБКОДЕРА) 🛠️
-        // ==============================================================================
+        // --- Lucide Icons (SVG) ---
+        const Heart = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>;
+        const Leaf = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>;
+        const Sparkles = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>;
+        const MessageCircle = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>;
+        const X = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>;
+
+        // ==========================================
+        // 🛠 БЛОК НАСТРОЕК (МЕНЯТЬ ТОЛЬКО ЗДЕСЬ) 🛠
+        // ==========================================
         const CONFIG = {
-            // --- 1. ГЛАВНЫЙ ЭКРАН: ТЕКСТЫ И ФОН ---
-            brandName: "Натали Леви", // Имя или название бренда
-            slogan: "Твой личный тревел-эксперт", // Подпись
-            mainBackgroundUrl: "https://i.postimg.cc/dtG9Cgrn/unnamed-10.jpg", // Фото фона (море и самолет)
-
-            // --- 2. ГЛАВНЫЙ ЭКРАН: НАСТРОЙКИ 4-Х КНОПОК НАД САМОЛЕТОМ ---
-            fanLayout: {
-                marginTop: "6vh", // Отступ всего веера сверху
+            // 1. Главный экран (Hero)
+            hero: {
+                name: "Александра Вейс",
+                description: "Помогаю обрести внутреннюю опору и гармонию",
+                photoUrl: "https://i.postimg.cc/j54xwpZm/unnamed-11.jpg",
             },
-            buttons: {
-                about: { // КНОПКА 1 (КРАЙНЯЯ СЛЕВА)
-                    text: "Обо мне", 
-                    image: "https://i.postimg.cc/WbcGsSCZ/kartocki-(1).png",
-                    width: "100%", // НЕ ТРОГАЮ
-                    left: "0%",    // НЕ ТРОГАЮ
-                    top: "0%",     // НЕ ТРОГАЮ
-                    
-                    // --- НАСТРОЙКИ ТЕКСТА ---
-                    textSettings: {
-                        fontSize: "10",      // РАЗМЕР ТЕКСТА
-                        topOffset: "-23%",    // РАСПОЛОЖЕНИЕ: Отступ сверху вниз (чем больше %, тем ниже)
-                        curve: "35",         // ИЗГИБ ДУГИ: 70 - прямая линия, 10 - сильная дуга вверх
-                        rotate: "-18deg",    // НАКЛОН ТЕКСТА: Крутит текст по или против часовой стрелки
-                        letterSpacing: "1",  // КАК РАЗДВИНУТЬ БУКВЫ (увеличьте до 3, 5 или 10, чтобы сделать текст шире)
-                        horizontalPosition: "50%" // ДВИГАТЬ ВЛЕВО-ВПРАВО (50% - центр. 40% - поедет влево, 60% - вправо)
-                    }
-                },
-                tours: { // КНОПКА 2 (ЦЕНТР-ЛЕВО)
-                    text: "Туры", 
-                    image: "https://i.postimg.cc/zXwnvKYQ/kartocki-(2).png",
-                    width: "100%", // НЕ ТРОГАЮ
-                    left: "0%",    // НЕ ТРОГАЮ
-                    top: "0%",     // НЕ ТРОГАЮ
-                    
-                    // --- НАСТРОЙКИ ТЕКСТА ---
-                    textSettings: {
-                        fontSize: "10",      
-                        topOffset: "-23%",     
-                        curve: "35",         
-                        rotate: "-6deg",
-                        letterSpacing: "1",  // КАК РАЗДВИНУТЬ БУКВЫ
-                        horizontalPosition: "50%" // ДВИГАТЬ ВЛЕВО-ВПРАВО
-                    }
-                },
-                contacts: { // КНОПКА 3 (ЦЕНТР-ПРАВО)
-                    text: "Контакты", 
-                    image: "https://i.postimg.cc/x10Lz80n/kartocki-(3).png",
-                    width: "100%", // НЕ ТРОГАЮ
-                    right: "0%",   // НЕ ТРОГАЮ
-                    top: "0%",     // НЕ ТРОГАЮ
-                    
-                    // --- НАСТРОЙКИ ТЕКСТА ---
-                    textSettings: {
-                        fontSize: "6",      
-                        topOffset: "-25%",     
-                        curve: "35",         
-                        rotate: "6deg",
-                        letterSpacing: "1",  // КАК РАЗДВИНУТЬ БУКВЫ
-                        horizontalPosition: "67%" // ДВИГАТЬ ВЛЕВО-ВПРАВО
-                    }
-                },
-                reviews: { // КНОПКА 4 (КРАЙНЯЯ СПРАВА)
-                    text: "Отзывы", 
-                    image: "https://i.postimg.cc/52x8CyxF/kartocki-(4).png",
-                    width: "100%", // НЕ ТРОГАЮ
-                    right: "0%",   // НЕ ТРОГАЮ
-                    top: "0%",     // НЕ ТРОГАЮ
-                    
-                    // --- НАСТРОЙКИ ТЕКСТА ---
-                    textSettings: {
-                        fontSize: "10",      
-                        topOffset: "-23%",    
-                        curve: "35",         
-                        rotate: "18deg",
-                        letterSpacing: "1",  // КАК РАЗДВИНУТЬ БУКВЫ
-                        horizontalPosition: "50%" // ДВИГАТЬ ВЛЕВО-ВПРАВО
-                    }
-                }
+            
+            // 2. Ссылки
+            links: {
+                telegram: "https://t.me/telegram", // Для записи и главной кнопки внизу
+                freebieUrl: "#", // Ссылка на пост/файл
+                freebieTitle: "Полезное (Free)",
+                freebieSubtitle: "Гайд \"Снижение тревожности\"",
             },
 
-            // --- 3. РАЗДЕЛ "ОБО МНЕ" ---
+            // 3. Блок "Обо мне"
             about: {
                 title: "Обо мне",
-                text: "Привет! Я твой личный тревел-эксперт. Я помогаю людям находить идеальные места для отдыха, организую незабываемые туры и беру всю рутину с документами на себя. Моя цель — сделать так, чтобы ты просто собрал чемодан и наслаждался отпуском!",
-                photoUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400",
+                paragraphs: [
+                    "Привет! Меня зовут Александра. В психологии я уже более 6 лет.",
+                    "Мой подход основан на бережном отношении к чувствам клиента. Я не даю советов, как \"правильно\" жить, но помогаю подсветить ваши сильные стороны и найти выход из сложных состояний.",
+                    "Верю, что каждый человек уже обладает всеми нужными ресурсами для счастья. Моя задача — помочь вам их распаковать."
+                ],
+                quote: "Изменения начинаются с принятия себя"
             },
 
-            // --- 4. РАЗДЕЛ "КОНТАКТЫ И СОЦСЕТИ" ---
-            bookingLink: "https://t.me/telegram", // Базовая ссылка, если в таблице туров она не указана
-            contacts: {
-                telegram: "https://t.me/telegram",
-                instagram: "https://instagram.com/instagram",
-                whatsapp: "https://wa.me/1234567890",
-                phone: "+7 (999) 123-45-67"
+            // 4. Теги методов работы
+            methods: ["Гештальт-терапия", "КПТ", "Арт-терапия", "Майндфулнес"],
+
+            // 5. Кнопка состояния (эмодзи и ответы)
+            supportMessages: {
+                '😔': "Грустить — это нормально. Позволь себе прожить эти эмоции, я рядом.",
+                '😰': "Сделай медленный вдох. Ты в безопасности. Тревога — это просто волна, она уйдёт.",
+                '🙂': "Замечательно! Сохрани этот свет внутри себя на весь день."
             },
 
-            // --- 5. БАЗЫ ДАННЫХ (GOOGLE ТАБЛИЦЫ И СКРИПТЫ) ---
-            googleSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=0&single=true&output=csv",
-            reviewsCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=882822745&single=true&output=csv",
-            reviewsPostUrl: "https://script.google.com/macros/s/AKfycbwnSKpgdCJGand6-hgZ1L6_5a7RRxi9gpf4fa-sPvuOGJqTBp6GiBYtdjOzzjfvMfDR-Q/exec"
-        };
-
-        const IconArrowLeft = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>;
-        const IconInstagram = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
-        const IconSend = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>;
-        const IconPhone = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>;
-        const IconMapPin = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
-        const IconStar = ({size=24, filled=true, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>;
-        const IconEdit = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
-
-        // ==============================================================================
-        // НОВЫЙ КОМПОНЕНТ ДЛЯ КРАСИВОГО ТЕКСТА ПО ДУГЕ
-        // ==============================================================================
-        const CurvedText = ({ text, settings, idKey }) => {
-            const pathD = `M 10,80 Q 100,${settings.curve} 190,80`;
-            const pathId = `curve-path-${idKey}`;
+            // 6. GOOGLE SCRIPT (Связь с таблицей)
+            // Вставь сюда URL, который выдаст Google Script (Web App URL)
+            // Если оставить пустым "", отзывы будут браться из defaultReviews ниже.
+            googleScriptUrl: "", 
             
-            return (
-                <div 
-                    className="absolute w-full left-0 pointer-events-none z-30 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" 
-                    style={{ top: settings.topOffset, transform: `rotate(${settings.rotate})` }}
-                >
-                    <svg viewBox="0 0 200 100" className="w-full h-auto overflow-visible">
-                        <path id={pathId} d={pathD} fill="transparent" />
-                        <text fill="white" fontSize={settings.fontSize} fontFamily="'Caveat', cursive" letterSpacing={settings.letterSpacing || "1"} textAnchor="middle">
-                            <textPath href={`#${pathId}`} startOffset={settings.horizontalPosition || "50%"}>
-                                {text}
-                            </textPath>
-                        </text>
-                    </svg>
-                </div>
-            );
+            // 7. Дефолтные отзывы (если таблица не подключена или пустая)
+            defaultReviews: [
+                { id: 1, name: "Анна М.", text: "Бережный подход и невероятное чувство такта. После сессий уходит тяжесть, появляется ясность." },
+                { id: 2, name: "Елена В.", text: "Научилась слышать себя и отстаивать границы без чувства вины. Спасибо за эту трансформацию!" },
+                { id: 3, name: "Михаил С.", text: "Каждая сессия — как глоток свежего воздуха. Нашел ту самую внутреннюю опору." }
+            ]
         };
+        // ==========================================
+        // КОНЕЦ БЛОКА НАСТРОЕК
+        // ==========================================
 
-        function App() {
-            const [activeScreen, setActiveScreen] = useState('home');
-            const [tours, setTours] = useState([]);
-            const [isLoadingTours, setIsLoadingTours] = useState(true);
-            const [dynamicBookingLink, setDynamicBookingLink] = useState("");
-            const [sortOrder, setSortOrder] = useState('none');
-            const [touchStart, setTouchStart] = useState(null);
-            const [touchEnd, setTouchEnd] = useState(null);
+        const App = () => {
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [selectedMood, setSelectedMood] = useState(null);
+            
+            // Новые состояния для лоадера и отзывов
+            const [isLoading, setIsLoading] = useState(true);
             const [reviews, setReviews] = useState([]);
-            const [isLoadingReviews, setIsLoadingReviews] = useState(true);
-            const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
-            const [reviewForm, setReviewForm] = useState({ name: '', text: '', rating: 5 });
-            const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
+            const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
+            const [reviewForm, setReviewForm] = useState({ name: '', text: '' });
             const [isSubmitting, setIsSubmitting] = useState(false);
-            const [isAppLoading, setIsAppLoading] = useState(true);
-            const [isAppFading, setIsAppFading] = useState(false);
+            const [submitStatus, setSubmitStatus] = useState(null);
 
+            // Эффект загрузки данных при старте
             useEffect(() => {
-                if (window.Telegram?.WebApp) {
-                    window.Telegram.WebApp.ready();
-                    window.Telegram.WebApp.expand();
-                    if (window.Telegram.WebApp.disableVerticalSwipes) {
-                        window.Telegram.WebApp.disableVerticalSwipes();
-                    }
+                if (!CONFIG.googleScriptUrl) {
+                    setReviews(CONFIG.defaultReviews);
+                    // Искусственная задержка для красоты загрузочного экрана
+                    setTimeout(() => setIsLoading(false), 1200); 
+                    return;
                 }
 
-                if (window.Papa && CONFIG.googleSheetUrl) {
-                    window.Papa.parse(CONFIG.googleSheetUrl, {
-                        download: true,
-                        header: true,
-                        skipEmptyLines: true,
-                        complete: function(results) {
-                            let foundGlobalLink = "";
-                            const validTours = results.data.map(row => {
-                                const linkKey = Object.keys(row).find(k => k.trim().toLowerCase() === 'bookinglink');
-                                const rowLink = linkKey ? row[linkKey].trim() : '';
-                                if (rowLink && !foundGlobalLink) foundGlobalLink = rowLink;
-                                return { ...row, _actualLink: rowLink };
-                            }).filter(row => row.title && row.price);
-                            setDynamicBookingLink(foundGlobalLink);
-                            setTours(validTours);
-                            setIsLoadingTours(false);
-                        },
-                        error: function(err) {
-                            console.error("Ошибка загрузки туров:", err);
-                            setIsLoadingTours(false);
-                        }
-                    });
-                } else {
-                    setIsLoadingTours(false);
-                }
-
-                if (window.Papa && CONFIG.reviewsCsvUrl) {
-                    window.Papa.parse(CONFIG.reviewsCsvUrl, {
-                        download: true,
-                        header: true,
-                        skipEmptyLines: true,
-                        complete: function(results) {
-                            const fetchedReviews = results.data
-                                .filter(row => row.name && row.text)
-                                .map((row, index) => ({
-                                    id: index,
-                                    name: row.name,
-                                    date: row.date,
-                                    rating: parseInt(row.rating) || 5,
-                                    text: row.text
-                                })).reverse();
-                            setReviews(fetchedReviews);
-                            setIsLoadingReviews(false);
-                        },
-                        error: function(err) {
-                            console.error("Ошибка загрузки отзывов:", err);
-                            setIsLoadingReviews(false);
-                        }
-                    });
-                } else {
-                    setIsLoadingReviews(false);
-                }
-
-                const fadeTimer = setTimeout(() => setIsAppFading(true), 1500);
-                const removeTimer = setTimeout(() => setIsAppLoading(false), 2000);
-                return () => { clearTimeout(fadeTimer); clearTimeout(removeTimer); };
+                // Запрашиваем "Одобренные" отзывы из гугл таблицы
+                fetch(CONFIG.googleScriptUrl)
+                    .then(res => res.json())
+                    .then(data => {
+                        if(data && data.length > 0) setReviews(data);
+                        else setReviews(CONFIG.defaultReviews);
+                    })
+                    .catch(err => {
+                        console.error("Ошибка загрузки отзывов", err);
+                        setReviews(CONFIG.defaultReviews);
+                    })
+                    .finally(() => setIsLoading(false));
             }, []);
 
-            const triggerHaptic = () => {
-                if (window.Telegram?.WebApp?.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-                else if (navigator.vibrate) navigator.vibrate(50);
-            };
-
-            const navigateTo = (screen, customLink = null) => {
-                triggerHaptic();
-                if (screen === 'booking') {
-                    const linkToOpen = CONFIG.bookingLink;
-                    if (window.Telegram?.WebApp?.openLink) window.Telegram.WebApp.openLink(linkToOpen);
-                    else window.open(linkToOpen, '_blank');
-                    return;
-                }
-                if (screen === 'quiQuo') {
-                    const linkToOpen = customLink || dynamicBookingLink;
-                    if (!linkToOpen) { alert("Ссылка на подборку еще не добавлена!"); return; }
-                    if (window.Telegram?.WebApp?.openLink) window.Telegram.WebApp.openLink(linkToOpen);
-                    else window.open(linkToOpen, '_blank');
-                    return;
-                }
-                setActiveScreen(screen);
-                window.scrollTo(0, 0);
-            };
-
-            const extractPrice = (priceStr) => { if (!priceStr) return 0; return parseInt(priceStr.replace(/\D/g, ''), 10) || 0; };
-            const onTouchStart = (e) => { setTouchEnd(null); setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }); };
-            const onTouchMove = (e) => { setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }); };
-            const onTouchEnd = () => {
-                if (!touchStart || !touchEnd) return;
-                const distanceX = touchEnd.x - touchStart.x;
-                const distanceY = Math.abs(touchEnd.y - touchStart.y);
-                const isEdgeSwipe = touchStart.x <= 30;
-                if (isEdgeSwipe && distanceX > 80 && distanceY < 50) {
-                    if (activeScreen !== 'home') navigateTo('home');
-                }
-            };
-
-            const handleSubmitReview = async (e) => {
+            // Отправка нового отзыва
+            const handleReviewSubmit = (e) => {
                 e.preventDefault();
-                if (isSubmitting) return;
+                if (!CONFIG.googleScriptUrl) {
+                    setSubmitStatus('error_no_url');
+                    return;
+                }
+                
                 setIsSubmitting(true);
-                try {
-                    await fetch(CONFIG.reviewsPostUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(reviewForm) });
-                    setIsReviewSubmitted(true);
-                    const d = new Date();
-                    const newDateStr = `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
-                    setReviews(prev => [{ id: Date.now(), name: reviewForm.name, date: newDateStr, rating: reviewForm.rating, text: reviewForm.text }, ...prev]);
-                    setTimeout(() => { setIsReviewModalOpen(false); setIsReviewSubmitted(false); setReviewForm({ name: '', text: '', rating: 5 }); }, 3000);
-                } catch (error) { alert("Ошибка при отправке."); } finally { setIsSubmitting(false); }
+                
+                // mode: 'no-cors' позволяет отправлять POST в Google Script без проблем с CORS
+                fetch(CONFIG.googleScriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(reviewForm)
+                })
+                .then(() => {
+                    setSubmitStatus('success');
+                    setReviewForm({ name: '', text: '' });
+                    // Закрываем форму через 3 секунды после успеха
+                    setTimeout(() => {
+                        setIsReviewFormOpen(false);
+                        setSubmitStatus(null);
+                    }, 3000);
+                })
+                .catch(() => setSubmitStatus('error'))
+                .finally(() => setIsSubmitting(false));
             };
+
+            // КРАСИВЫЙ ЭКРАН ЗАГРУЗКИ
+            if (isLoading) {
+                return (
+                    <div className="flex flex-col items-center justify-center min-h-screen bg-sand text-sage">
+                        <div className="relative flex justify-center items-center mb-6">
+                            <div className="absolute animate-ping w-20 h-20 rounded-full bg-sage/20"></div>
+                            <div className="w-14 h-14 rounded-full border-4 border-sage-light border-t-sage animate-spin relative z-10 shadow-soft"></div>
+                            <Leaf className="w-5 h-5 absolute z-20 text-sage" />
+                        </div>
+                        <span className="font-serif text-graphite/60 text-sm tracking-widest uppercase animate-pulse">Загружаем уют...</span>
+                    </div>
+                );
+            }
 
             return (
-                <div className="w-full min-h-screen sm:bg-[#1c1c1e] flex justify-center items-center sm:py-8 sm:px-4">
-                    {/* АДЕКВАТНЫЙ ЭМУЛЯТОР ТЕЛЕФОНА (стиль современного смартфона) */}
-                    <div className="relative transform w-full h-[100dvh] sm:w-[375px] sm:h-[812px] sm:max-h-[90vh] sm:rounded-[45px] sm:border-[10px] sm:border-[#0f1013] sm:ring-[1px] sm:ring-white/10 sm:shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden bg-[#fce2b1]">
-                        
-                        {/* Аккуратная "чёлка" камеры */}
-                        <div className="hidden sm:flex absolute top-0 inset-x-0 h-6 justify-center z-[1000] pointer-events-none">
-                            <div className="w-[100px] h-full bg-[#0f1013] rounded-b-3xl relative">
-                                <div className="absolute top-1/2 right-4 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#1a1b26] shadow-[inset_0_1px_1px_rgba(0,0,0,0.9)]"></div>
+                <div className="max-w-md mx-auto min-h-screen pb-24 relative selection:bg-sage/30">
+                    
+                    {/* Header / Hero */}
+                    <header className="px-6 pt-12 pb-6 flex flex-col items-center text-center opacity-0 animate-fade-in-up">
+                        <div className="relative mb-6">
+                            <div className="w-32 h-32 rounded-full overflow-hidden shadow-soft border-4 border-white">
+                                <img 
+                                    src={CONFIG.hero.photoUrl} 
+                                    alt="" 
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <div className="absolute -bottom-2 -right-2 bg-sage text-white p-2 rounded-full shadow-md animate-pulse-slow">
+                                <Leaf className="w-4 h-4" />
                             </div>
                         </div>
+                        <h1 className="font-serif text-3xl mb-2 text-graphite tracking-tight">{CONFIG.hero.name}</h1>
+                        <p className="text-sm text-graphite/70 font-light max-w-[240px] leading-relaxed">
+                            {CONFIG.hero.description}
+                        </p>
+                    </header>
 
-                        {/* Тонкая полоска "Домой" */}
-                        <div className="hidden sm:block absolute bottom-1.5 inset-x-0 h-1 z-[1000] pointer-events-none">
-                            <div className="w-[35%] h-full bg-black/20 mx-auto rounded-full"></div>
-                        </div>
-
-                        {/* --- ВАШ ОРИГИНАЛЬНЫЙ КОНТЕЙНЕР (ВНУТРИ НИЧЕГО НЕ ИЗМЕНИЛОСЬ) --- */}
-                        <div 
-                            className="app-container bg-paper text-[#2C2C2C] selection:bg-amber-200 hide-scrollbar"
-                            onTouchStart={onTouchStart}
-                            onTouchMove={onTouchMove}
-                            onTouchEnd={onTouchEnd}
-                            style={{ minHeight: '100%', height: '100%', maxWidth: '100%', margin: 0, overflowY: 'auto' }}
-                        >
-                            {isAppLoading && (
-                                <div className={`fixed inset-0 z-[100] bg-[#fce2b1] flex flex-col items-center justify-center transition-opacity duration-500 ${isAppFading ? 'opacity-0' : 'opacity-100'}`}>
-                                    <div className="relative flex justify-center items-center">
-                                        <div className="absolute w-20 h-20 border-[3px] border-[#E7D6BD] rounded-full"></div>
-                                        <div className="absolute w-20 h-20 border-[3px] border-[#d4af37] rounded-full border-t-transparent animate-spin" style={{ animationDuration: '1.2s' }}></div>
-                                        <div className="absolute w-14 h-14 border-[2px] border-[#d4af37]/40 rounded-full border-b-transparent animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
-                                        <IconMapPin size={22} className="text-[#d4af37] animate-pulse" />
+                    {/* State Checker (Unique Feature) */}
+                    <section className="px-6 mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+                        <div className="glass-panel rounded-[2rem] p-6 shadow-glass text-center transition-all duration-300">
+                            {!selectedMood ? (
+                                <div>
+                                    <h3 className="font-serif text-lg mb-4 text-graphite">Как ты сейчас?</h3>
+                                    <div className="flex justify-center gap-6">
+                                        {Object.keys(CONFIG.supportMessages).map((emoji) => (
+                                            <button 
+                                                key={emoji}
+                                                onClick={() => setSelectedMood(emoji)}
+                                                className="text-4xl transition-transform active:scale-90 hover:scale-110"
+                                            >
+                                                {emoji}
+                                            </button>
+                                        ))}
                                     </div>
-                                    <h2 className="mt-8 text-xs font-serif font-bold text-[#2C2C2C] tracking-[0.3em] uppercase animate-pulse text-center px-4">{CONFIG.brandName}</h2>
                                 </div>
-                            )}
-
-                            {activeScreen === 'home' && (
-                                <div className="relative min-h-screen flex flex-col items-center animate-fade bg-[#a5d8f3]">
-                                    {/* Фоновое изображение */}
-                                    <div 
-                                        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-                                        style={{ backgroundImage: `url('${CONFIG.mainBackgroundUrl}')` }}
-                                    ></div>
-
-                            {/* Легкий градиент */}
-                            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/50 to-transparent z-10 pointer-events-none"></div>
-
-                            {/* Заголовок */}
-                            <div className="z-20 flex flex-col items-center mt-8 animate-item" style={{animationDelay: '0.1s'}}>
-                                <h1 className="text-3xl font-serif font-bold text-white text-center uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">{CONFIG.brandName}</h1>
-                                <p className="text-sm font-serif italic text-white/90 text-center px-4 mt-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">{CONFIG.slogan}</p>
-                            </div>
-
-                            {/* Интерактивные кнопки-веер над самолетом */}
-                            <div className="relative w-full px-2 max-w-[500px] h-[260px] sm:h-[350px] z-20 flex-shrink-0 animate-item mx-auto" style={{animationDelay: '0.3s', marginTop: CONFIG.fanLayout.marginTop}}>
-                                
-                                {/* КНОПКА 1 */}
-                                <button onClick={() => navigateTo('about')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-10" style={{ width: CONFIG.buttons.about.width, left: CONFIG.buttons.about.left, top: CONFIG.buttons.about.top }}>
-                                    <img src={CONFIG.buttons.about.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.about.text} />
-                                    <CurvedText text={CONFIG.buttons.about.text} settings={CONFIG.buttons.about.textSettings} idKey="about" />
-                                </button>
-                                
-                                {/* КНОПКА 2 */}
-                                <button onClick={() => navigateTo('tours')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-20" style={{ width: CONFIG.buttons.tours.width, left: CONFIG.buttons.tours.left, top: CONFIG.buttons.tours.top }}>
-                                    <img src={CONFIG.buttons.tours.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.tours.text} />
-                                    <CurvedText text={CONFIG.buttons.tours.text} settings={CONFIG.buttons.tours.textSettings} idKey="tours" />
-                                </button>
-
-                                {/* КНОПКА 3 */}
-                                <button onClick={() => navigateTo('contacts')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-20" style={{ width: CONFIG.buttons.contacts.width, right: CONFIG.buttons.contacts.right, top: CONFIG.buttons.contacts.top }}>
-                                    <img src={CONFIG.buttons.contacts.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.contacts.text} />
-                                    <CurvedText text={CONFIG.buttons.contacts.text} settings={CONFIG.buttons.contacts.textSettings} idKey="contacts" />
-                                </button>
-
-                                {/* КНОПКА 4 */}
-                                <button onClick={() => navigateTo('reviews')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-10" style={{ width: CONFIG.buttons.reviews.width, right: CONFIG.buttons.reviews.right, top: CONFIG.buttons.reviews.top }}>
-                                    <img src={CONFIG.buttons.reviews.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.reviews.text} />
-                                    <CurvedText text={CONFIG.buttons.reviews.text} settings={CONFIG.buttons.reviews.textSettings} idKey="reviews" />
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {activeScreen === 'about' && (
-                        <div className="min-h-screen p-6 animate-fade bg-paper">
-                            <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70"><IconArrowLeft size={20} /> Назад</button>
-                            <div className="bg-white p-1 rounded-2xl shadow-md mb-6 rotate-1 max-w-sm mx-auto"><img src={CONFIG.about.photoUrl} alt="About" className="w-full h-64 object-cover rounded-xl" /></div>
-                            <div className="max-w-sm mx-auto text-center px-2">
-                                <h2 className="text-3xl font-serif font-bold mb-4">{CONFIG.about.title}</h2>
-                                <p className="text-lg font-serif italic text-[#5c5c5c] leading-relaxed whitespace-pre-line">{CONFIG.about.text}</p>
-                            </div>
-                        </div>
-                    )}
-
-                    {activeScreen === 'tours' && (
-                        <div className="min-h-screen p-6 animate-fade bg-paper">
-                            <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70"><IconArrowLeft size={20} /> Назад</button>
-                            <h2 className="text-3xl font-serif font-bold mb-2 text-center">Горящие туры</h2>
-                            <div className="w-full flex justify-between items-center mb-4 px-2">
-                                <button onClick={() => setSortOrder(prev => prev === 'none' ? 'asc' : prev === 'asc' ? 'desc' : 'none')} className="bg-transparent border-b border-gray-400 text-sm font-serif outline-none py-1 text-gray-700 active:opacity-50 transition-opacity flex items-center gap-1">
-                                    {sortOrder === 'none' ? 'Сортировка' : sortOrder === 'asc' ? 'Дешевле' : 'Дороже'}
-                                    <span className="text-[10px]">{sortOrder === 'none' ? '↕' : sortOrder === 'asc' ? '↓' : '↑'}</span>
-                                </button>
-                                <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_4px_rgba(34,197,94,0.6)] animate-pulse"></span><span className="text-[10px] font-serif italic text-[#5c5c5c]">Обновлено сегодня</span></div>
-                            </div>
-                            {isLoadingTours ? (
-                                <div className="flex justify-center items-center h-40"><div className="w-8 h-8 border-4 border-black/20 border-t-black rounded-full animate-spin"></div></div>
                             ) : (
-                                <div className="flex flex-col gap-4 w-full">
-                                    {[...tours].sort((a, b) => {
-                                        if (sortOrder === 'asc') return extractPrice(a.price) - extractPrice(b.price);
-                                        if (sortOrder === 'desc') return extractPrice(b.price) - extractPrice(a.price);
-                                        return 0;
-                                    }).map((tour, index) => (
-                                        <div key={index} onClick={() => navigateTo('quiQuo', tour._actualLink)} className="relative bg-white p-3 rounded-2xl shadow-md flex gap-4 border border-[#E7D6BD] active:scale-95 transition-all cursor-pointer">
-                                            <div className="absolute top-2 right-2 w-6 h-6 bg-[#84cc16] text-white text-[10px] font-bold rounded shadow-sm flex items-center justify-center z-10">{tour.rating || "5.0"}</div>
-                                            <div className="shrink-0"><img src={tour.imageUrl} className="w-24 h-full min-h-[105px] object-cover rounded-xl" /></div>
-                                            <div className="flex flex-col justify-between w-full min-w-0 py-0.5">
-                                                <div><div className="font-bold text-[13px] leading-snug truncate">{tour.hotel}</div><div className="text-[11px] text-gray-500 truncate">{tour.dates}</div><div className="text-[11px] text-gray-500 flex items-center gap-1 mt-0.5 truncate"><IconMapPin size={12} className="text-gray-400" /><span>{tour.title}</span></div></div>
-                                                <div className="flex items-end justify-between mt-3">
-                                                    <div className="flex flex-col"><span className="line-through text-[10px] text-gray-400 mb-0.5">{tour.oldPrice}</span><span className="font-bold text-[15px]">{tour.price}</span></div>
-                                                    <button className="bg-black text-white text-[11px] font-semibold py-1.5 px-3 rounded-lg">Подробнее</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
+                                <div className="animate-fade-in-up">
+                                    <p className="text-sm italic text-graphite/80 leading-relaxed mb-4">
+                                        "{CONFIG.supportMessages[selectedMood]}"
+                                    </p>
+                                    <button 
+                                        onClick={() => setSelectedMood(null)}
+                                        className="text-xs text-sage border-b border-sage/30 pb-0.5 uppercase tracking-wider font-medium"
+                                    >
+                                        Вернуться
+                                    </button>
                                 </div>
                             )}
                         </div>
-                    )}
+                    </section>
 
-                    {activeScreen === 'contacts' && (
-                        <div className="min-h-screen p-6 animate-fade bg-paper flex flex-col items-center justify-center">
-                            <div className="absolute top-6 left-6"><button onClick={() => navigateTo('home')} className="flex items-center gap-2 font-medium text-black/70"><IconArrowLeft size={20} /> Назад</button></div>
-                            <h2 className="text-3xl font-serif font-bold mb-8 text-center">Всегда на связи</h2>
-                            <div className="w-full flex flex-col gap-4 px-4">
-                                <a href={CONFIG.contacts.telegram} target="_blank" className="flex items-center gap-4 bg-white/70 backdrop-blur-md p-4 rounded-3xl border border-white shadow-sm active:scale-95 transition-all">
-                                    <div className="bg-white p-3 rounded-full text-[#0088cc]"><IconSend size={24} /></div><span className="text-lg font-medium">Написать в Telegram</span>
-                                </a>
-                                <a href={CONFIG.contacts.instagram} target="_blank" className="flex items-center gap-4 bg-white/70 backdrop-blur-md p-4 rounded-3xl border border-white shadow-sm active:scale-95 transition-all">
-                                    <div className="bg-white p-3 rounded-full text-[#E1306C]"><IconInstagram size={24} /></div><span className="text-lg font-medium">Мой Instagram</span>
-                                </a>
-                                <a href={`tel:${CONFIG.contacts.phone}`} className="flex items-center gap-4 bg-white/70 backdrop-blur-md p-4 rounded-3xl border border-white shadow-sm active:scale-95 transition-all">
-                                    <div className="bg-white p-3 rounded-full text-green-600"><IconPhone size={24} /></div><span className="text-lg font-medium">{CONFIG.contacts.phone}</span>
-                                </a>
+                    {/* Interactive Buttons */}
+                    <section className="px-6 mb-8 grid grid-cols-2 gap-4 opacity-0 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+                        <button 
+                            onClick={() => setIsModalOpen(true)}
+                            className="glass-panel p-5 rounded-[2rem] flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform"
+                        >
+                            <div className="bg-sand p-3 rounded-full text-sage">
+                                <Heart className="w-6 h-6" />
+                            </div>
+                            <span className="font-medium text-sm">Обо мне</span>
+                        </button>
+                        
+                        <a 
+                            href={CONFIG.links.telegram} 
+                            target="_blank"
+                            className="glass-panel p-5 rounded-[2rem] flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform"
+                        >
+                            <div className="bg-sand p-3 rounded-full text-sage">
+                                <MessageCircle className="w-6 h-6" />
+                            </div>
+                            <span className="font-medium text-sm">Записаться</span>
+                        </a>
+
+                        <div className="col-span-2 glass-panel p-6 rounded-[2rem]">
+                            <h3 className="font-serif text-lg mb-4 flex items-center gap-2">
+                                <Sparkles className="w-5 h-5 text-sage" />
+                                Методы работы
+                            </h3>
+                            <div className="flex flex-wrap gap-2">
+                                {CONFIG.methods.map((method, idx) => (
+                                    <span key={idx} className="bg-white/60 text-graphite/80 text-xs px-4 py-2 rounded-full border border-white">
+                                        {method}
+                                    </span>
+                                ))}
                             </div>
                         </div>
-                    )}
 
-                    {activeScreen === 'reviews' && (
-                        <div className="min-h-screen pt-6 px-6 animate-fade bg-paper flex flex-col relative">
-                            <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70 shrink-0"><IconArrowLeft size={20} /> Назад</button>
-                            <h2 className="text-3xl font-serif font-bold mb-8 text-center">Отзывы туристов</h2>
-                            <div className="flex flex-col gap-6 w-full max-w-sm mx-auto pb-32">
-                                {isLoadingReviews ? (<div className="flex justify-center h-40 items-center"><div className="w-8 h-8 border-4 border-black/20 border-t-black rounded-full animate-spin"></div></div>) : (
-                                    reviews.map(review => (
-                                        <div key={review.id} className="relative bg-[#FFFcf5] p-5 rounded-sm shadow-sm border border-[#e8dcc7] flex flex-col gap-3">
-                                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/40 backdrop-blur-md rotate-[-2deg]"></div>
-                                            <div className="flex justify-between items-start">
-                                                <div><h3 className="font-bold text-lg font-serif">{review.name}</h3><div className="text-[9px] text-gray-400 tracking-wider mt-0.5">{review.date}</div></div>
-                                                <div className="flex gap-0.5 text-amber-400">{[...Array(5)].map((_, i) => <IconStar key={i} size={14} filled={i < review.rating} />)}</div>
-                                            </div>
-                                            <p className="text-[#5c5c5c] font-serif italic text-sm leading-relaxed">"{review.text}"</p>
-                                        </div>
-                                    ))
-                                )}
+                        <a 
+                            href={CONFIG.links.freebieUrl} 
+                            className="col-span-2 bg-sage text-white p-5 rounded-[2rem] flex items-center justify-between active:scale-95 transition-transform shadow-soft"
+                        >
+                            <div className="text-left">
+                                <span className="block font-serif text-lg mb-1">{CONFIG.links.freebieTitle}</span>
+                                <span className="block text-xs text-white/80 font-light">{CONFIG.links.freebieSubtitle}</span>
                             </div>
-                            <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[500px] pb-6 pt-16 px-6 bg-gradient-to-t from-[#fce2b1] via-[#fce2b1] to-transparent flex justify-center z-20 pointer-events-none">
-                                <button onClick={() => setIsReviewModalOpen(true)} className="w-full max-w-sm flex justify-center items-center gap-2 bg-[#F8F1E5]/90 border-2 border-black rounded-full py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 transition-all pointer-events-auto">
-                                    <IconEdit size={18} /> Написать отзыв
+                            <div className="bg-white/20 p-2 rounded-full">
+                                <Leaf className="w-5 h-5" />
+                            </div>
+                        </a>
+                    </section>
+
+                    {/* Reviews Carousel & Submit Form */}
+                    <section className="mb-8 opacity-0 animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+                        <div className="flex justify-between items-end px-6 mb-4">
+                            <h2 className="font-serif text-xl text-graphite">Отзывы</h2>
+                            <button 
+                                onClick={() => setIsReviewFormOpen(true)} 
+                                className="text-xs text-sage border-b border-sage/30 pb-0.5 hover:text-graphite transition-colors"
+                            >
+                                Оставить отзыв
+                            </button>
+                        </div>
+                        <div className="flex gap-4 overflow-x-auto snap-x px-6 pb-4 no-scrollbar">
+                            {reviews.map((review, index) => (
+                                <div key={review.id || index} className="snap-center shrink-0 w-64 glass-panel p-5 rounded-[2rem]">
+                                    <div className="flex text-sage mb-2">
+                                        {[...Array(5)].map((_, i) => (
+                                            <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                        ))}
+                                    </div>
+                                    <p className="text-sm text-graphite/80 font-light leading-relaxed mb-3">"{review.text}"</p>
+                                    <span className="text-xs font-medium text-graphite">{review.name}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* CTA Bottom Button (Fixed) */}
+                    <div className="fixed bottom-6 left-0 right-0 px-6 max-w-md mx-auto z-40">
+                        <a 
+                            href={CONFIG.links.telegram}
+                            target="_blank"
+                            className="glass-panel border-sage/20 shadow-soft w-full py-4 rounded-full flex items-center justify-center gap-2 text-graphite font-medium active:scale-95 transition-transform"
+                        >
+                            Подписаться на мой уютный канал
+                        </a>
+                    </div>
+
+                    {/* About Modal */}
+                    {isModalOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up">
+                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white">
+                                <button 
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
+                                >
+                                    <X className="w-5 h-5" />
                                 </button>
+                                
+                                <h2 className="font-serif text-2xl mb-4 text-graphite">{CONFIG.about.title}</h2>
+                                <div className="space-y-4 text-sm font-light text-graphite/80 leading-relaxed max-h-[60vh] overflow-y-auto no-scrollbar pr-2">
+                                    {CONFIG.about.paragraphs.map((p, idx) => (
+                                        <p key={idx}>{p}</p>
+                                    ))}
+                                    <div className="bg-sage/10 p-4 rounded-2xl mt-6 border border-sage/20">
+                                        <p className="font-medium text-sage text-center italic">"{CONFIG.about.quote}"</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
 
-                    {isReviewModalOpen && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade">
-                            <div className="bg-[#FFFcf5] w-full max-w-sm rounded-3xl p-6 shadow-2xl relative animate-item border border-[#e8dcc7]">
-                                <button onClick={() => setIsReviewModalOpen(false)} className="absolute top-4 right-4 text-gray-400"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
-                                {isReviewSubmitted ? (
-                                    <div className="py-10 flex flex-col items-center text-center animate-fade">
-                                        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                                        <h3 className="text-2xl font-serif font-bold mb-2">Спасибо!</h3>
-                                        <p className="text-sm">Ваш отзыв скоро появится.</p>
+                    {/* Написать отзыв Modal */}
+                    {isReviewFormOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up">
+                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white">
+                                <button 
+                                    onClick={() => setIsReviewFormOpen(false)}
+                                    className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                                
+                                <h2 className="font-serif text-2xl mb-4 text-graphite">Оставить отзыв</h2>
+                                
+                                {submitStatus === 'success' ? (
+                                    <div className="text-center py-6 animate-fade-in-up">
+                                        <div className="bg-sage/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <Heart className="w-8 h-8 text-sage" />
+                                        </div>
+                                        <p className="text-graphite/80 text-sm">Благодарю! Твои слова отправлены, скоро они появятся здесь.</p>
                                     </div>
                                 ) : (
-                                    <form onSubmit={handleSubmitReview} className="flex flex-col gap-6">
-                                        <h3 className="text-2xl font-serif font-bold">Ваш отзыв</h3>
-                                        <div className="flex flex-col gap-2"><label className="text-xs uppercase tracking-wide">Оценка</label><div className="flex gap-2 text-amber-400">{[1, 2, 3, 4, 5].map((star) => <button type="button" key={star} onClick={() => setReviewForm({...reviewForm, rating: star})} className="active:scale-75 transition-all"><IconStar size={36} filled={star <= reviewForm.rating} /></button>)}</div></div>
-                                        <div className="flex flex-col gap-1"><label className="text-xs uppercase tracking-wide">Имя</label><input type="text" required value={reviewForm.name} onChange={(e) => setReviewForm({...reviewForm, name: e.target.value})} className="w-full bg-transparent border-b-2 border-[#d4af37]/30 focus:border-[#d4af37] transition-colors py-2 outline-none font-serif text-lg" placeholder="Например: Мария" /></div>
-                                        <div className="flex flex-col gap-1"><label className="text-xs uppercase tracking-wide">Впечатления</label><textarea required rows="3" value={reviewForm.text} onChange={(e) => setReviewForm({...reviewForm, text: e.target.value})} className="w-full bg-transparent border-b-2 border-[#d4af37]/30 focus:border-[#d4af37] transition-colors py-2 outline-none font-serif text-base resize-none" placeholder="Пару слов об отдыхе..."></textarea></div>
-                                        <button type="submit" disabled={isSubmitting} className="w-full bg-[#d4af37] text-white py-4 rounded-xl font-bold mt-2 shadow-lg active:scale-95 transition-all">{isSubmitting ? 'Отправка...' : 'Отправить отзыв'}</button>
+                                    <form onSubmit={handleReviewSubmit} className="space-y-4">
+                                        <input 
+                                            required 
+                                            type="text" 
+                                            placeholder="Твоё имя" 
+                                            className="w-full bg-white/60 border border-white rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-sage/50 text-graphite"
+                                            value={reviewForm.name}
+                                            onChange={e => setReviewForm({...reviewForm, name: e.target.value})}
+                                        />
+                                        <textarea 
+                                            required 
+                                            placeholder="Поделись своими чувствами и впечатлениями..." 
+                                            rows="4"
+                                            className="w-full bg-white/60 border border-white rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-sage/50 resize-none text-graphite"
+                                            value={reviewForm.text}
+                                            onChange={e => setReviewForm({...reviewForm, text: e.target.value})}
+                                        ></textarea>
+                                        
+                                        {submitStatus === 'error_no_url' && <p className="text-red-400 text-xs text-center">Сначала подключи Google Script в настройках кода.</p>}
+                                        {submitStatus === 'error' && <p className="text-red-400 text-xs text-center">Произошла ошибка, попробуй позже.</p>}
+                                        
+                                        <button 
+                                            disabled={isSubmitting}
+                                            type="submit" 
+                                            className="w-full bg-sage text-white py-3 rounded-full font-medium shadow-soft active:scale-95 transition-transform disabled:opacity-70 mt-2 flex items-center justify-center gap-2"
+                                        >
+                                            {isSubmitting ? 'Отправляем...' : 'Отправить'}
+                                        </button>
                                     </form>
                                 )}
                             </div>
                         </div>
                     )}
-                </div>
-                    </div>
+
                 </div>
             );
-        }
+        };
 
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
