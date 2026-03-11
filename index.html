@@ -105,11 +105,40 @@
             
             // 2. Ссылки
             links: {
-                telegram: "https://t.me/telegram", // Для записи и главной кнопки внизу
+                telegram: "https://t.me/telegram", // Для записи и кнопки "Написать мне"
+                telegramChannel: "https://t.me/telegram_channel", // Ссылка для кнопки "Мой канал"
                 freebieUrl: "#", // Ссылка на пост/файл
                 freebieTitle: "Полезное (Free)",
                 freebieSubtitle: "Гайд \"Снижение тревожности\"",
             },
+
+            // ==========================================
+            // ⭐️ НОВЫЙ РАЗДЕЛ: ПОЛЕЗНОЕ (ЛИД-МАГНИТЫ) ⭐️
+            // Добавляй свои гайды сюда. Если хочешь добавить еще один — просто 
+            // скопируй блок в фигурных скобках {...} и вставь через запятую!
+            // ==========================================
+            freebies: [
+                { 
+                    title: "Гайд по самопомощи", 
+                    subtitle: "Снижение тревожности за 10 минут", 
+                    url: "https://t.me/telegram_channel/1" // Ссылка на пост с гайдом
+                },
+                { 
+                    title: "Медитация на сон", 
+                    subtitle: "Аудио-практика для глубокого расслабления", 
+                    url: "https://t.me/telegram_channel/2" // Ссылка на аудио/пост
+                },
+                { 
+                    title: "Тест на уровень стресса", 
+                    subtitle: "Узнай свое состояние прямо сейчас", 
+                    url: "https://t.me/telegram_channel/3" // Ссылка на бота или тест
+                },
+                { 
+                    title: "Чек-лист: Личные границы", 
+                    subtitle: "Как говорить «нет» без чувства вины", 
+                    url: "https://t.me/telegram_channel/4" 
+                }
+            ],
 
             // 3. Блок "Обо мне"
             about: {
@@ -122,14 +151,74 @@
                 quote: "Изменения начинаются с принятия себя"
             },
 
-            // 4. Теги методов работы
-            methods: ["Гештальт-терапия", "КПТ", "Арт-терапия", "Майндфулнес"],
+            // 4. С чем я работаю (карточки)
+            expertise: [
+                { title: "Тревога", message: "Я помогу тебе найти островок спокойствия внутри себя с помощью бережных техник." },
+                { title: "Отношения", message: "Разберемся в сложных сценариях и научимся выстраивать теплые, здоровые связи." },
+                { title: "Самооценка", message: "Бережно подсветим твою ценность и вернем уверенность в своих силах." },
+                { title: "Выгорание", message: "Найдем, куда уходит энергия, и шаг за шагом восстановим твой внутренний ресурс." },
+                { title: "Поиск себя", message: "Услышим твои истинные желания и проложим путь к жизни, которая тебе по душе." }
+            ],
 
-            // 5. Кнопка состояния (эмодзи и ответы)
+            // 5. Кнопка состояния (эмодзи и ответы - 51 вариант!)
             supportMessages: {
-                '😔': "Грустить — это нормально. Позволь себе прожить эти эмоции, я рядом.",
-                '😰': "Сделай медленный вдох. Ты в безопасности. Тревога — это просто волна, она уйдёт.",
-                '🙂': "Замечательно! Сохрани этот свет внутри себя на весь день."
+                '😔': [
+                    "Грустить — это нормально. Позволь себе прожить эти эмоции, я рядом.",
+                    "Твои чувства важны. Дай себе столько времени, сколько нужно, чтобы пережить это.",
+                    "Даже в самые темные дни помни: тучи обязательно рассеются.",
+                    "Обнимаю тебя. Сейчас может быть тяжело, но ты справишься.",
+                    "Не требуй от себя многого сегодня. Просто отдохни и побудь с собой.",
+                    "Плакать можно. Это помогает душе очиститься от тяжести.",
+                    "Ты не одинок(а) в своих переживаниях. Я мысленно держу тебя за руку.",
+                    "Каждое твое чувство имеет право на существование. Дыши.",
+                    "Завтра будет новый день, а сегодня просто позволь себе быть не в ресурсе.",
+                    "Разреши себе снять броню. Тебе не нужно всегда быть сильным(ой).",
+                    "Твоя грусть говорит о том, что тебе не всё равно. Это проявление любви к себе.",
+                    "Маленькими шагами. Сегодня твой шаг — просто разрешить себе погрустить.",
+                    "Я слышу твою боль. Ты имеешь полное право чувствовать то, что чувствуешь.",
+                    "Это состояние временно. Оно пройдет, как проходит зима.",
+                    "Попробуй обнять себя за плечи прямо сейчас. Ты — свой самый близкий человек.",
+                    "Тебе не нужно оправдываться за свою грусть. Просто побудь в тишине.",
+                    "Иногда самое продуктивное, что можно сделать — это лечь и отдохнуть."
+                ],
+                '😰': [
+                    "Сделай медленный вдох. Ты в безопасности. Тревога — это просто волна, она уйдёт.",
+                    "Вдохни на 4 счета, выдохни на 6. Прямо сейчас тебе ничего не угрожает.",
+                    "Эта тревога — ложная тревога. Твой мозг пытается тебя защитить, но ты в безопасности.",
+                    "Оглянись вокруг: назови 5 предметов, которые ты сейчас видишь. Вернись в реальность.",
+                    "Ты больше, чем твоя тревога. Она пройдет, а ты останешься.",
+                    "Позволь плечам опуститься. Разожми челюсть. Выдохни напряжение.",
+                    "То, что тебя пугает сейчас, вряд ли случится. Возвращайся в момент 'здесь и сейчас'.",
+                    "Страх питается твоими мыслями. Давай попробуем переключить внимание на тело.",
+                    "Тревога любит будущее, а жизнь происходит в настоящем. Что ты чувствуешь прямо сейчас?",
+                    "Представь свою тревогу как облако, которое медленно проплывает мимо.",
+                    "Я рядом. Эта буря внутри скоро утихнет, просто продолжай дышать.",
+                    "Ничего страшного не происходит прямо в эту секунду. Заземлись.",
+                    "Ты уже справлялся(лась) с этим раньше. Справишься и сейчас.",
+                    "Почувствуй опору под ногами. Земля держит тебя, ты не упадешь.",
+                    "Отложи мысли на потом. Сейчас твоя единственная задача — спокойно дышать.",
+                    "Переведи фокус на свои руки: сожми и разожми кулаки несколько раз.",
+                    "Тревога громко кричит, но она часто врет. Не верь ей сейчас."
+                ],
+                '🙂': [
+                    "Замечательно! Сохрани этот свет внутри себя на весь день.",
+                    "Я очень рада за тебя! Пусть это состояние длится как можно дольше.",
+                    "Заметь это чувство. Как оно отзывается в теле? Запомни его.",
+                    "Твоя улыбка — это прекрасно. Продолжай светить!",
+                    "Ты молодец! Разреши себе искренне насладиться этим моментом.",
+                    "Это твой ресурс. Черпай из него силы для новых свершений.",
+                    "Как здорово! Пусть этот день принесет тебе еще больше приятных сюрпризов.",
+                    "Поблагодари себя за то, что пришел(ла) к этому светлому состоянию.",
+                    "Зафиксируй эту радость. Она — твое топливо на пути к целям.",
+                    "Ты заслуживаешь этого спокойствия и счастья. Впитывай каждую каплю!",
+                    "Чудесно! Поделись этим теплом с миром, и оно вернется вдвойне.",
+                    "Твоя гармония — результат твоей внутренней работы. Горжусь тобой!",
+                    "Пусть эта легкость сопровождает тебя в каждом деле сегодня.",
+                    "Радость в мелочах. Здорово, что ты умеешь ее замечать!",
+                    "Сохрани этот 'снимок' хорошего настроения в памяти на случай пасмурных дней.",
+                    "Дышится легко, правда? Наслаждайся этим чувством свободы.",
+                    "Прекрасный настрой! Мир сегодня точно на твоей стороне."
+                ]
             },
 
             // 6. СВЯЗЬ С ТАБЛИЦЕЙ
@@ -157,6 +246,10 @@
         const App = () => {
             const [isModalOpen, setIsModalOpen] = useState(false);
             const [selectedMood, setSelectedMood] = useState(null);
+            const [selectedMessage, setSelectedMessage] = useState("");
+            
+            // ВАЙБОВЫЙ ФИКС: Добавили потерянное состояние для окна Полезного
+            const [isFreebiesOpen, setIsFreebiesOpen] = useState(false);
             
             // Новые состояния для лоадера и отзывов
             const [isLoading, setIsLoading] = useState(true);
@@ -165,6 +258,7 @@
             const [reviewForm, setReviewForm] = useState({ name: '', text: '', rating: 5 });
             const [isSubmitting, setIsSubmitting] = useState(false);
             const [submitStatus, setSubmitStatus] = useState(null);
+            const [activeExpertise, setActiveExpertise] = useState(null);
 
             // 3. Легкая вибрация (Haptic Feedback)
             const triggerHaptic = () => {
@@ -193,9 +287,10 @@
                     triggerHaptic();
                     setIsModalOpen(false);
                     setIsReviewFormOpen(false);
+                    setIsFreebiesOpen(false); // Закрываем полезное при свайпе
                 };
 
-                if (isModalOpen || isReviewFormOpen) {
+                if (isModalOpen || isReviewFormOpen || isFreebiesOpen) {
                     tg.BackButton.show();
                     tg.onEvent('backButtonClicked', handleBack);
                 } else {
@@ -206,7 +301,7 @@
                 return () => {
                     tg.offEvent('backButtonClicked', handleBack);
                 };
-            }, [isModalOpen, isReviewFormOpen]);
+            }, [isModalOpen, isReviewFormOpen, isFreebiesOpen]); // Не забыли добавить в зависимости
 
             // Эффект загрузки данных при старте (Чтение напрямую из Google Таблицы)
             useEffect(() => {
@@ -338,7 +433,13 @@
                                         {Object.keys(CONFIG.supportMessages).map((emoji) => (
                                             <button 
                                                 key={emoji}
-                                                onClick={() => { triggerHaptic(); setSelectedMood(emoji); }}
+                                                onClick={() => { 
+                                                    triggerHaptic(); 
+                                                    const messages = CONFIG.supportMessages[emoji];
+                                                    const randomMsg = messages[Math.floor(Math.random() * messages.length)];
+                                                    setSelectedMood(emoji); 
+                                                    setSelectedMessage(randomMsg);
+                                                }}
                                                 className="text-4xl transition-transform active:scale-90 hover:scale-110"
                                             >
                                                 {emoji}
@@ -349,10 +450,10 @@
                             ) : (
                                 <div className="animate-fade-in-up">
                                     <p className="text-sm italic text-graphite/80 leading-relaxed mb-4">
-                                        "{CONFIG.supportMessages[selectedMood]}"
+                                        "{selectedMessage}"
                                     </p>
                                     <button 
-                                        onClick={() => { triggerHaptic(); setSelectedMood(null); }}
+                                        onClick={() => { triggerHaptic(); setSelectedMood(null); setSelectedMessage(""); }}
                                         className="text-xs text-sage border-b border-sage/30 pb-0.5 uppercase tracking-wider font-medium"
                                     >
                                         Вернуться
@@ -386,33 +487,44 @@
                             <span className="font-medium text-sm">Записаться</span>
                         </a>
 
-                        <div className="col-span-2 glass-panel p-6 rounded-[2rem]">
+                        <div className="col-span-2 glass-panel p-6 rounded-[2rem] transition-all duration-300">
                             <h3 className="font-serif text-lg mb-4 flex items-center gap-2">
                                 <Sparkles className="w-5 h-5 text-sage" />
-                                Методы работы
+                                С чем я работаю
                             </h3>
                             <div className="flex flex-wrap gap-2">
-                                {CONFIG.methods.map((method, idx) => (
-                                    <span key={idx} className="bg-white/60 text-graphite/80 text-xs px-4 py-2 rounded-full border border-white">
-                                        {method}
-                                    </span>
+                                {CONFIG.expertise.map((item, idx) => (
+                                    <button 
+                                        key={idx} 
+                                        onClick={() => { triggerHaptic(); setActiveExpertise(activeExpertise === idx ? null : idx); }}
+                                        className={`text-xs px-4 py-2 rounded-full border transition-all duration-300 active:scale-95 ${activeExpertise === idx ? 'bg-sage text-white border-sage shadow-soft' : 'bg-white/60 text-graphite/80 border-white hover:bg-white/80'}`}
+                                    >
+                                        {item.title}
+                                    </button>
                                 ))}
                             </div>
+                            {activeExpertise !== null && (
+                                <div className="mt-4 p-4 bg-sage/10 rounded-2xl border border-sage/20 animate-fade-in-up">
+                                    <p className="text-sm font-light text-graphite/80 leading-relaxed italic">
+                                        "{CONFIG.expertise[activeExpertise].message}"
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
-                        <a 
-                            href={CONFIG.links.freebieUrl} 
-                            onClick={triggerHaptic}
-                            className="col-span-2 bg-sage text-white p-5 rounded-[2rem] flex items-center justify-between active:scale-95 transition-transform shadow-soft"
+                        {/* КНОПКА ПОЛЕЗНОЕ (Теперь открывает меню лид-магнитов) */}
+                        <button 
+                            onClick={() => { triggerHaptic(); setIsFreebiesOpen(true); }}
+                            className="col-span-2 bg-sage text-white p-5 rounded-[2rem] flex items-center justify-between active:scale-95 transition-transform shadow-soft w-full"
                         >
                             <div className="text-left">
-                                <span className="block font-serif text-lg mb-1">{CONFIG.links.freebieTitle}</span>
-                                <span className="block text-xs text-white/80 font-light">{CONFIG.links.freebieSubtitle}</span>
+                                <span className="block font-serif text-lg mb-1">Полезное (Free)</span>
+                                <span className="block text-xs text-white/80 font-light">Гайды, медитации и тесты</span>
                             </div>
                             <div className="bg-white/20 p-2 rounded-full">
                                 <Leaf className="w-5 h-5" />
                             </div>
-                        </a>
+                        </button>
                     </section>
 
                     {/* Reviews Carousel & Submit Form */}
@@ -446,17 +558,33 @@
                                 ))}
                             </div>
                         )}
+                        
+                        {/* Эстетичная плашка про разрешение клиентов */}
+                        <div className="text-center px-6 flex justify-center items-center gap-1.5 mt-1">
+                            <Heart className="w-3 h-3 text-sage/60" />
+                            <p className="text-[11px] text-graphite/50 font-light italic">
+                                Все отзывы опубликованы с разрешения клиентов
+                            </p>
+                        </div>
                     </section>
 
-                    {/* CTA Bottom Button (Fixed) */}
-                    <div className="fixed bottom-6 left-0 right-0 px-6 max-w-md mx-auto z-40">
+                    {/* CTA Bottom Buttons (Fixed) */}
+                    <div className="fixed bottom-6 left-0 right-0 px-6 max-w-md mx-auto z-40 flex gap-3">
                         <a 
                             href={CONFIG.links.telegram}
                             target="_blank"
                             onClick={triggerHaptic}
-                            className="glass-panel border-sage/20 shadow-soft w-full py-4 rounded-full flex items-center justify-center gap-2 text-graphite font-medium active:scale-95 transition-transform"
+                            className="glass-panel border-sage/20 shadow-soft flex-1 py-3.5 rounded-full flex items-center justify-center text-graphite font-medium active:scale-95 transition-transform text-sm"
                         >
-                            Подписаться на мой уютный канал
+                            Написать мне
+                        </a>
+                        <a 
+                            href={CONFIG.links.telegramChannel}
+                            target="_blank"
+                            onClick={triggerHaptic}
+                            className="bg-sage text-white shadow-soft flex-1 py-3.5 rounded-full flex items-center justify-center font-medium active:scale-95 transition-transform text-sm"
+                        >
+                            Мой канал
                         </a>
                     </div>
 
@@ -479,6 +607,43 @@
                                     <div className="bg-sage/10 p-4 rounded-2xl mt-6 border border-sage/20">
                                         <p className="font-medium text-sage text-center italic">"{CONFIG.about.quote}"</p>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Полезное (Freebies / Лид-магниты) Modal */}
+                    {isFreebiesOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up">
+                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white">
+                                <button 
+                                    onClick={() => { triggerHaptic(); setIsFreebiesOpen(false); }}
+                                    className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
+                                >
+                                    <X className="w-5 h-5" />
+                                </button>
+                                
+                                <h2 className="font-serif text-2xl mb-2 text-graphite flex items-center gap-2">
+                                    <Leaf className="w-6 h-6 text-sage" />
+                                    Полезное
+                               </h2>
+                               <p className="text-sm font-light text-graphite/80 mb-6 leading-relaxed">
+                                   Забирай бесплатные материалы, которые помогут тебе поддержать себя:
+                               </p>
+                                
+                                <div className="space-y-3 max-h-[60vh] overflow-y-auto no-scrollbar pr-2 pb-2">
+                                    {CONFIG.freebies.map((item, idx) => (
+                                        <a 
+                                            key={idx}
+                                            href={item.url}
+                                            target="_blank"
+                                            onClick={triggerHaptic}
+                                            className="block bg-white/60 hover:bg-white/90 border border-white p-4 rounded-[1.5rem] active:scale-95 transition-all shadow-sm"
+                                        >
+                                            <span className="block font-medium text-graphite mb-0.5">{item.title}</span>
+                                            <span className="block text-[11px] text-graphite/60 font-light">{item.subtitle}</span>
+                                        </a>
+                                    ))}
                                 </div>
                             </div>
                         </div>
