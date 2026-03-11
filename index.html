@@ -22,7 +22,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
     <!-- Подключаем рукописный шрифт для подписи на фото и основной элегантный шрифт -->
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
         html, body { 
@@ -102,8 +102,6 @@
 
         // ==============================================================================
         // 🛠️ СУПЕР-БЛОК НАСТРОЕК (ДЛЯ ВАЙБКОДЕРА) 🛠️
-        // Здесь собрано абсолютно всё: тексты, фото, ссылки, отступы и размеры.
-        // Просто меняйте значения внутри кавычек "", и проект обновится сам!
         // ==============================================================================
         const CONFIG = {
             // --- 1. ГЛАВНЫЙ ЭКРАН: ТЕКСТЫ И ФОН ---
@@ -113,36 +111,76 @@
 
             // --- 2. ГЛАВНЫЙ ЭКРАН: НАСТРОЙКИ 4-Х КНОПОК НАД САМОЛЕТОМ ---
             fanLayout: {
-                marginTop: "6vh", // Отступ всего веера сверху (двигайте, чтобы посадить веер прямо на самолет)
+                marginTop: "6vh", // Отступ всего веера сверху
             },
             buttons: {
                 about: { // КНОПКА 1 (КРАЙНЯЯ СЛЕВА)
                     text: "Обо мне", 
                     image: "https://i.postimg.cc/WbcGsSCZ/kartocki-(1).png",
-                    width: "100%", // ОГРОМНЫЙ РАЗМЕР
-                    left: "0%",  // Сдвиг влево
-                    top: "0%"    // Сдвиг вниз (формируем арку)
+                    width: "100%", // НЕ ТРОГАЮ
+                    left: "0%",    // НЕ ТРОГАЮ
+                    top: "0%",     // НЕ ТРОГАЮ
+                    
+                    // --- НАСТРОЙКИ ТЕКСТА ---
+                    textSettings: {
+                        fontSize: "10",      // РАЗМЕР ТЕКСТА
+                        topOffset: "-23%",    // РАСПОЛОЖЕНИЕ: Отступ сверху вниз (чем больше %, тем ниже)
+                        curve: "35",         // ИЗГИБ ДУГИ: 70 - прямая линия, 10 - сильная дуга вверх
+                        rotate: "-18deg",    // НАКЛОН ТЕКСТА: Крутит текст по или против часовой стрелки
+                        letterSpacing: "1",  // КАК РАЗДВИНУТЬ БУКВЫ (увеличьте до 3, 5 или 10, чтобы сделать текст шире)
+                        horizontalPosition: "50%" // ДВИГАТЬ ВЛЕВО-ВПРАВО (50% - центр. 40% - поедет влево, 60% - вправо)
+                    }
                 },
                 tours: { // КНОПКА 2 (ЦЕНТР-ЛЕВО)
                     text: "Туры", 
                     image: "https://i.postimg.cc/zXwnvKYQ/kartocki-(2).png",
-                    width: "100%", // ОГРОМНЫЙ РАЗМЕР
-                    left: "0%",  // НАЛОЖЕНИЕ на первую кнопку, чтобы убить дырку!
-                    top: "0%"     // Выше крайних
+                    width: "100%", // НЕ ТРОГАЮ
+                    left: "0%",    // НЕ ТРОГАЮ
+                    top: "0%",     // НЕ ТРОГАЮ
+                    
+                    // --- НАСТРОЙКИ ТЕКСТА ---
+                    textSettings: {
+                        fontSize: "10",      
+                        topOffset: "-23%",     
+                        curve: "35",         
+                        rotate: "-6deg",
+                        letterSpacing: "1",  // КАК РАЗДВИНУТЬ БУКВЫ
+                        horizontalPosition: "50%" // ДВИГАТЬ ВЛЕВО-ВПРАВО
+                    }
                 },
                 contacts: { // КНОПКА 3 (ЦЕНТР-ПРАВО)
                     text: "Контакты", 
                     image: "https://i.postimg.cc/x10Lz80n/kartocki-(3).png",
-                    width: "100%", // ОГРОМНЫЙ РАЗМЕР
-                    right: "0%", // НАЛОЖЕНИЕ на четвертую кнопку!
-                    top: "0%"     // Выше крайних
+                    width: "100%", // НЕ ТРОГАЮ
+                    right: "0%",   // НЕ ТРОГАЮ
+                    top: "0%",     // НЕ ТРОГАЮ
+                    
+                    // --- НАСТРОЙКИ ТЕКСТА ---
+                    textSettings: {
+                        fontSize: "6",      
+                        topOffset: "-25%",     
+                        curve: "35",         
+                        rotate: "6deg",
+                        letterSpacing: "1",  // КАК РАЗДВИНУТЬ БУКВЫ
+                        horizontalPosition: "67%" // ДВИГАТЬ ВЛЕВО-ВПРАВО
+                    }
                 },
                 reviews: { // КНОПКА 4 (КРАЙНЯЯ СПРАВА)
                     text: "Отзывы", 
                     image: "https://i.postimg.cc/52x8CyxF/kartocki-(4).png",
-                    width: "100%", // ОГРОМНЫЙ РАЗМЕР
-                    right: "0%", // Сдвиг вправо
-                    top: "0%"    // Сдвиг вниз
+                    width: "100%", // НЕ ТРОГАЮ
+                    right: "0%",   // НЕ ТРОГАЮ
+                    top: "0%",     // НЕ ТРОГАЮ
+                    
+                    // --- НАСТРОЙКИ ТЕКСТА ---
+                    textSettings: {
+                        fontSize: "10",      
+                        topOffset: "-23%",    
+                        curve: "35",         
+                        rotate: "18deg",
+                        letterSpacing: "1",  // КАК РАЗДВИНУТЬ БУКВЫ
+                        horizontalPosition: "50%" // ДВИГАТЬ ВЛЕВО-ВПРАВО
+                    }
                 }
             },
 
@@ -163,13 +201,8 @@
             },
 
             // --- 5. БАЗЫ ДАННЫХ (GOOGLE ТАБЛИЦЫ И СКРИПТЫ) ---
-            // Ссылка на таблицу с турами (формат CSV)
             googleSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=0&single=true&output=csv",
-            
-            // Ссылка на таблицу с отзывами (формат CSV)
             reviewsCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=882822745&single=true&output=csv",
-            
-            // Ссылка на Web App (Google Script) для отправки новых отзывов
             reviewsPostUrl: "https://script.google.com/macros/s/AKfycbwnSKpgdCJGand6-hgZ1L6_5a7RRxi9gpf4fa-sPvuOGJqTBp6GiBYtdjOzzjfvMfDR-Q/exec"
         };
 
@@ -180,6 +213,30 @@
         const IconMapPin = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
         const IconStar = ({size=24, filled=true, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>;
         const IconEdit = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
+
+        // ==============================================================================
+        // НОВЫЙ КОМПОНЕНТ ДЛЯ КРАСИВОГО ТЕКСТА ПО ДУГЕ
+        // ==============================================================================
+        const CurvedText = ({ text, settings, idKey }) => {
+            const pathD = `M 10,80 Q 100,${settings.curve} 190,80`;
+            const pathId = `curve-path-${idKey}`;
+            
+            return (
+                <div 
+                    className="absolute w-full left-0 pointer-events-none z-30 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]" 
+                    style={{ top: settings.topOffset, transform: `rotate(${settings.rotate})` }}
+                >
+                    <svg viewBox="0 0 200 100" className="w-full h-auto overflow-visible">
+                        <path id={pathId} d={pathD} fill="transparent" />
+                        <text fill="white" fontSize={settings.fontSize} fontFamily="'Caveat', cursive" letterSpacing={settings.letterSpacing || "1"} textAnchor="middle">
+                            <textPath href={`#${pathId}`} startOffset={settings.horizontalPosition || "50%"}>
+                                {text}
+                            </textPath>
+                        </text>
+                    </svg>
+                </div>
+            );
+        };
 
         function App() {
             const [activeScreen, setActiveScreen] = useState('home');
@@ -316,41 +373,52 @@
                 } catch (error) { alert("Ошибка при отправке."); } finally { setIsSubmitting(false); }
             };
 
-            const Polaroid = ({ src, className, tilt, children }) => (
-                <div className={`absolute p-2 pb-10 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] ${className}`} style={{ transform: `rotate(${tilt}deg)`, boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
-                    <img src={src} alt="Travel" className="w-32 h-32 object-cover border border-gray-300/50" />
-                    {children}
-                </div>
-            );
-
             return (
-                <div 
-                    className="app-container bg-paper text-[#2C2C2C] selection:bg-amber-200 hide-scrollbar"
-                    onTouchStart={onTouchStart}
-                    onTouchMove={onTouchMove}
-                    onTouchEnd={onTouchEnd}
-                >
-                    {isAppLoading && (
-                        <div className={`fixed inset-0 z-[100] bg-[#fce2b1] flex flex-col items-center justify-center transition-opacity duration-500 ${isAppFading ? 'opacity-0' : 'opacity-100'}`}>
-                            <div className="relative flex justify-center items-center">
-                                <div className="absolute w-20 h-20 border-[3px] border-[#E7D6BD] rounded-full"></div>
-                                <div className="absolute w-20 h-20 border-[3px] border-[#d4af37] rounded-full border-t-transparent animate-spin" style={{ animationDuration: '1.2s' }}></div>
-                                <div className="absolute w-14 h-14 border-[2px] border-[#d4af37]/40 rounded-full border-b-transparent animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
-                                <IconMapPin size={22} className="text-[#d4af37] animate-pulse" />
+                <div className="w-full min-h-screen sm:bg-[#1c1c1e] flex justify-center items-center sm:py-8 sm:px-4">
+                    {/* АДЕКВАТНЫЙ ЭМУЛЯТОР ТЕЛЕФОНА (стиль современного смартфона) */}
+                    <div className="relative transform w-full h-[100dvh] sm:w-[375px] sm:h-[812px] sm:max-h-[90vh] sm:rounded-[45px] sm:border-[10px] sm:border-[#0f1013] sm:ring-[1px] sm:ring-white/10 sm:shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden bg-[#fce2b1]">
+                        
+                        {/* Аккуратная "чёлка" камеры */}
+                        <div className="hidden sm:flex absolute top-0 inset-x-0 h-6 justify-center z-[1000] pointer-events-none">
+                            <div className="w-[100px] h-full bg-[#0f1013] rounded-b-3xl relative">
+                                <div className="absolute top-1/2 right-4 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-[#1a1b26] shadow-[inset_0_1px_1px_rgba(0,0,0,0.9)]"></div>
                             </div>
-                            <h2 className="mt-8 text-xs font-serif font-bold text-[#2C2C2C] tracking-[0.3em] uppercase animate-pulse text-center px-4">{CONFIG.brandName}</h2>
                         </div>
-                    )}
 
-                    {activeScreen === 'home' && (
-                        <div className="relative min-h-screen flex flex-col items-center animate-fade bg-[#a5d8f3]">
-                            {/* Фоновое изображение (море и самолет) */}
-                            <div 
-                                className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
-                                style={{ backgroundImage: `url('${CONFIG.mainBackgroundUrl}')` }}
-                            ></div>
+                        {/* Тонкая полоска "Домой" */}
+                        <div className="hidden sm:block absolute bottom-1.5 inset-x-0 h-1 z-[1000] pointer-events-none">
+                            <div className="w-[35%] h-full bg-black/20 mx-auto rounded-full"></div>
+                        </div>
 
-                            {/* Легкий градиент сверху для читаемости имени */}
+                        {/* --- ВАШ ОРИГИНАЛЬНЫЙ КОНТЕЙНЕР (ВНУТРИ НИЧЕГО НЕ ИЗМЕНИЛОСЬ) --- */}
+                        <div 
+                            className="app-container bg-paper text-[#2C2C2C] selection:bg-amber-200 hide-scrollbar"
+                            onTouchStart={onTouchStart}
+                            onTouchMove={onTouchMove}
+                            onTouchEnd={onTouchEnd}
+                            style={{ minHeight: '100%', height: '100%', maxWidth: '100%', margin: 0, overflowY: 'auto' }}
+                        >
+                            {isAppLoading && (
+                                <div className={`fixed inset-0 z-[100] bg-[#fce2b1] flex flex-col items-center justify-center transition-opacity duration-500 ${isAppFading ? 'opacity-0' : 'opacity-100'}`}>
+                                    <div className="relative flex justify-center items-center">
+                                        <div className="absolute w-20 h-20 border-[3px] border-[#E7D6BD] rounded-full"></div>
+                                        <div className="absolute w-20 h-20 border-[3px] border-[#d4af37] rounded-full border-t-transparent animate-spin" style={{ animationDuration: '1.2s' }}></div>
+                                        <div className="absolute w-14 h-14 border-[2px] border-[#d4af37]/40 rounded-full border-b-transparent animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
+                                        <IconMapPin size={22} className="text-[#d4af37] animate-pulse" />
+                                    </div>
+                                    <h2 className="mt-8 text-xs font-serif font-bold text-[#2C2C2C] tracking-[0.3em] uppercase animate-pulse text-center px-4">{CONFIG.brandName}</h2>
+                                </div>
+                            )}
+
+                            {activeScreen === 'home' && (
+                                <div className="relative min-h-screen flex flex-col items-center animate-fade bg-[#a5d8f3]">
+                                    {/* Фоновое изображение */}
+                                    <div 
+                                        className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+                                        style={{ backgroundImage: `url('${CONFIG.mainBackgroundUrl}')` }}
+                                    ></div>
+
+                            {/* Легкий градиент */}
                             <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/50 to-transparent z-10 pointer-events-none"></div>
 
                             {/* Заголовок */}
@@ -359,39 +427,31 @@
                                 <p className="text-sm font-serif italic text-white/90 text-center px-4 mt-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">{CONFIG.slogan}</p>
                             </div>
 
-                            {/* Интерактивные кнопки-веер над самолетом (АБСОЛЮТНОЕ ПОЗИЦИОНИРОВАНИЕ С НАХЛЕСТОМ) */}
+                            {/* Интерактивные кнопки-веер над самолетом */}
                             <div className="relative w-full px-2 max-w-[500px] h-[260px] sm:h-[350px] z-20 flex-shrink-0 animate-item mx-auto" style={{animationDelay: '0.3s', marginTop: CONFIG.fanLayout.marginTop}}>
                                 
-                                {/* КНОПКА 1: Обо мне */}
+                                {/* КНОПКА 1 */}
                                 <button onClick={() => navigateTo('about')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-10" style={{ width: CONFIG.buttons.about.width, left: CONFIG.buttons.about.left, top: CONFIG.buttons.about.top }}>
                                     <img src={CONFIG.buttons.about.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.about.text} />
-                                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-white font-bold text-[10px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.about.text}</span>
-                                    </div>
+                                    <CurvedText text={CONFIG.buttons.about.text} settings={CONFIG.buttons.about.textSettings} idKey="about" />
                                 </button>
                                 
-                                {/* КНОПКА 2: Туры */}
+                                {/* КНОПКА 2 */}
                                 <button onClick={() => navigateTo('tours')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-20" style={{ width: CONFIG.buttons.tours.width, left: CONFIG.buttons.tours.left, top: CONFIG.buttons.tours.top }}>
                                     <img src={CONFIG.buttons.tours.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.tours.text} />
-                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-white font-bold text-[10px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.tours.text}</span>
-                                    </div>
+                                    <CurvedText text={CONFIG.buttons.tours.text} settings={CONFIG.buttons.tours.textSettings} idKey="tours" />
                                 </button>
 
-                                {/* КНОПКА 3: Контакты */}
+                                {/* КНОПКА 3 */}
                                 <button onClick={() => navigateTo('contacts')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-20" style={{ width: CONFIG.buttons.contacts.width, right: CONFIG.buttons.contacts.right, top: CONFIG.buttons.contacts.top }}>
                                     <img src={CONFIG.buttons.contacts.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.contacts.text} />
-                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-white font-bold text-[10px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.contacts.text}</span>
-                                    </div>
+                                    <CurvedText text={CONFIG.buttons.contacts.text} settings={CONFIG.buttons.contacts.textSettings} idKey="contacts" />
                                 </button>
 
-                                {/* КНОПКА 4: Отзывы */}
+                                {/* КНОПКА 4 */}
                                 <button onClick={() => navigateTo('reviews')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-10" style={{ width: CONFIG.buttons.reviews.width, right: CONFIG.buttons.reviews.right, top: CONFIG.buttons.reviews.top }}>
                                     <img src={CONFIG.buttons.reviews.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.reviews.text} />
-                                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-2 py-1 sm:px-3 sm:py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
-                                        <span className="text-white font-bold text-[10px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.reviews.text}</span>
-                                    </div>
+                                    <CurvedText text={CONFIG.buttons.reviews.text} settings={CONFIG.buttons.reviews.textSettings} idKey="reviews" />
                                 </button>
                             </div>
                         </div>
@@ -511,6 +571,8 @@
                             </div>
                         </div>
                     )}
+                </div>
+                    </div>
                 </div>
             );
         }
