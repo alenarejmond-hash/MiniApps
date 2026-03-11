@@ -93,6 +93,8 @@
         const Sparkles = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>;
         const MessageCircle = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>;
         const X = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>;
+        const Calendar = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>;
+        const QrCode = ({ className }) => <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>;
 
         // ==========================================
         // 🛠 БЛОК НАСТРОЕК (МЕНЯТЬ ТОЛЬКО ЗДЕСЬ) 🛠
@@ -109,6 +111,7 @@
             links: {
                 telegram: "https://t.me/telegram", // Для записи и кнопки "Написать мне"
                 telegramChannel: "https://t.me/telegram_channel", // Ссылка для кнопки "Мой канал"
+                qrCodeUrl: "https://i.postimg.cc/VNjjw7mp/Remove-background-project-(1).png", // ⭐️ Ссылка на картинку с QR-кодом
                 freebieUrl: "#", // Ссылка на пост/файл
                 freebieTitle: "Полезное (Free)",
                 freebieSubtitle: "Гайд \"Снижение тревожности\"",
@@ -237,6 +240,15 @@
                 { id: 1, name: "Анна М.", text: "Бережный подход и невероятное чувство такта. После сессий уходит тяжесть, появляется ясность.", rating: 5 },
                 { id: 2, name: "Елена В.", text: "Научилась слышать себя и отстаивать границы без чувства вины. Спасибо за эту трансформацию!", rating: 5 },
                 { id: 3, name: "Михаил С.", text: "Каждая сессия — как глоток свежего воздуха. Нашел ту самую внутреннюю опору.", rating: 5 }
+            ],
+
+            // ==========================================
+            // ⭐️ НОВЫЙ РАЗДЕЛ: ФОРМАТ И СТОИМОСТЬ ⭐️
+            // ==========================================
+            pricing: [
+                { title: "Онлайн-сессия", duration: "60 мин", price: "3 500 ₽" },
+                { title: "Личная встреча", duration: "60 мин", price: "5 000 ₽" },
+                { title: "Групповая терапия", duration: "120 мин", price: "2 500 ₽" }
             ]
         };
         // ==========================================
@@ -252,6 +264,12 @@
             
             // ВАЙБОВЫЙ ФИКС: Добавили потерянное состояние для окна Полезного
             const [isFreebiesOpen, setIsFreebiesOpen] = useState(false);
+            
+            // Новое состояние для окна Стоимости
+            const [isPricingOpen, setIsPricingOpen] = useState(false);
+            
+            // ВАЙБОВЫЙ ФИКС: Новое состояние для окна QR-кода
+            const [isQrOpen, setIsQrOpen] = useState(false);
             
             // Новые состояния для лоадера и отзывов
             const [isLoading, setIsLoading] = useState(true);
@@ -286,13 +304,13 @@
 
             // 🛠 ВАЙБОВЫЙ ФИКС 1: Блокировка скролла фона при открытых модалках
             useEffect(() => {
-                if (isModalOpen || isReviewFormOpen || isFreebiesOpen) {
+                if (isModalOpen || isReviewFormOpen || isFreebiesOpen || isPricingOpen || isQrOpen) {
                     document.body.style.overflow = 'hidden';
                 } else {
                     document.body.style.overflow = '';
                 }
                 return () => { document.body.style.overflow = ''; };
-            }, [isModalOpen, isReviewFormOpen, isFreebiesOpen]);
+            }, [isModalOpen, isReviewFormOpen, isFreebiesOpen, isPricingOpen, isQrOpen]);
 
             // 4. Обработка системной кнопки "Назад" (Android/TG Desktop)
             useEffect(() => {
@@ -303,9 +321,11 @@
                     setIsModalOpen(false);
                     setIsReviewFormOpen(false);
                     setIsFreebiesOpen(false); // Закрываем полезное при системном свайпе
+                    setIsPricingOpen(false); // Закрываем прайс-лист
+                    setIsQrOpen(false); // Закрываем QR-код
                 };
 
-                if (isModalOpen || isReviewFormOpen || isFreebiesOpen) {
+                if (isModalOpen || isReviewFormOpen || isFreebiesOpen || isPricingOpen || isQrOpen) {
                     tg.BackButton.show();
                     tg.onEvent('backButtonClicked', handleBack);
                 } else {
@@ -316,7 +336,7 @@
                 return () => {
                     tg.offEvent('backButtonClicked', handleBack);
                 };
-            }, [isModalOpen, isReviewFormOpen, isFreebiesOpen]);
+            }, [isModalOpen, isReviewFormOpen, isFreebiesOpen, isPricingOpen, isQrOpen]);
 
             // 🛠 ВАЙБОВЫЙ ФИКС 3: Обработчики свайпа вправо (Touch Events для модалок)
             const onTouchStart = (e) => {
@@ -440,6 +460,14 @@
             return (
                 <div className="max-w-md mx-auto min-h-screen pb-24 relative selection:bg-sage/30">
                     
+                    {/* Кнопка QR-кода (Справа вверху, как ты и просила!) */}
+                    <button 
+                        onClick={() => { triggerHaptic(); setIsQrOpen(true); }}
+                        className="absolute top-6 right-6 glass-panel p-3 rounded-full text-sage hover:text-graphite transition-all active:scale-95 shadow-md z-50"
+                    >
+                        <QrCode className="w-6 h-6" />
+                    </button>
+
                     {/* Header / Hero */}
                     <header className="px-6 pt-12 pb-6 flex flex-col items-center text-center opacity-0 animate-fade-in-up">
                         <div className="relative mb-6">
@@ -512,17 +540,15 @@
                             <span className="font-medium text-sm">Обо мне</span>
                         </button>
                         
-                        <a 
-                            href={CONFIG.links.telegram} 
-                            target="_blank"
-                            onClick={triggerHaptic}
+                        <button 
+                            onClick={() => { triggerHaptic(); setIsPricingOpen(true); }}
                             className="glass-panel p-5 rounded-[2rem] flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform"
                         >
                             <div className="bg-sand p-3 rounded-full text-sage">
-                                <MessageCircle className="w-6 h-6" />
+                                <Calendar className="w-6 h-6" />
                             </div>
-                            <span className="font-medium text-sm">Записаться</span>
-                        </a>
+                            <span className="font-medium text-sm text-center leading-tight">Формат и<br/>стоимость</span>
+                        </button>
 
                         <div className="col-span-2 glass-panel p-6 rounded-[2rem] transition-all duration-300">
                             <h3 className="font-serif text-lg mb-4 flex items-center gap-2">
@@ -653,43 +679,37 @@
                         </div>
                     )}
 
-                    {/* Полезное (Freebies / Лид-магниты) Modal */}
-                    {isFreebiesOpen && (
+                    {/* QR-код Modal */}
+                    {isQrOpen && (
                         <div 
                             className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up"
                             onTouchStart={onTouchStart}
-                            onTouchEnd={(e) => onTouchEnd(e, () => setIsFreebiesOpen(false))}
+                            onTouchEnd={(e) => onTouchEnd(e, () => setIsQrOpen(false))}
                         >
-                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white" onClick={e => e.stopPropagation()}>
+                            <div className="glass-panel w-full max-w-xs rounded-[2.5rem] p-8 relative shadow-2xl border-white text-center" onClick={e => e.stopPropagation()}>
                                 <button 
-                                    onClick={() => { triggerHaptic(); setIsFreebiesOpen(false); }}
+                                    onClick={() => { triggerHaptic(); setIsQrOpen(false); }}
                                     className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
                                 >
                                     <X className="w-5 h-5" />
                                 </button>
                                 
-                                <h2 className="font-serif text-2xl mb-2 text-graphite flex items-center gap-2">
-                                    <Leaf className="w-6 h-6 text-sage" />
-                                    Полезное
-                               </h2>
-                               <p className="text-sm font-light text-graphite/80 mb-6 leading-relaxed">
-                                   Забирай бесплатные материалы, которые помогут тебе поддержать себя:
-                               </p>
+                                <h2 className="font-serif text-2xl mb-6 text-graphite flex items-center justify-center gap-2">
+                                    <QrCode className="w-6 h-6 text-sage" />
+                                    Мой канал
+                                </h2>
                                 
-                                <div className="space-y-3 max-h-[60vh] overflow-y-auto no-scrollbar pr-2 pb-2 overscroll-contain">
-                                    {CONFIG.freebies.map((item, idx) => (
-                                        <a 
-                                            key={idx}
-                                            href={item.url}
-                                            target="_blank"
-                                            onClick={triggerHaptic}
-                                            className="block bg-white/60 hover:bg-white/90 border border-white p-4 rounded-[1.5rem] active:scale-95 transition-all shadow-sm"
-                                        >
-                                            <span className="block font-medium text-graphite mb-0.5">{item.title}</span>
-                                            <span className="block text-[11px] text-graphite/60 font-light">{item.subtitle}</span>
-                                        </a>
-                                    ))}
+                                <div className="bg-white p-4 rounded-[1.5rem] shadow-sm mb-4 inline-block">
+                                    <img 
+                                        src={CONFIG.links.qrCodeUrl} 
+                                        alt="" 
+                                        className="w-48 h-48 object-contain rounded-xl"
+                                    />
                                 </div>
+                                
+                                <p className="text-sm font-light text-graphite/80 leading-relaxed italic px-2">
+                                    Отсканируй, чтобы не потерять уютный канал ✨
+                                </p>
                             </div>
                         </div>
                     )}
