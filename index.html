@@ -59,7 +59,9 @@
     </script>
 
     <style>
-        body {
+        /* 🛠 ВАЙБОВЫЙ ФИКС 2: Жесткая фиксация экрана (убираем "резинку" и прыжки) */
+        html, body {
+            overscroll-behavior-y: none;
             background-color: #F4F1EA;
             -webkit-tap-highlight-color: transparent;
         }
@@ -232,9 +234,9 @@
 
             // 7. Дефолтные отзывы (если таблица не подключена или пустая)
             defaultReviews: [
-                { id: 1, name: "Анна М.", text: "Бережный подход и невероятное чувство такта. После сессий уходит тяжесть, появляется ясность." },
-                { id: 2, name: "Елена В.", text: "Научилась слышать себя и отстаивать границы без чувства вины. Спасибо за эту трансформацию!" },
-                { id: 3, name: "Михаил С.", text: "Каждая сессия — как глоток свежего воздуха. Нашел ту самую внутреннюю опору." }
+                { id: 1, name: "Анна М.", text: "Бережный подход и невероятное чувство такта. После сессий уходит тяжесть, появляется ясность.", rating: 5 },
+                { id: 2, name: "Елена В.", text: "Научилась слышать себя и отстаивать границы без чувства вины. Спасибо за эту трансформацию!", rating: 5 },
+                { id: 3, name: "Михаил С.", text: "Каждая сессия — как глоток свежего воздуха. Нашел ту самую внутреннюю опору.", rating: 5 }
             ]
         };
         // ==========================================
@@ -260,6 +262,9 @@
             const [submitStatus, setSubmitStatus] = useState(null);
             const [activeExpertise, setActiveExpertise] = useState(null);
 
+            // Состояние для обработки свайпа (Swipe Back)
+            const [touchStartXY, setTouchStartXY] = useState({x: 0, y: 0});
+
             // 3. Легкая вибрация (Haptic Feedback)
             const triggerHaptic = () => {
                 if (tg && tg.HapticFeedback) {
@@ -279,7 +284,17 @@
                 }
             }, []);
 
-            // 4. Обработка системной кнопки "Назад" и свайпа вправо (iOS)
+            // 🛠 ВАЙБОВЫЙ ФИКС 1: Блокировка скролла фона при открытых модалках
+            useEffect(() => {
+                if (isModalOpen || isReviewFormOpen || isFreebiesOpen) {
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    document.body.style.overflow = '';
+                }
+                return () => { document.body.style.overflow = ''; };
+            }, [isModalOpen, isReviewFormOpen, isFreebiesOpen]);
+
+            // 4. Обработка системной кнопки "Назад" (Android/TG Desktop)
             useEffect(() => {
                 if (!tg) return;
                 
@@ -287,7 +302,7 @@
                     triggerHaptic();
                     setIsModalOpen(false);
                     setIsReviewFormOpen(false);
-                    setIsFreebiesOpen(false); // Закрываем полезное при свайпе
+                    setIsFreebiesOpen(false); // Закрываем полезное при системном свайпе
                 };
 
                 if (isModalOpen || isReviewFormOpen || isFreebiesOpen) {
@@ -301,7 +316,29 @@
                 return () => {
                     tg.offEvent('backButtonClicked', handleBack);
                 };
-            }, [isModalOpen, isReviewFormOpen, isFreebiesOpen]); // Не забыли добавить в зависимости
+            }, [isModalOpen, isReviewFormOpen, isFreebiesOpen]);
+
+            // 🛠 ВАЙБОВЫЙ ФИКС 3: Обработчики свайпа вправо (Touch Events для модалок)
+            const onTouchStart = (e) => {
+                setTouchStartXY({
+                    x: e.targetTouches[0].clientX,
+                    y: e.targetTouches[0].clientY
+                });
+            };
+
+            const onTouchEnd = (e, closeFn) => {
+                const touchEndX = e.changedTouches[0].clientX;
+                const touchEndY = e.changedTouches[0].clientY;
+                
+                const dx = touchEndX - touchStartXY.x;
+                const dy = Math.abs(touchEndY - touchStartXY.y);
+                
+                // Если провели вправо больше чем на 70px и палец не ушел сильно вверх-вниз (защита от скролла)
+                if (dx > 70 && dy < 50) { 
+                    triggerHaptic();
+                    closeFn();
+                }
+            };
 
             // Эффект загрузки данных при старте (Чтение напрямую из Google Таблицы)
             useEffect(() => {
@@ -590,8 +627,12 @@
 
                     {/* About Modal */}
                     {isModalOpen && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up">
-                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white">
+                        <div 
+                            className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up"
+                            onTouchStart={onTouchStart}
+                            onTouchEnd={(e) => onTouchEnd(e, () => setIsModalOpen(false))}
+                        >
+                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white" onClick={e => e.stopPropagation()}>
                                 <button 
                                     onClick={() => { triggerHaptic(); setIsModalOpen(false); }}
                                     className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
@@ -600,7 +641,7 @@
                                 </button>
                                 
                                 <h2 className="font-serif text-2xl mb-4 text-graphite">{CONFIG.about.title}</h2>
-                                <div className="space-y-4 text-sm font-light text-graphite/80 leading-relaxed max-h-[60vh] overflow-y-auto no-scrollbar pr-2">
+                                <div className="space-y-4 text-sm font-light text-graphite/80 leading-relaxed max-h-[60vh] overflow-y-auto no-scrollbar pr-2 overscroll-contain">
                                     {CONFIG.about.paragraphs.map((p, idx) => (
                                         <p key={idx}>{p}</p>
                                     ))}
@@ -614,8 +655,12 @@
 
                     {/* Полезное (Freebies / Лид-магниты) Modal */}
                     {isFreebiesOpen && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up">
-                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white">
+                        <div 
+                            className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up"
+                            onTouchStart={onTouchStart}
+                            onTouchEnd={(e) => onTouchEnd(e, () => setIsFreebiesOpen(false))}
+                        >
+                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white" onClick={e => e.stopPropagation()}>
                                 <button 
                                     onClick={() => { triggerHaptic(); setIsFreebiesOpen(false); }}
                                     className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
@@ -631,7 +676,7 @@
                                    Забирай бесплатные материалы, которые помогут тебе поддержать себя:
                                </p>
                                 
-                                <div className="space-y-3 max-h-[60vh] overflow-y-auto no-scrollbar pr-2 pb-2">
+                                <div className="space-y-3 max-h-[60vh] overflow-y-auto no-scrollbar pr-2 pb-2 overscroll-contain">
                                     {CONFIG.freebies.map((item, idx) => (
                                         <a 
                                             key={idx}
@@ -651,8 +696,12 @@
 
                     {/* Написать отзыв Modal */}
                     {isReviewFormOpen && (
-                        <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up">
-                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white">
+                        <div 
+                            className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up"
+                            onTouchStart={onTouchStart}
+                            onTouchEnd={(e) => onTouchEnd(e, () => setIsReviewFormOpen(false))}
+                        >
+                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white" onClick={e => e.stopPropagation()}>
                                 <button 
                                     onClick={() => { triggerHaptic(); setIsReviewFormOpen(false); }}
                                     className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
