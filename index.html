@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Психолог | Telegram Mini App</title>
     
+    <!-- Telegram Web App -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -144,6 +147,8 @@
         // КОНЕЦ БЛОКА НАСТРОЕК
         // ==========================================
 
+        const tg = window.Telegram?.WebApp;
+
         const App = () => {
             const [isModalOpen, setIsModalOpen] = useState(false);
             const [selectedMood, setSelectedMood] = useState(null);
@@ -152,20 +157,66 @@
             const [isLoading, setIsLoading] = useState(true);
             const [reviews, setReviews] = useState([]);
             const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
-            const [reviewForm, setReviewForm] = useState({ name: '', text: '' });
+            const [reviewForm, setReviewForm] = useState({ name: '', text: '', rating: 5 });
             const [isSubmitting, setIsSubmitting] = useState(false);
             const [submitStatus, setSubmitStatus] = useState(null);
+
+            // 3. Легкая вибрация (Haptic Feedback)
+            const triggerHaptic = () => {
+                if (tg && tg.HapticFeedback) {
+                    tg.HapticFeedback.impactOccurred('light');
+                }
+            };
+
+            // 1 & 2. Инициализация Telegram Mini App (разворот и защита от смахивания)
+            useEffect(() => {
+                if (tg) {
+                    tg.ready();
+                    tg.expand(); // Разворачиваем на весь экран
+                    tg.enableClosingConfirmation(); // Защита от случайного закрытия
+                    if (tg.disableVerticalSwipes) {
+                        tg.disableVerticalSwipes(); // Блокировка смахивания вниз (в новых версиях TG)
+                    }
+                }
+            }, []);
+
+            // 4. Обработка системной кнопки "Назад" и свайпа вправо (iOS)
+            useEffect(() => {
+                if (!tg) return;
+                
+                const handleBack = () => {
+                    triggerHaptic();
+                    setIsModalOpen(false);
+                    setIsReviewFormOpen(false);
+                };
+
+                if (isModalOpen || isReviewFormOpen) {
+                    tg.BackButton.show();
+                    tg.onEvent('backButtonClicked', handleBack);
+                } else {
+                    tg.BackButton.hide();
+                    tg.offEvent('backButtonClicked', handleBack);
+                }
+
+                return () => {
+                    tg.offEvent('backButtonClicked', handleBack);
+                };
+            }, [isModalOpen, isReviewFormOpen]);
 
             // Эффект загрузки данных при старте
             useEffect(() => {
                 if (!CONFIG.googleScriptUrl) {
                     setReviews(CONFIG.defaultReviews);
-                    setTimeout(() => setIsLoading(false), 1200); 
+                    setIsLoading(false); 
                     return;
                 }
 
-                // Запрашиваем "Одобренные" отзывы из гугл таблицы
-                fetch(CONFIG.googleScriptUrl.trim(), { redirect: 'follow' })
+                // Запрашиваем "Одобренные" отзывы из гугл таблицы (добавлен антикэш)
+                const timestamp = new Date().getTime();
+                const url = CONFIG.googleScriptUrl.trim();
+                const fetchUrl = url.includes('?') ? `${url}&t=${timestamp}` : `${url}?t=${timestamp}`;
+
+                fetch(fetchUrl, { cache: 'no-store', redirect: 'follow' })
                     .then(res => {
                         if (!res.ok) throw new Error("Скрипт недоступен");
                         return res.json();
@@ -184,6 +235,7 @@
             // Отправка нового отзыва
             const handleReviewSubmit = (e) => {
                 e.preventDefault();
+                triggerHaptic();
                 if (!CONFIG.googleScriptUrl) {
                     setSubmitStatus('error_no_url');
                     return;
@@ -195,6 +247,7 @@
                 const formData = new URLSearchParams();
                 formData.append('reviewer_name', reviewForm.name);
                 formData.append('reviewer_text', reviewForm.text);
+                formData.append('reviewer_rating', reviewForm.rating);
 
                 fetch(CONFIG.googleScriptUrl, {
                     method: 'POST',
@@ -204,7 +257,7 @@
                 })
                 .then(() => {
                     setSubmitStatus('success');
-                    setReviewForm({ name: '', text: '' });
+                    setReviewForm({ name: '', text: '', rating: 5 });
                     // Закрываем форму через 3 секунды после успеха
                     setTimeout(() => {
                         setIsReviewFormOpen(false);
@@ -214,20 +267,6 @@
                 .catch(() => setSubmitStatus('error'))
                 .finally(() => setIsSubmitting(false));
             };
-
-            // КРАСИВЫЙ ЭКРАН ЗАГРУЗКИ
-            if (isLoading) {
-                return (
-                    <div className="flex flex-col items-center justify-center min-h-screen bg-sand text-sage">
-                        <div className="relative flex justify-center items-center mb-6">
-                            <div className="absolute animate-ping w-20 h-20 rounded-full bg-sage/20"></div>
-                            <div className="w-14 h-14 rounded-full border-4 border-sage-light border-t-sage animate-spin relative z-10 shadow-soft"></div>
-                            <Leaf className="w-5 h-5 absolute z-20 text-sage" />
-                        </div>
-                        <span className="font-serif text-graphite/60 text-sm tracking-widest uppercase animate-pulse">Загружаем уют...</span>
-                    </div>
-                );
-            }
 
             return (
                 <div className="max-w-md mx-auto min-h-screen pb-24 relative selection:bg-sage/30">
@@ -262,7 +301,7 @@
                                         {Object.keys(CONFIG.supportMessages).map((emoji) => (
                                             <button 
                                                 key={emoji}
-                                                onClick={() => setSelectedMood(emoji)}
+                                                onClick={() => { triggerHaptic(); setSelectedMood(emoji); }}
                                                 className="text-4xl transition-transform active:scale-90 hover:scale-110"
                                             >
                                                 {emoji}
@@ -276,7 +315,7 @@
                                         "{CONFIG.supportMessages[selectedMood]}"
                                     </p>
                                     <button 
-                                        onClick={() => setSelectedMood(null)}
+                                        onClick={() => { triggerHaptic(); setSelectedMood(null); }}
                                         className="text-xs text-sage border-b border-sage/30 pb-0.5 uppercase tracking-wider font-medium"
                                     >
                                         Вернуться
@@ -289,7 +328,7 @@
                     {/* Interactive Buttons */}
                     <section className="px-6 mb-8 grid grid-cols-2 gap-4 opacity-0 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
                         <button 
-                            onClick={() => setIsModalOpen(true)}
+                            onClick={() => { triggerHaptic(); setIsModalOpen(true); }}
                             className="glass-panel p-5 rounded-[2rem] flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform"
                         >
                             <div className="bg-sand p-3 rounded-full text-sage">
@@ -301,6 +340,7 @@
                         <a 
                             href={CONFIG.links.telegram} 
                             target="_blank"
+                            onClick={triggerHaptic}
                             className="glass-panel p-5 rounded-[2rem] flex flex-col items-center justify-center gap-3 active:scale-95 transition-transform"
                         >
                             <div className="bg-sand p-3 rounded-full text-sage">
@@ -325,6 +365,7 @@
 
                         <a 
                             href={CONFIG.links.freebieUrl} 
+                            onClick={triggerHaptic}
                             className="col-span-2 bg-sage text-white p-5 rounded-[2rem] flex items-center justify-between active:scale-95 transition-transform shadow-soft"
                         >
                             <div className="text-left">
@@ -342,25 +383,32 @@
                         <div className="flex justify-between items-end px-6 mb-4">
                             <h2 className="font-serif text-xl text-graphite">Отзывы</h2>
                             <button 
-                                onClick={() => setIsReviewFormOpen(true)} 
+                                onClick={() => { triggerHaptic(); setIsReviewFormOpen(true); }} 
                                 className="text-xs text-sage border-b border-sage/30 pb-0.5 hover:text-graphite transition-colors"
                             >
                                 Оставить отзыв
                             </button>
                         </div>
-                        <div className="flex gap-4 overflow-x-auto snap-x px-6 pb-4 no-scrollbar">
-                            {reviews.map((review, index) => (
-                                <div key={review.id || index} className="snap-center shrink-0 w-64 glass-panel p-5 rounded-[2rem]">
-                                    <div className="flex text-sage mb-2">
-                                        {[...Array(5)].map((_, i) => (
-                                            <svg key={i} className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-                                        ))}
+                        {isLoading ? (
+                            <div className="px-6 pb-4 text-sm text-sage flex items-center gap-2">
+                                <div className="w-4 h-4 rounded-full border-2 border-sage-light border-t-sage animate-spin"></div>
+                                Загружаем отзывы...
+                            </div>
+                        ) : (
+                            <div className="flex gap-4 overflow-x-auto snap-x px-6 pb-4 no-scrollbar">
+                                {reviews.map((review, index) => (
+                                    <div key={review.id || index} className="snap-center shrink-0 w-64 glass-panel p-5 rounded-[2rem]">
+                                        <div className="flex mb-2">
+                                            {[...Array(5)].map((_, i) => (
+                                                <svg key={i} className={`w-4 h-4 ${i < (review.rating || 5) ? 'fill-current text-sage' : 'fill-current text-sage-light'}`} viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                            ))}
+                                        </div>
+                                        <p className="text-sm text-graphite/80 font-light leading-relaxed mb-3">"{review.text}"</p>
+                                        <span className="text-xs font-medium text-graphite">{review.name}</span>
                                     </div>
-                                    <p className="text-sm text-graphite/80 font-light leading-relaxed mb-3">"{review.text}"</p>
-                                    <span className="text-xs font-medium text-graphite">{review.name}</span>
-                                </div>
-                            ))}
-                        </div>
+                                ))}
+                            </div>
+                        )}
                     </section>
 
                     {/* CTA Bottom Button (Fixed) */}
@@ -368,6 +416,7 @@
                         <a 
                             href={CONFIG.links.telegram}
                             target="_blank"
+                            onClick={triggerHaptic}
                             className="glass-panel border-sage/20 shadow-soft w-full py-4 rounded-full flex items-center justify-center gap-2 text-graphite font-medium active:scale-95 transition-transform"
                         >
                             Подписаться на мой уютный канал
@@ -379,7 +428,7 @@
                         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up">
                             <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white">
                                 <button 
-                                    onClick={() => setIsModalOpen(false)}
+                                    onClick={() => { triggerHaptic(); setIsModalOpen(false); }}
                                     className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
                                 >
                                     <X className="w-5 h-5" />
@@ -403,7 +452,7 @@
                         <div className="fixed inset-0 z-50 flex items-center justify-center p-6 bg-graphite/20 backdrop-blur-sm animate-fade-in-up">
                             <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white">
                                 <button 
-                                    onClick={() => setIsReviewFormOpen(false)}
+                                    onClick={() => { triggerHaptic(); setIsReviewFormOpen(false); }}
                                     className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
                                 >
                                     <X className="w-5 h-5" />
@@ -420,6 +469,18 @@
                                     </div>
                                 ) : (
                                     <form onSubmit={handleReviewSubmit} className="space-y-4">
+                                        <div className="flex justify-center gap-2 mb-2">
+                                            {[1, 2, 3, 4, 5].map(star => (
+                                                <svg 
+                                                    key={star} 
+                                                    onClick={() => { triggerHaptic(); setReviewForm({...reviewForm, rating: star}); }}
+                                                    className={`w-8 h-8 cursor-pointer transition-colors ${reviewForm.rating >= star ? 'text-sage fill-current' : 'text-sage-light fill-current'}`} 
+                                                    viewBox="0 0 20 20"
+                                                >
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                                </svg>
+                                            ))}
+                                        </div>
                                         <input 
                                             required 
                                             type="text" 
