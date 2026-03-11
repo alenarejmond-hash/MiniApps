@@ -8,6 +8,9 @@
     <!-- Telegram Web App -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
+    <!-- VK Mini Apps (Добавили мозги ВКонтакте!) -->
+    <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+
     <!-- React & ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -264,6 +267,7 @@
         // ==========================================
 
         const tg = window.Telegram?.WebApp;
+        const vk = window.vkBridge; // ВАЙБОВЫЙ ФИКС: Подключили VK
 
         const App = () => {
             const [isModalOpen, setIsModalOpen] = useState(false);
@@ -291,22 +295,34 @@
             // Состояние для обработки свайпа (Swipe Back)
             const [touchStartXY, setTouchStartXY] = useState({x: 0, y: 0});
 
-            // 3. Легкая вибрация (Haptic Feedback)
+            // 3. Легкая вибрация (Умный выбор: TG или VK)
             const triggerHaptic = () => {
-                if (tg && tg.HapticFeedback) {
+                // Проверяем, открыто ли именно в Телеграме
+                const isTgActive = tg && tg.initDataUnsafe && Object.keys(tg.initDataUnsafe).length > 0;
+                
+                if (isTgActive && tg.HapticFeedback) {
                     tg.HapticFeedback.impactOccurred('light');
+                } else if (vk) {
+                    // Если не в ТГ, пробуем вибрацию ВКонтакте
+                    vk.send('VKWebAppTapticImpactOccurred', { style: 'light' }).catch(() => {});
                 }
             };
 
-            // 1 & 2. Инициализация Telegram Mini App (разворот и защита от смахивания)
+            // 1 & 2. Инициализация (разворот и защита от смахивания)
             useEffect(() => {
-                if (tg) {
+                const isTgActive = tg && tg.initDataUnsafe && Object.keys(tg.initDataUnsafe).length > 0;
+                
+                if (isTgActive) {
+                    // Настройки для Телеграма
                     tg.ready();
-                    tg.expand(); // Разворачиваем на весь экран
-                    tg.enableClosingConfirmation(); // Защита от случайного закрытия
+                    tg.expand();
+                    tg.enableClosingConfirmation();
                     if (tg.disableVerticalSwipes) {
-                        tg.disableVerticalSwipes(); // Блокировка смахивания вниз (в новых версиях TG)
+                        tg.disableVerticalSwipes();
                     }
+                } else if (vk) {
+                    // Настройки для ВКонтакте
+                    vk.send('VKWebAppInit');
                 }
             }, []);
 
@@ -322,7 +338,8 @@
 
             // 4. Обработка системной кнопки "Назад" (Android/TG Desktop)
             useEffect(() => {
-                if (!tg) return;
+                const isTgActive = tg && tg.initDataUnsafe && Object.keys(tg.initDataUnsafe).length > 0;
+                if (!isTgActive) return; // ВК и браузеры игнорируем, там работают наши крестики и свайпы
                 
                 const handleBack = () => {
                     triggerHaptic();
