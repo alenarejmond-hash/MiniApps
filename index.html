@@ -132,10 +132,15 @@
                 '🙂': "Замечательно! Сохрани этот свет внутри себя на весь день."
             },
 
-            // 6. GOOGLE SCRIPT (Связь с таблицей)
-            // Ссылка теперь находится внутри кавычек переменной, как и должно быть!
-            googleScriptUrl: "https://script.google.com/macros/s/AKfycbyU83q5z54M6nsdsQHWKmDJHfQXb14EySFqootBLDc4CtejnlxsmZfq9W3G3ocPsZpN/exec", 
+            // 6. СВЯЗЬ С ТАБЛИЦЕЙ
+            // 6.1. Ссылка на скрипт (ДЛЯ ОТПРАВКИ новых отзывов в карантин)
+            googleScriptUrl: "https://script.google.com/macros/s/AKfycbwqZ6dQzSToWxX05lZrIPGE_bl_O65piq7IiTb4p7mRNMCEHVqmpcYQMFn5qOewdaC9/exec", 
             
+            // 6.2. Ссылка на саму таблицу (ДЛЯ ПРЯМОГО ЧТЕНИЯ опубликованных)
+            // ⚠️ ВАЖНО: В настройках таблицы (кнопка "Поделиться" справа сверху) 
+            // должен стоять доступ "Все, у кого есть ссылка" -> "Читатель".
+            googleSheetUrl: "https://docs.google.com/spreadsheets/d/1ii-0VEFRxh4g7XdZh676zLAKPy0NDJDEBrjSsEygAEc/edit?gid=0#gid=0",
+
             // 7. Дефолтные отзывы (если таблица не подключена или пустая)
             defaultReviews: [
                 { id: 1, name: "Анна М.", text: "Бережный подход и невероятное чувство такта. После сессий уходит тяжесть, появляется ясность." },
@@ -203,33 +208,65 @@
                 };
             }, [isModalOpen, isReviewFormOpen]);
 
-            // Эффект загрузки данных при старте
+            // Эффект загрузки данных при старте (Чтение напрямую из Google Таблицы)
             useEffect(() => {
-                if (!CONFIG.googleScriptUrl) {
-                    setReviews(CONFIG.defaultReviews);
-                    setIsLoading(false); 
-                    return;
+                if (CONFIG.googleSheetUrl) {
+                    // Достаем ID таблицы из ссылки
+                    const match = CONFIG.googleSheetUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+                    if (match && match[1]) {
+                        const sheetId = match[1];
+                        const sheetName = encodeURIComponent("Опубликованные отзывы");
+                        const timestamp = new Date().getTime(); // Антикэш
+                        
+                        // Специальная ссылка Google API для прямого чтения таблиц (вайб-кодерский трюк!)
+                        const fetchUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&sheet=${sheetName}&t=${timestamp}`;
+
+                        fetch(fetchUrl, { cache: 'no-store' })
+                            .then(res => res.text())
+                            .then(text => {
+                                // Очищаем ответ от лишних символов Google
+                                const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                                const data = JSON.parse(jsonStr);
+                                const rows = data.table.rows;
+                                const loadedReviews = [];
+
+                                rows.forEach((row, idx) => {
+                                    // Проверяем, что в строке есть имя (0 колонка) и текст (2 колонка)
+                                    if (row.c && row.c[0] && row.c[2]) {
+                                        const name = row.c[0].v;
+                                        const textVal = row.c[2].v;
+                                        
+                                        // Игнорируем заголовки, если они попали в данные
+                                        if (textVal && textVal.toLowerCase() !== "текст" && name !== "Имя") {
+                                            loadedReviews.push({
+                                                id: idx,
+                                                name: name || "Аноним",
+                                                text: textVal,
+                                                // Оценка в 4 колонке (индекс 3)
+                                                rating: row.c[3] ? parseInt(row.c[3].v) : 5 
+                                            });
+                                        }
+                                    }
+                                });
+
+                                if (loadedReviews.length > 0) {
+                                    setReviews(loadedReviews.reverse()); // Свежие наверх
+                                } else {
+                                    setReviews(CONFIG.defaultReviews);
+                                }
+                            })
+                            .catch(err => {
+                                console.warn("⚠️ Не удалось загрузить из таблицы напрямую. Показываем дефолтные.");
+                                setReviews(CONFIG.defaultReviews);
+                            })
+                            .finally(() => setIsLoading(false));
+                        return; // Завершаем, чтобы не пошло дальше
+                    }
                 }
-
-                // Запрашиваем "Одобренные" отзывы из гугл таблицы (добавлен антикэш)
-                const timestamp = new Date().getTime();
-                const url = CONFIG.googleScriptUrl.trim();
-                const fetchUrl = url.includes('?') ? `${url}&t=${timestamp}` : `${url}?t=${timestamp}`;
-
-                fetch(fetchUrl, { cache: 'no-store', redirect: 'follow' })
-                    .then(res => {
-                        if (!res.ok) throw new Error("Скрипт недоступен");
-                        return res.json();
-                    })
-                    .then(data => {
-                        if(data && data.length > 0) setReviews(data);
-                        else setReviews(CONFIG.defaultReviews);
-                    })
-                    .catch(err => {
-                        console.warn("⚠️ Таблица пока недоступна. Показываю дефолтные отзывы.");
-                        setReviews(CONFIG.defaultReviews);
-                    })
-                    .finally(() => setIsLoading(false));
+                
+                // Если ссылки на таблицу нет
+                setReviews(CONFIG.defaultReviews);
+                setIsLoading(false);
             }, []);
 
             // Отправка нового отзыва
