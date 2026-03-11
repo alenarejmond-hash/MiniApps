@@ -12,157 +12,183 @@
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     
-    <!-- Подключаем Babel -->
+    <!-- Подключаем Babel, чтобы браузер понял React-код внутри HTML -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <!-- Подключаем Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     
-    <!-- Подключаем парсер для Google Таблиц -->
+    <!-- Подключаем парсер для Google Таблиц (магия данных) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
-    <!-- 
-    =======================================================================
-    ✨✨✨ БЛОК ДЛЯ ВАЙБКОДЕРА (НАСТРОЙКИ ШРИФТОВ) ✨✨✨
-    Здесь ты можешь изменить ссылки на шрифты от Google Fonts.
-    =======================================================================
-    -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
-    <!-- ================= КОНЕЦ БЛОКА ШРИФТОВ ================= -->
+    <!-- Подключаем рукописный шрифт для подписи на фото и основной элегантный шрифт -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
     <style>
         html, body { 
             margin: 0; 
             padding: 0; 
-            /* Если хочешь изменить цвет фона всего приложения - меняй #F9F8F6 здесь */
-            background-color: #F9F8F6; 
+            font-family: 'Lora', serif; 
             -webkit-tap-highlight-color: transparent; 
             overscroll-behavior-y: none;
+            background-color: #fce2b1; /* Цвет фона всей страницы */
         }
-        
-        /* Здесь задаются сами шрифты. 
-        font-serif - для заголовков
-        font-sans - для обычного текста
-        */
-        .font-serif { font-family: 'Playfair Display', serif; }
-        .font-sans { font-family: 'Inter', sans-serif; }
-
-        /* Анимации для дизайна */
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
         @keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
         }
-        @keyframes slideUpSheet {
-            0% { transform: translateY(100%); }
-            100% { transform: translateY(0); }
+        .animate-item {
+            animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
         }
         .animate-fade {
             animation: fadeIn 0.5s ease-out forwards;
         }
-        .animate-slide-up {
-            animation: slideUpSheet 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+        /* --- ТЕКСТУРА БУМАГИ --- */
+        .bg-paper {
+            background-color: #fce2b1; 
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.35'/%3E%3C/svg%3E");
+            box-shadow: inset 0 0 100px rgba(0,0,0,0.05);
         }
 
-        /* Убираем скроллбар, но оставляем прокрутку */
+        /* --- СТИЛЬ ПОЧТОВОЙ МАРКИ --- */
+        .postage-stamp {
+            background: white;
+            padding: 4px;
+            filter: drop-shadow(2px 3px 5px rgba(0,0,0,0.2));
+            --g: radial-gradient(4px at 4px 4px, #0000 98%, #000 101%);
+            -webkit-mask: 
+                var(--g) 0 0 / 100% 8px repeat-x,
+                var(--g) 0 0 / 8px 100% repeat-y,
+                var(--g) 100% 100% / 100% 8px repeat-x,
+                var(--g) 100% 100% / 8px 100% repeat-y,
+                linear-gradient(#000 0 0) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
+            mask: 
+                var(--g) 0 0 / 100% 8px repeat-x,
+                var(--g) 0 0 / 8px 100% repeat-y,
+                var(--g) 100% 100% / 100% 8px repeat-x,
+                var(--g) 100% 100% / 8px 100% repeat-y,
+                linear-gradient(#000 0 0) center / calc(100% - 8px) calc(100% - 8px) no-repeat;
+        }
+
+        /* --- АДАПТИВНЫЙ КОНТЕЙНЕР --- */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         .app-container {
             min-height: 100dvh;
             width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 500px; /* Ограничение ширины для десктопа */
+            margin: 0 auto;   /* Центрирование */
             position: relative;
             overflow-x: hidden;
             overflow-y: auto;
-            background-color: #F9F8F6;
+            background-color: #fce2b1;
+            /* Легкая тень по бокам только на больших экранах */
+            box-shadow: 0 0 60px rgba(0,0,0,0.05);
         }
     </style>
 </head>
-<body class="bg-[#F9F8F6] text-[#242424] font-sans selection:bg-[#B85C47] selection:text-white">
+<body>
     <div id="root"></div>
 
     <script type="text/babel">
-        // =======================================================================
-        // ✨✨✨ БЛОК ДЛЯ ВАЙБКОДЕРА (НАСТРОЙКИ ПРИЛОЖЕНИЯ) ✨✨✨
-        // Привет! Это твоя панель управления. Тебе больше не нужно копаться 
-        // в сложном коде ниже. Просто меняй текст и ссылки внутри кавычек "", 
-        // и дизайн обновится сам!
-        // =======================================================================
-        const APP_SETTINGS = {
-            // --- 1. ТЕКСТЫ И ФОТО: ГЛАВНЫЙ ЭКРАН ---
-            brandName: "Вероника Крафт", 
-            brandSubtitle: "Travel Expert", 
-            slogan: "Твой личный тревел-эксперт", 
-            heroImage: "https://i.postimg.cc/NjngY2VT/unnamed-7.jpg", // Главное фото сверху и на экране загрузки
-            
-            // --- 2. ТЕКСТЫ И ФОТО: МЕНЮ (ПЛИТКИ) ---
-            menuToursTitle: "Горящие туры",
-            menuToursImage: "https://i.postimg.cc/cCC9sCPQ/unnamed-8.jpg", // Фото на плитке туров
+        const { useState, useEffect } = React;
 
-            menuAboutTitle: "Обо мне",
-            menuAboutSubtitle: "Мой подход",
+        // ==============================================================================
+        // 🛠️ СУПЕР-БЛОК НАСТРОЕК (ДЛЯ ВАЙБКОДЕРА) 🛠️
+        // Здесь собрано абсолютно всё: тексты, фото, ссылки, отступы и размеры.
+        // Просто меняйте значения внутри кавычек "", и проект обновится сам!
+        // ==============================================================================
+        const CONFIG = {
+            // --- 1. ГЛАВНЫЙ ЭКРАН: ТЕКСТЫ И ФОН ---
+            brandName: "Натали Леви", // Имя или название бренда
+            slogan: "Твой личный тревел-эксперт", // Подпись
+            mainBackgroundUrl: "https://i.postimg.cc/dtG9Cgrn/unnamed-10.jpg", // Фото фона (море и самолет)
 
-            menuReviewsTitle: "Отзывы",
-            menuReviewsSubtitle: "Слова туристов",
+            // --- 2. ГЛАВНЫЙ ЭКРАН: НАСТРОЙКИ 4-Х КНОПОК НАД САМОЛЕТОМ ---
+            fanLayout: {
+                marginTop: "0vh", // Отступ всего веера сверху (двигает все 4 кнопки разом вверх/вниз)
+            },
+            buttons: {
+                about: { // КНОПКА 1 (КРАЙНЯЯ СЛЕВА)
+                    text: "Обо мне", 
+                    image: "https://i.postimg.cc/WbcGsSCZ/kartocki-(1).png",
+                    width: "80%", // Размер кнопки
+                    left: "1%",   // Сдвиг слева
+                    top: "0%"    // Сдвиг сверху
+                },
+                tours: { // КНОПКА 2 (ЦЕНТР-ЛЕВО)
+                    text: "Туры", 
+                    image: "https://i.postimg.cc/zXwnvKYQ/kartocki-(2).png",
+                    width: "80%", 
+                    left: "1%", 
+                    top: "0%"
+                },
+                contacts: { // КНОПКА 3 (ЦЕНТР-ПРАВО)
+                    text: "Контакты", 
+                    image: "https://i.postimg.cc/x10Lz80n/kartocki-(3).png",
+                    width: "80%", 
+                    right: "19%", 
+                    top: "0%"
+                },
+                reviews: { // КНОПКА 4 (КРАЙНЯЯ СПРАВА)
+                    text: "Отзывы", 
+                    image: "https://i.postimg.cc/52x8CyxF/kartocki-(4).png",
+                    width: "80%", 
+                    right: "19%", 
+                    top: "0%"
+                }
+            },
 
-            menuContactsTitle: "Связаться со мной",
-            menuContactsSubtitle: "Отвечаю лично",
+            // --- 3. РАЗДЕЛ "ОБО МНЕ" ---
+            about: {
+                title: "Обо мне",
+                text: "Привет! Я твой личный тревел-эксперт. Я помогаю людям находить идеальные места для отдыха, организую незабываемые туры и беру всю рутину с документами на себя. Моя цель — сделать так, чтобы ты просто собрал чемодан и наслаждался отпуском!",
+                photoUrl: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400",
+            },
 
-            // --- 3. ТЕКСТЫ: АКТУАЛЬНЫЙ ТУР (НА ГЛАВНОМ ЭКРАНЕ) ---
-            featuredTourSectionTitle: "Ближайший тур",
-            featuredTourBtnText: "Подробнее",
-
-            // --- 4. ТЕКСТЫ И ССЫЛКИ: ГЛАВНАЯ КНОПКА ВНИЗУ ---
-            bottomBtnText: "Подобрать тур",
-            bottomBtnGlobalLink: "https://t.me/aicreata", // Ссылка для главной кнопки, если не указана другая в туре
-
-            // --- 5. ТЕКСТЫ И ФОТО: ЭКРАН "ОБО МНЕ" ---
-            aboutSheetTitle: "Обо мне",
-            aboutPhotoUrl: "https://i.postimg.cc/NjngY2VT/unnamed-7.jpg",
-            aboutText: "Привет! Я твой личный тревел-эксперт. Я помогаю людям находить идеальные места для отдыха, организую незабываемые туры и беру всю рутину с документами на себя. Моя цель — сделать так, чтобы ты просто собрал чемодан и наслаждался отпуском!",
-
-            // --- 6. ТЕКСТЫ И ССЫЛКИ: ЭКРАН "КОНТАКТЫ" ---
-            contactsSheetTitle: "Связаться со мной",
-            socialLinks: {
-                whatsapp: "https://wa.me/1234567890",
+            // --- 4. РАЗДЕЛ "КОНТАКТЫ И СОЦСЕТИ" ---
+            bookingLink: "https://t.me/telegram", // Базовая ссылка, если в таблице туров она не указана
+            contacts: {
                 telegram: "https://t.me/telegram",
                 instagram: "https://instagram.com/instagram",
+                whatsapp: "https://wa.me/1234567890",
                 phone: "+7 (999) 123-45-67"
             },
 
-            // --- 7. ТЕКСТЫ: ОТЗЫВЫ ---
-            reviewsSheetTitle: "Отзывы",
-            writeReviewBtnText: "Написать отзыв",
-
-            // --- 8. РАЗМЕРЫ (ВЫСОТА ФОТОГРАФИЙ) ---
-            sizes: {
-                heroImageHeight: "40vh",     // Высота главного фото (vh - процент от высоты экрана)
-                tourCardImageHeight: "200px" // Высота фото в карточке тура внутри шторки
-            },
-
-            // --- 9. БАЗЫ ДАННЫХ (GOOGLE SHEETS И SCRIPTS) ---
-            // Ссылка на таблицу с ТУРАМИ (CSV)
-            googleSheetToursUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=0&single=true&output=csv",
+            // --- 5. БАЗЫ ДАННЫХ (GOOGLE ТАБЛИЦЫ И СКРИПТЫ) ---
+            // Ссылка на таблицу с турами (формат CSV)
+            googleSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=0&single=true&output=csv",
             
-            // Ссылка на таблицу с ОТЗЫВАМИ (CSV)
-            googleSheetReviewsUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=882822745&single=true&output=csv",
+            // Ссылка на таблицу с отзывами (формат CSV)
+            reviewsCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=882822745&single=true&output=csv",
             
-            // Ссылка на Google Apps Script для ПРИЕМА НОВЫХ ОТЗЫВОВ
-            googleScriptSubmitReviewUrl: "https://script.google.com/macros/s/AKfycbwnSKpgdCJGand6-hgZ1L6_5a7RRxi9gpf4fa-sPvuOGJqTBp6GiBYtdjOzzjfvMfDR-Q/exec"
+            // Ссылка на Web App (Google Script) для отправки новых отзывов
+            reviewsPostUrl: "https://script.google.com/macros/s/AKfycbwnSKpgdCJGand6-hgZ1L6_5a7RRxi9gpf4fa-sPvuOGJqTBp6GiBYtdjOzzjfvMfDR-Q/exec"
         };
-        // ================= КОНЕЦ БЛОКА НАСТРОЕК =================
 
-        const { useState, useEffect, useRef } = React;
+        const IconArrowLeft = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>;
+        const IconInstagram = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
+        const IconSend = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>;
+        const IconPhone = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>;
+        const IconMapPin = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
+        const IconStar = ({size=24, filled=true, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>;
+        const IconEdit = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
 
         function App() {
-            // ЛОГИКА СОСТОЯНИЙ
             const [activeScreen, setActiveScreen] = useState('home');
             const [tours, setTours] = useState([]);
             const [isLoadingTours, setIsLoadingTours] = useState(true);
             const [dynamicBookingLink, setDynamicBookingLink] = useState("");
             const [sortOrder, setSortOrder] = useState('none');
-            const touchStartRef = useRef(null);
+            const [touchStart, setTouchStart] = useState(null);
+            const [touchEnd, setTouchEnd] = useState(null);
             const [reviews, setReviews] = useState([]);
             const [isLoadingReviews, setIsLoadingReviews] = useState(true);
             const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
@@ -181,9 +207,11 @@
                     }
                 }
 
-                if (window.Papa && APP_SETTINGS.googleSheetToursUrl) {
-                    window.Papa.parse(APP_SETTINGS.googleSheetToursUrl, {
-                        download: true, header: true, skipEmptyLines: true,
+                if (window.Papa && CONFIG.googleSheetUrl) {
+                    window.Papa.parse(CONFIG.googleSheetUrl, {
+                        download: true,
+                        header: true,
+                        skipEmptyLines: true,
                         complete: function(results) {
                             let foundGlobalLink = "";
                             const validTours = results.data.map(row => {
@@ -196,40 +224,46 @@
                             setTours(validTours);
                             setIsLoadingTours(false);
                         },
-                        error: function(err) { console.error("Ошибка загрузки туров:", err); setIsLoadingTours(false); }
+                        error: function(err) {
+                            console.error("Ошибка загрузки туров:", err);
+                            setIsLoadingTours(false);
+                        }
                     });
-                } else { setIsLoadingTours(false); }
+                } else {
+                    setIsLoadingTours(false);
+                }
 
-                if (window.Papa && APP_SETTINGS.googleSheetReviewsUrl) {
-                    window.Papa.parse(APP_SETTINGS.googleSheetReviewsUrl, {
-                        download: true, header: true, skipEmptyLines: true,
+                if (window.Papa && CONFIG.reviewsCsvUrl) {
+                    window.Papa.parse(CONFIG.reviewsCsvUrl, {
+                        download: true,
+                        header: true,
+                        skipEmptyLines: true,
                         complete: function(results) {
                             const fetchedReviews = results.data
                                 .filter(row => row.name && row.text)
                                 .map((row, index) => ({
-                                    id: index, name: row.name, date: row.date,
-                                    rating: parseInt(row.rating) || 5, text: row.text
+                                    id: index,
+                                    name: row.name,
+                                    date: row.date,
+                                    rating: parseInt(row.rating) || 5,
+                                    text: row.text
                                 })).reverse();
                             setReviews(fetchedReviews);
                             setIsLoadingReviews(false);
                         },
-                        error: function(err) { console.error("Ошибка загрузки отзывов:", err); setIsLoadingReviews(false); }
+                        error: function(err) {
+                            console.error("Ошибка загрузки отзывов:", err);
+                            setIsLoadingReviews(false);
+                        }
                     });
-                } else { setIsLoadingReviews(false); }
+                } else {
+                    setIsLoadingReviews(false);
+                }
 
                 const fadeTimer = setTimeout(() => setIsAppFading(true), 1500);
                 const removeTimer = setTimeout(() => setIsAppLoading(false), 2000);
                 return () => { clearTimeout(fadeTimer); clearTimeout(removeTimer); };
             }, []);
-
-            useEffect(() => {
-                // Блокируем скролл фона при открытых шторках, чтобы убрать "прыжки"
-                if (activeScreen !== 'home' || isReviewModalOpen) {
-                    document.body.style.overflow = 'hidden';
-                } else {
-                    document.body.style.overflow = '';
-                }
-            }, [activeScreen, isReviewModalOpen]);
 
             const triggerHaptic = () => {
                 if (window.Telegram?.WebApp?.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
@@ -239,7 +273,7 @@
             const navigateTo = (screen, customLink = null) => {
                 triggerHaptic();
                 if (screen === 'booking') {
-                    const linkToOpen = APP_SETTINGS.bottomBtnGlobalLink;
+                    const linkToOpen = CONFIG.bookingLink;
                     if (window.Telegram?.WebApp?.openLink) window.Telegram.WebApp.openLink(linkToOpen);
                     else window.open(linkToOpen, '_blank');
                     return;
@@ -252,20 +286,20 @@
                     return;
                 }
                 setActiveScreen(screen);
-                if(screen === 'home') setIsReviewModalOpen(false); 
+                window.scrollTo(0, 0);
             };
 
             const extractPrice = (priceStr) => { if (!priceStr) return 0; return parseInt(priceStr.replace(/\D/g, ''), 10) || 0; };
-            const onTouchStart = (e) => { touchStartRef.current = { x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }; };
-            const onTouchEnd = (e) => {
-                if (!touchStartRef.current) return;
-                const distanceX = e.changedTouches[0].clientX - touchStartRef.current.x;
-                const distanceY = Math.abs(e.changedTouches[0].clientY - touchStartRef.current.y);
-                const isEdgeSwipe = touchStartRef.current.x <= 30;
+            const onTouchStart = (e) => { setTouchEnd(null); setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }); };
+            const onTouchMove = (e) => { setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }); };
+            const onTouchEnd = () => {
+                if (!touchStart || !touchEnd) return;
+                const distanceX = touchEnd.x - touchStart.x;
+                const distanceY = Math.abs(touchEnd.y - touchStart.y);
+                const isEdgeSwipe = touchStart.x <= 30;
                 if (isEdgeSwipe && distanceX > 80 && distanceY < 50) {
                     if (activeScreen !== 'home') navigateTo('home');
                 }
-                touchStartRef.current = null;
             };
 
             const handleSubmitReview = async (e) => {
@@ -273,7 +307,7 @@
                 if (isSubmitting) return;
                 setIsSubmitting(true);
                 try {
-                    await fetch(APP_SETTINGS.googleScriptSubmitReviewUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(reviewForm) });
+                    await fetch(CONFIG.reviewsPostUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(reviewForm) });
                     setIsReviewSubmitted(true);
                     const d = new Date();
                     const newDateStr = `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
@@ -282,377 +316,198 @@
                 } catch (error) { alert("Ошибка при отправке."); } finally { setIsSubmitting(false); }
             };
 
-            const BottomSheet = ({ isOpen, onClose, title, children, isTall = true }) => {
-                if (!isOpen) return null;
-                return (
-                    <div className="fixed inset-0 z-[110] flex flex-col justify-end">
-                        <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] animate-fade" onClick={onClose}></div>
-                        <div className={`relative bg-[#F9F8F6] w-full max-w-5xl mx-auto rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] flex flex-col animate-slide-up ${isTall ? 'max-h-[90vh]' : 'max-h-[70vh]'}`}>
-                            <div className="flex-shrink-0 pt-4 pb-3 px-6 flex flex-col items-center bg-[#F9F8F6]/95 backdrop-blur-md rounded-t-[24px] z-10 sticky top-0 border-b border-[#E5E5E5]/50">
-                                <div className="w-12 h-1 bg-[#D4D4D4] rounded-full mb-5"></div>
-                                <div className="w-full flex justify-between items-center mb-1">
-                                    <h2 className="font-serif text-2xl text-[#1A1A1A]">{title}</h2>
-                                    <button onClick={onClose} className="p-2 -mr-2 text-[#8C8C8C] hover:text-[#242424] transition-colors rounded-full bg-white/50">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                                    </button>
-                                </div>
-                            </div>
-                            <div className="overflow-y-auto hide-scrollbar w-full">
-                                {children}
-                            </div>
-                        </div>
-                    </div>
-                );
-            };
-
-            const featuredTour = tours.length > 0 ? tours[0] : null;
+            const Polaroid = ({ src, className, tilt, children }) => (
+                <div className={`absolute p-2 pb-10 bg-[#fdfdfd] shadow-[2px_10px_20px_rgba(0,0,0,0.3)] border border-gray-200/50 rounded-[2px] ${className}`} style={{ transform: `rotate(${tilt}deg)`, boxShadow: 'inset 0 0 5px rgba(0,0,0,0.1), 2px 10px 20px rgba(0,0,0,0.3)' }}>
+                    <img src={src} alt="Travel" className="w-32 h-32 object-cover border border-gray-300/50" />
+                    {children}
+                </div>
+            );
 
             return (
                 <div 
-                    className="app-container hide-scrollbar"
+                    className="app-container bg-paper text-[#2C2C2C] selection:bg-amber-200 hide-scrollbar"
                     onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
                     onTouchEnd={onTouchEnd}
                 >
-                    {/* ЭКРАН ЗАГРУЗКИ */}
                     {isAppLoading && (
-                        <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center transition-opacity duration-700 bg-cover bg-center ${isAppFading ? 'opacity-0' : 'opacity-100'}`} style={{backgroundImage: `url('${APP_SETTINGS.heroImage}')`}}>
-                            <div className="absolute inset-0 bg-[#F9F8F6]/80 backdrop-blur-md"></div>
-                            <div className="relative z-10 flex flex-col items-center">
-                                <svg className="animate-spin h-12 w-12 text-[#B85C47] mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                <p className="font-serif text-[#1A1A1A] text-lg tracking-widest uppercase animate-pulse">Загрузка...</p>
+                        <div className={`fixed inset-0 z-[100] bg-[#fce2b1] flex flex-col items-center justify-center transition-opacity duration-500 ${isAppFading ? 'opacity-0' : 'opacity-100'}`}>
+                            <div className="relative flex justify-center items-center">
+                                <div className="absolute w-20 h-20 border-[3px] border-[#E7D6BD] rounded-full"></div>
+                                <div className="absolute w-20 h-20 border-[3px] border-[#d4af37] rounded-full border-t-transparent animate-spin" style={{ animationDuration: '1.2s' }}></div>
+                                <div className="absolute w-14 h-14 border-[2px] border-[#d4af37]/40 rounded-full border-b-transparent animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }}></div>
+                                <IconMapPin size={22} className="text-[#d4af37] animate-pulse" />
+                            </div>
+                            <h2 className="mt-8 text-xs font-serif font-bold text-[#2C2C2C] tracking-[0.3em] uppercase animate-pulse text-center px-4">{CONFIG.brandName}</h2>
+                        </div>
+                    )}
+
+                    {activeScreen === 'home' && (
+                        <div className="relative min-h-screen flex flex-col items-center animate-fade bg-[#a5d8f3]">
+                            {/* Фоновое изображение (море и самолет) */}
+                            <div 
+                                className="absolute inset-0 bg-cover bg-center bg-no-repeat z-0"
+                                style={{ backgroundImage: `url('${CONFIG.mainBackgroundUrl}')` }}
+                            ></div>
+
+                            {/* Легкий градиент сверху для читаемости имени */}
+                            <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-black/50 to-transparent z-10 pointer-events-none"></div>
+
+                            {/* Заголовок */}
+                            <div className="z-20 flex flex-col items-center mt-8 animate-item" style={{animationDelay: '0.1s'}}>
+                                <h1 className="text-3xl font-serif font-bold text-white text-center uppercase tracking-widest drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">{CONFIG.brandName}</h1>
+                                <p className="text-sm font-serif italic text-white/90 text-center px-4 mt-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">{CONFIG.slogan}</p>
+                            </div>
+
+                            {/* Интерактивные кнопки-веер над самолетом */}
+                            <div className="relative w-full px-2 max-w-[500px] h-[280px] sm:h-[340px] z-20 flex-shrink-0 animate-item mx-auto" style={{animationDelay: '0.3s', marginTop: CONFIG.fanLayout.marginTop}}>
+                                
+                                {/* КНОПКА 1: Обо мне */}
+                                <button onClick={() => navigateTo('about')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-10" style={{ width: CONFIG.buttons.about.width, left: CONFIG.buttons.about.left, top: CONFIG.buttons.about.top }}>
+                                    <img src={CONFIG.buttons.about.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.about.text} />
+                                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white font-bold text-[11px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.about.text}</span>
+                                    </div>
+                                </button>
+                                
+                                {/* КНОПКА 2: Туры */}
+                                <button onClick={() => navigateTo('tours')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-20" style={{ width: CONFIG.buttons.tours.width, left: CONFIG.buttons.tours.left, top: CONFIG.buttons.tours.top }}>
+                                    <img src={CONFIG.buttons.tours.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.tours.text} />
+                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white font-bold text-[11px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.tours.text}</span>
+                                    </div>
+                                </button>
+
+                                {/* КНОПКА 3: Контакты */}
+                                <button onClick={() => navigateTo('contacts')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-20" style={{ width: CONFIG.buttons.contacts.width, right: CONFIG.buttons.contacts.right, top: CONFIG.buttons.contacts.top }}>
+                                    <img src={CONFIG.buttons.contacts.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.contacts.text} />
+                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white font-bold text-[11px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.contacts.text}</span>
+                                    </div>
+                                </button>
+
+                                {/* КНОПКА 4: Отзывы */}
+                                <button onClick={() => navigateTo('reviews')} className="group absolute hover:-translate-y-2 active:scale-95 transition-all duration-300 z-10" style={{ width: CONFIG.buttons.reviews.width, right: CONFIG.buttons.reviews.right, top: CONFIG.buttons.reviews.top }}>
+                                    <img src={CONFIG.buttons.reviews.image} className="w-full h-auto drop-shadow-2xl" alt={CONFIG.buttons.reviews.text} />
+                                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20 opacity-90 group-hover:opacity-100 transition-opacity">
+                                        <span className="text-white font-bold text-[11px] sm:text-sm uppercase tracking-wider whitespace-nowrap">{CONFIG.buttons.reviews.text}</span>
+                                    </div>
+                                </button>
                             </div>
                         </div>
                     )}
 
-                    {/* ГЛАВНАЯ СТРАНИЦА */}
-                    <div className="pb-32 relative">
-                        <header className="relative w-full flex flex-col items-center">
-                            <div className="w-full min-h-[300px] relative" style={{ height: APP_SETTINGS.sizes.heroImageHeight }}>
-                                <img src={APP_SETTINGS.heroImage} alt="Main" className="w-full h-full object-cover" />
-                                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#F9F8F6] to-transparent"></div>
-                            </div>
-                            <div className="relative -mt-12 flex flex-col items-center px-4 text-center z-10 w-full">
-                                <div className="bg-[#F9F8F6]/80 backdrop-blur-md px-8 py-8 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] w-[90%] border border-white/50">
-                                    <h1 className="font-serif text-3xl font-medium tracking-wide mb-3 text-[#1A1A1A]">{APP_SETTINGS.brandName}</h1>
-                                    <div className="flex items-center justify-center gap-3">
-                                        <div className="h-[1px] w-8 bg-[#B85C47]/40"></div>
-                                        <p className="font-sans uppercase tracking-[0.2em] text-[9px] font-medium text-[#6B6B6B]">
-                                            {APP_SETTINGS.brandSubtitle}
-                                        </p>
-                                        <div className="h-[1px] w-8 bg-[#B85C47]/40"></div>
-                                    </div>
-                                    <p className="font-serif italic text-sm text-[#8C8C8C] mt-2">{APP_SETTINGS.slogan}</p>
-                                </div>
-                            </div>
-                        </header>
-
-                        <main className="px-5 py-8">
-                            <section className="relative z-20">
-                                <div className="grid grid-cols-2 gap-3">
-                                    <button onClick={() => navigateTo('tours')} className="appearance-none focus:outline-none w-full text-left col-span-2 relative aspect-[21/9] rounded-[10px] overflow-hidden shadow-sm group cursor-pointer">
-                                        <img src={APP_SETTINGS.menuToursImage} alt="Tours" className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 pointer-events-none" />
-                                        <div className="absolute inset-0 bg-black/30 transition-colors duration-500 group-hover:bg-black/40 pointer-events-none"></div>
-                                        <div className="absolute inset-0 p-5 flex flex-col justify-end text-white pointer-events-none">
-                                            <div className="flex items-end justify-between">
-                                                <div>
-                                                    <p className="text-[10px] uppercase tracking-widest opacity-80 mb-1">{APP_SETTINGS.menuToursSubtitle}</p>
-                                                    <h3 className="font-serif text-2xl">{APP_SETTINGS.menuToursTitle}</h3>
-                                                </div>
-                                                <div className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </button>
-
-                                    <button onClick={() => navigateTo('about')} className="appearance-none focus:outline-none w-full text-left bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow cursor-pointer">
-                                        <div className="w-12 h-12 rounded-full bg-[#F9F8F6] flex items-center justify-center mb-3 pointer-events-none text-[#B85C47]">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
-                                        </div>
-                                        <span className="text-sm font-medium tracking-wide pointer-events-none">{APP_SETTINGS.menuAboutTitle}</span>
-                                        <span className="text-[10px] text-[#8C8C8C] mt-1 pointer-events-none">{APP_SETTINGS.menuAboutSubtitle}</span>
-                                    </button>
-
-                                    <button onClick={() => navigateTo('reviews')} className="appearance-none focus:outline-none w-full text-left bg-white rounded-[10px] p-5 aspect-square flex flex-col items-center justify-center text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow cursor-pointer">
-                                        <div className="w-12 h-12 rounded-full bg-[#F9F8F6] flex items-center justify-center mb-3 pointer-events-none text-[#B85C47]">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21a9 9 0 1 0-9-9c0 1.488.36 2.89 1 4.127L3 21l4.873-1c1.236.64 2.64 1 4.127 1Z"/><path d="M9 12h.01"/><path d="M12 12h.01"/><path d="M15 12h.01"/></svg>
-                                        </div>
-                                        <span className="text-sm font-medium tracking-wide pointer-events-none">{APP_SETTINGS.menuReviewsTitle}</span>
-                                        <span className="text-[10px] text-[#8C8C8C] mt-1 pointer-events-none">{APP_SETTINGS.menuReviewsSubtitle}</span>
-                                    </button>
-
-                                    <button onClick={() => navigateTo('contacts')} className="appearance-none focus:outline-none w-full text-left col-span-2 bg-white rounded-[10px] p-4 flex items-center justify-between text-center shadow-[0_2px_15px_-4px_rgba(0,0,0,0.03)] hover:shadow-md transition-shadow cursor-pointer">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-[#F9F8F6] flex items-center justify-center pointer-events-none text-[#B85C47]">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                                            </div>
-                                            <div className="text-left">
-                                                <span className="block text-sm font-medium tracking-wide pointer-events-none">{APP_SETTINGS.menuContactsTitle}</span>
-                                                <span className="block text-[10px] text-[#8C8C8C] mt-0.5 pointer-events-none">{APP_SETTINGS.menuContactsSubtitle}</span>
-                                            </div>
-                                        </div>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#8C8C8C]"><path d="m9 18 6-6-6-6"/></svg>
-                                    </button>
-                                </div>
-                            </section>
-
-                            {featuredTour && (
-                                <section className="mt-12">
-                                    <h2 className="font-serif text-[22px] mb-5 text-[#1A1A1A] flex items-center gap-3">
-                                        <span className="w-6 h-[1px] bg-[#B85C47]"></span> {APP_SETTINGS.featuredTourSectionTitle}
-                                    </h2>
-                                    <a onClick={() => navigateTo('quiQuo', featuredTour._actualLink)} className="flex flex-col bg-white rounded-[20px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.08)] border border-[#F0EFEA] active:scale-[0.98] transition-all cursor-pointer">
-                                        <div className="relative w-full bg-[#F9F8F6]" style={{ height: APP_SETTINGS.sizes.tourCardImageHeight }}>
-                                            <img src={featuredTour.imageUrl || "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=400"} alt="Tour" className="absolute inset-0 w-full h-full object-cover" />
-                                            {featuredTour.rating && (
-                                                <div className="absolute top-4 right-4 bg-white/95 backdrop-blur-md border border-white/60 px-2.5 py-1 rounded-[8px] shadow-sm z-10 flex items-center gap-1">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="#B85C47" stroke="#B85C47"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                                    <p className="text-[11px] font-bold text-[#1A1A1A]">{featuredTour.rating}</p>
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="p-6">
-                                            <h3 className="font-serif text-[22px] text-[#1A1A1A] mb-3 leading-tight">{featuredTour.hotel}</h3>
-                                            <div className="flex flex-col gap-2 mb-4">
-                                                <p className="text-[13px] text-[#6B6B6B] flex items-center gap-2 font-medium">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#B85C47]/80"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                                                    {featuredTour.dates}
-                                                </p>
-                                                <p className="text-[13px] text-[#6B6B6B] flex items-center gap-2 font-medium">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#B85C47]/80"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                                                    {featuredTour.title}
-                                                </p>
-                                            </div>
-                                            <div className="flex items-center justify-between pt-4 border-t border-[#F0EFEA]">
-                                                <div>
-                                                    {featuredTour.oldPrice && <span className="line-through text-[11px] text-[#8C8C8C] block mb-0.5">{featuredTour.oldPrice}</span>}
-                                                    <span className="text-[18px] font-semibold text-[#1A1A1A]">{featuredTour.price}</span>
-                                                </div>
-                                                <span className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-semibold text-[#B85C47]">
-                                                    {APP_SETTINGS.featuredTourBtnText}
-                                                    <span className="w-7 h-7 rounded-full bg-[#B85C47]/10 flex items-center justify-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                                    </span>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </section>
-                            )}
-                        </main>
-
-                        <div className="fixed bottom-0 left-0 right-0 p-5 pt-16 bg-gradient-to-t from-[#F9F8F6] via-[#F9F8F6]/95 to-transparent z-50 pointer-events-none">
-                            <div className="w-full max-w-500px mx-auto">
-                                <button onClick={() => navigateTo('booking')} className="pointer-events-auto w-full bg-[#B85C47] text-white py-4 px-6 rounded-[10px] text-xs uppercase tracking-[0.15em] font-medium shadow-[0_8px_20px_-6px_rgba(184,92,71,0.5)] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                                    {APP_SETTINGS.bottomBtnText}
-                                </button>
+                    {activeScreen === 'about' && (
+                        <div className="min-h-screen p-6 animate-fade bg-paper">
+                            <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70"><IconArrowLeft size={20} /> Назад</button>
+                            <div className="bg-white p-1 rounded-2xl shadow-md mb-6 rotate-1 max-w-sm mx-auto"><img src={CONFIG.about.photoUrl} alt="About" className="w-full h-64 object-cover rounded-xl" /></div>
+                            <div className="max-w-sm mx-auto text-center px-2">
+                                <h2 className="text-3xl font-serif font-bold mb-4">{CONFIG.about.title}</h2>
+                                <p className="text-lg font-serif italic text-[#5c5c5c] leading-relaxed whitespace-pre-line">{CONFIG.about.text}</p>
                             </div>
                         </div>
-                    </div>
+                    )}
 
-                    {/* === ШТОРКА ТУРОВ === */}
-                    <BottomSheet isOpen={activeScreen === 'tours'} onClose={() => navigateTo('home')} title={APP_SETTINGS.menuToursTitle}>
-                        <div className="p-5 pb-10 flex flex-col gap-4">
-                            <div className="flex justify-between items-center mb-2 px-1">
-                                <button onClick={() => setSortOrder(prev => prev === 'none' ? 'asc' : prev === 'asc' ? 'desc' : 'none')} className="text-xs uppercase tracking-widest text-[#8C8C8C] font-medium flex items-center gap-1">
+                    {activeScreen === 'tours' && (
+                        <div className="min-h-screen p-6 animate-fade bg-paper">
+                            <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70"><IconArrowLeft size={20} /> Назад</button>
+                            <h2 className="text-3xl font-serif font-bold mb-2 text-center">Горящие туры</h2>
+                            <div className="w-full flex justify-between items-center mb-4 px-2">
+                                <button onClick={() => setSortOrder(prev => prev === 'none' ? 'asc' : prev === 'asc' ? 'desc' : 'none')} className="bg-transparent border-b border-gray-400 text-sm font-serif outline-none py-1 text-gray-700 active:opacity-50 transition-opacity flex items-center gap-1">
                                     {sortOrder === 'none' ? 'Сортировка' : sortOrder === 'asc' ? 'Дешевле' : 'Дороже'}
                                     <span className="text-[10px]">{sortOrder === 'none' ? '↕' : sortOrder === 'asc' ? '↓' : '↑'}</span>
                                 </button>
-                                <div className="flex items-center gap-1.5">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                    <span className="text-[10px] uppercase tracking-widest text-[#8C8C8C]">Обновлено</span>
-                                </div>
+                                <div className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_4px_rgba(34,197,94,0.6)] animate-pulse"></span><span className="text-[10px] font-serif italic text-[#5c5c5c]">Обновлено сегодня</span></div>
                             </div>
-
                             {isLoadingTours ? (
-                                <div className="flex justify-center py-10"><div className="animate-spin h-8 w-8 border-2 border-[#B85C47] border-t-transparent rounded-full"></div></div>
+                                <div className="flex justify-center items-center h-40"><div className="w-8 h-8 border-4 border-black/20 border-t-black rounded-full animate-spin"></div></div>
                             ) : (
-                                [...tours].sort((a, b) => {
-                                    if (sortOrder === 'asc') return extractPrice(a.price) - extractPrice(b.price);
-                                    if (sortOrder === 'desc') return extractPrice(b.price) - extractPrice(a.price);
-                                    return 0;
-                                }).map((tour, index) => (
-                                    <a key={index} onClick={() => navigateTo('quiQuo', tour._actualLink)} className="flex flex-col bg-white rounded-[20px] overflow-hidden shadow-[0_8px_30px_-10px_rgba(0,0,0,0.08)] border border-[#F0EFEA] active:scale-[0.98] transition-all cursor-pointer">
-                                        <div className="relative w-full bg-[#F9F8F6]" style={{ height: APP_SETTINGS.sizes.tourCardImageHeight }}>
-                                            <img src={tour.imageUrl || "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=400"} className="absolute inset-0 w-full h-full object-cover" alt="tour" />
-                                            {tour.rating && (
-                                                <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-md border border-white/60 px-2.5 py-1 rounded-[8px] shadow-sm z-10 flex items-center gap-1">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="#B85C47" stroke="#B85C47"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                                    <p className="text-[11px] font-bold text-[#1A1A1A]">{tour.rating}</p>
+                                <div className="flex flex-col gap-4 w-full">
+                                    {[...tours].sort((a, b) => {
+                                        if (sortOrder === 'asc') return extractPrice(a.price) - extractPrice(b.price);
+                                        if (sortOrder === 'desc') return extractPrice(b.price) - extractPrice(a.price);
+                                        return 0;
+                                    }).map((tour, index) => (
+                                        <div key={index} onClick={() => navigateTo('quiQuo', tour._actualLink)} className="relative bg-white p-3 rounded-2xl shadow-md flex gap-4 border border-[#E7D6BD] active:scale-95 transition-all cursor-pointer">
+                                            <div className="absolute top-2 right-2 w-6 h-6 bg-[#84cc16] text-white text-[10px] font-bold rounded shadow-sm flex items-center justify-center z-10">{tour.rating || "5.0"}</div>
+                                            <div className="shrink-0"><img src={tour.imageUrl} className="w-24 h-full min-h-[105px] object-cover rounded-xl" /></div>
+                                            <div className="flex flex-col justify-between w-full min-w-0 py-0.5">
+                                                <div><div className="font-bold text-[13px] leading-snug truncate">{tour.hotel}</div><div className="text-[11px] text-gray-500 truncate">{tour.dates}</div><div className="text-[11px] text-gray-500 flex items-center gap-1 mt-0.5 truncate"><IconMapPin size={12} className="text-gray-400" /><span>{tour.title}</span></div></div>
+                                                <div className="flex items-end justify-between mt-3">
+                                                    <div className="flex flex-col"><span className="line-through text-[10px] text-gray-400 mb-0.5">{tour.oldPrice}</span><span className="font-bold text-[15px]">{tour.price}</span></div>
+                                                    <button className="bg-black text-white text-[11px] font-semibold py-1.5 px-3 rounded-lg">Подробнее</button>
                                                 </div>
-                                            )}
-                                        </div>
-                                        <div className="p-6">
-                                            <h3 className="font-serif text-[22px] text-[#1A1A1A] mb-3 leading-tight">{tour.hotel}</h3>
-                                            <div className="flex flex-col gap-2 mb-4">
-                                                <p className="text-[13px] text-[#6B6B6B] flex items-center gap-2 font-medium">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#B85C47]/80"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                                                    {tour.dates}
-                                                </p>
-                                                <p className="text-[13px] text-[#6B6B6B] flex items-center gap-2 font-medium">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-[#B85C47]/80"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                                                    {tour.title}
-                                                </p>
-                                            </div>
-                                            <div className="flex items-center justify-between pt-4 border-t border-[#F0EFEA]">
-                                                <div>
-                                                    {tour.oldPrice && <span className="line-through text-[11px] text-[#8C8C8C] block mb-0.5">{tour.oldPrice}</span>}
-                                                    <span className="text-[18px] font-semibold text-[#1A1A1A]">{tour.price}</span>
-                                                </div>
-                                                <span className="flex items-center gap-2 text-[10px] uppercase tracking-widest font-semibold text-[#B85C47]">
-                                                    Подробнее
-                                                    <span className="w-7 h-7 rounded-full bg-[#B85C47]/10 flex items-center justify-center">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-                                                    </span>
-                                                </span>
                                             </div>
                                         </div>
-                                    </a>
-                                ))
+                                    ))}
+                                </div>
                             )}
                         </div>
-                    </BottomSheet>
+                    )}
 
-                    {/* === ШТОРКА ОБО МНЕ === */}
-                    <BottomSheet isOpen={activeScreen === 'about'} onClose={() => navigateTo('home')} title={APP_SETTINGS.aboutSheetTitle}>
-                        <div className="p-6 pb-12 flex flex-col items-center">
-                            <div className="w-full aspect-square md:aspect-video rounded-[16px] overflow-hidden shadow-sm border border-[#F0EFEA] mb-8">
-                                <img src={APP_SETTINGS.aboutPhotoUrl} alt="About" className="w-full h-full object-cover" />
+                    {activeScreen === 'contacts' && (
+                        <div className="min-h-screen p-6 animate-fade bg-paper flex flex-col items-center justify-center">
+                            <div className="absolute top-6 left-6"><button onClick={() => navigateTo('home')} className="flex items-center gap-2 font-medium text-black/70"><IconArrowLeft size={20} /> Назад</button></div>
+                            <h2 className="text-3xl font-serif font-bold mb-8 text-center">Всегда на связи</h2>
+                            <div className="w-full flex flex-col gap-4 px-4">
+                                <a href={CONFIG.contacts.telegram} target="_blank" className="flex items-center gap-4 bg-white/70 backdrop-blur-md p-4 rounded-3xl border border-white shadow-sm active:scale-95 transition-all">
+                                    <div className="bg-white p-3 rounded-full text-[#0088cc]"><IconSend size={24} /></div><span className="text-lg font-medium">Написать в Telegram</span>
+                                </a>
+                                <a href={CONFIG.contacts.instagram} target="_blank" className="flex items-center gap-4 bg-white/70 backdrop-blur-md p-4 rounded-3xl border border-white shadow-sm active:scale-95 transition-all">
+                                    <div className="bg-white p-3 rounded-full text-[#E1306C]"><IconInstagram size={24} /></div><span className="text-lg font-medium">Мой Instagram</span>
+                                </a>
+                                <a href={`tel:${CONFIG.contacts.phone}`} className="flex items-center gap-4 bg-white/70 backdrop-blur-md p-4 rounded-3xl border border-white shadow-sm active:scale-95 transition-all">
+                                    <div className="bg-white p-3 rounded-full text-green-600"><IconPhone size={24} /></div><span className="text-lg font-medium">{CONFIG.contacts.phone}</span>
+                                </a>
                             </div>
-                            <p className="font-serif text-[16px] italic text-center text-[#242424] leading-relaxed px-2 tracking-wide border-l-2 border-r-2 border-[#B85C47]/20 mx-2 whitespace-pre-line">
-                                {APP_SETTINGS.aboutText}
-                            </p>
                         </div>
-                    </BottomSheet>
+                    )}
 
-                    {/* === ШТОРКА КОНТАКТЫ === */}
-                    <BottomSheet isOpen={activeScreen === 'contacts'} onClose={() => navigateTo('home')} title={APP_SETTINGS.contactsSheetTitle} isTall={false}>
-                        <div className="px-6 pb-12 pt-2 space-y-3">
-                            <a href={APP_SETTINGS.socialLinks.whatsapp} target="_blank" className="w-full bg-white border border-[#F0EFEA] shadow-[0_4px_25px_-10px_rgba(0,0,0,0.06)] rounded-[18px] p-4 flex items-center gap-5 active:scale-95 transition-all">
-                                <div className="w-12 h-12 rounded-[14px] bg-[#25D366]/10 flex items-center justify-center shrink-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#25D366" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                                </div>
-                                <span className="text-[16px] font-medium text-[#1A1A1A] tracking-wide">WhatsApp</span>
-                            </a>
-
-                            <a href={APP_SETTINGS.socialLinks.telegram} target="_blank" className="w-full bg-white border border-[#F0EFEA] shadow-[0_4px_25px_-10px_rgba(0,0,0,0.06)] rounded-[18px] p-4 flex items-center gap-5 active:scale-95 transition-all">
-                                <div className="w-12 h-12 rounded-[14px] bg-[#2AABEE]/10 flex items-center justify-center shrink-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2AABEE" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21.198 2.433a2.242 2.242 0 0 0-1.022.215l-18.6 7.143a2.25 2.25 0 0 0-.122 4.22l5.594 1.714 2.143 6.643a1.5 1.5 0 0 0 2.829-.029l2.76-5.807 5.178 3.834a2.25 2.25 0 0 0 3.535-1.503L23.493 3.51a2.25 2.25 0 0 0-2.295-1.077Z"/><path d="m10.5 15.5 4.5-4.5"/></svg>
-                                </div>
-                                <span className="text-[16px] font-medium text-[#1A1A1A] tracking-wide">Telegram</span>
-                            </a>
-
-                            <a href={APP_SETTINGS.socialLinks.instagram} target="_blank" className="w-full bg-white border border-[#F0EFEA] shadow-[0_4px_25px_-10px_rgba(0,0,0,0.06)] rounded-[18px] p-4 flex items-center gap-5 active:scale-95 transition-all">
-                                <div className="w-12 h-12 rounded-[14px] bg-[#E1306C]/10 flex items-center justify-center shrink-0">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E1306C" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-                                </div>
-                                <span className="text-[16px] font-medium text-[#1A1A1A] tracking-wide">Instagram</span>
-                            </a>
-                            
-                            <a href={`tel:${APP_SETTINGS.socialLinks.phone}`} className="w-full bg-white border border-[#F0EFEA] shadow-[0_4px_25px_-10px_rgba(0,0,0,0.06)] rounded-[18px] p-4 flex items-center gap-5 active:scale-95 transition-all">
-                                <div className="w-12 h-12 rounded-[14px] bg-gray-100 flex items-center justify-center shrink-0 text-gray-700">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                                </div>
-                                <span className="text-[16px] font-medium text-[#1A1A1A] tracking-wide">{APP_SETTINGS.socialLinks.phone}</span>
-                            </a>
-                        </div>
-                    </BottomSheet>
-
-                    {/* === ШТОРКА ОТЗЫВОВ === */}
-                    <BottomSheet isOpen={activeScreen === 'reviews'} onClose={() => navigateTo('home')} title={APP_SETTINGS.reviewsSheetTitle}>
-                        <div className="p-5 pb-32 flex flex-col gap-4 relative">
-                            {isLoadingReviews ? (
-                                <div className="flex justify-center py-10"><div className="animate-spin h-8 w-8 border-2 border-[#B85C47] border-t-transparent rounded-full"></div></div>
-                            ) : (
-                                reviews.map(review => (
-                                    <div key={review.id} className="bg-white border border-[#F0EFEA] shadow-[0_8px_30px_-10px_rgba(0,0,0,0.06)] rounded-[20px] p-6 relative">
-                                        <div className="absolute top-4 right-5 text-[#B85C47]/10">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M10 11h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2z"/><path d="M10 11v6a4 4 0 0 1-4 4H5"/><path d="M20 11h-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2z"/><path d="M20 11v6a4 4 0 0 1-4 4h-1"/></svg>
-                                        </div>
-                                        <p className="text-[14px] text-[#6B6B6B] leading-relaxed mb-5 font-light relative z-10 italic">«{review.text}»</p>
-                                        <div className="flex items-center gap-3 mt-auto border-t border-[#F0EFEA] pt-4">
-                                            <div className="w-10 h-10 rounded-full bg-[#F9F8F6] flex items-center justify-center shrink-0">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B85C47" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    {activeScreen === 'reviews' && (
+                        <div className="min-h-screen pt-6 px-6 animate-fade bg-paper flex flex-col relative">
+                            <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-black/70 shrink-0"><IconArrowLeft size={20} /> Назад</button>
+                            <h2 className="text-3xl font-serif font-bold mb-8 text-center">Отзывы туристов</h2>
+                            <div className="flex flex-col gap-6 w-full max-w-sm mx-auto pb-32">
+                                {isLoadingReviews ? (<div className="flex justify-center h-40 items-center"><div className="w-8 h-8 border-4 border-black/20 border-t-black rounded-full animate-spin"></div></div>) : (
+                                    reviews.map(review => (
+                                        <div key={review.id} className="relative bg-[#FFFcf5] p-5 rounded-sm shadow-sm border border-[#e8dcc7] flex flex-col gap-3">
+                                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/40 backdrop-blur-md rotate-[-2deg]"></div>
+                                            <div className="flex justify-between items-start">
+                                                <div><h3 className="font-bold text-lg font-serif">{review.name}</h3><div className="text-[9px] text-gray-400 tracking-wider mt-0.5">{review.date}</div></div>
+                                                <div className="flex gap-0.5 text-amber-400">{[...Array(5)].map((_, i) => <IconStar key={i} size={14} filled={i < review.rating} />)}</div>
                                             </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[14px] font-medium text-[#1A1A1A] tracking-wide">{review.name}</span>
-                                                <div className="flex gap-0.5 mt-0.5 text-amber-400">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <svg key={i} xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill={i < review.rating ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                                    ))}
-                                                    <span className="text-[9px] text-[#8C8C8C] ml-1">{review.date}</span>
-                                                </div>
-                                            </div>
+                                            <p className="text-[#5c5c5c] font-serif italic text-sm leading-relaxed">"{review.text}"</p>
                                         </div>
-                                    </div>
-                                ))
-                            )}
+                                    ))
+                                )}
+                            </div>
+                            <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[500px] pb-6 pt-16 px-6 bg-gradient-to-t from-[#fce2b1] via-[#fce2b1] to-transparent flex justify-center z-20 pointer-events-none">
+                                <button onClick={() => setIsReviewModalOpen(true)} className="w-full max-w-sm flex justify-center items-center gap-2 bg-[#F8F1E5]/90 border-2 border-black rounded-full py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.1)] active:translate-y-1 transition-all pointer-events-auto">
+                                    <IconEdit size={18} /> Написать отзыв
+                                </button>
+                            </div>
                         </div>
+                    )}
 
-                        <div className="absolute bottom-0 left-0 right-0 p-5 pt-12 bg-gradient-to-t from-[#F9F8F6] via-[#F9F8F6]/95 to-transparent rounded-b-[24px]">
-                            <button onClick={() => setIsReviewModalOpen(true)} className="w-full bg-white border border-[#E5E5E5] text-[#1A1A1A] py-4 px-6 rounded-[10px] text-xs uppercase tracking-[0.15em] font-medium shadow-[0_4px_15px_-4px_rgba(0,0,0,0.05)] hover:bg-[#F0EFEA] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#B85C47]"><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/></svg>
-                                {APP_SETTINGS.writeReviewBtnText}
-                            </button>
-                        </div>
-                    </BottomSheet>
-
-                    {/* === ПОПАП: НАПИСАТЬ ОТЗЫВ === */}
                     {isReviewModalOpen && (
-                        <div className="fixed inset-0 z-[140] flex flex-col justify-end">
-                            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade" onClick={() => setIsReviewModalOpen(false)}></div>
-                            <div className="relative bg-white/95 backdrop-blur-2xl w-full max-w-5xl mx-auto rounded-t-[24px] shadow-[0_-10px_40px_rgba(0,0,0,0.1)] flex flex-col animate-slide-up border-t border-white/60">
-                                <div className="flex-shrink-0 pt-4 pb-3 px-6 flex flex-col items-center z-10 sticky top-0">
-                                    <div className="w-12 h-1 bg-[#D4D4D4] rounded-full mb-5"></div>
-                                    <div className="w-full flex justify-between items-center mb-1">
-                                        <h2 className="font-serif text-2xl text-[#1A1A1A]">Ваш отзыв</h2>
-                                        <button onClick={() => setIsReviewModalOpen(false)} className="p-2 -mr-2 text-[#8C8C8C] hover:text-[#242424] transition-colors rounded-full bg-black/5">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-                                        </button>
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade">
+                            <div className="bg-[#FFFcf5] w-full max-w-sm rounded-3xl p-6 shadow-2xl relative animate-item border border-[#e8dcc7]">
+                                <button onClick={() => setIsReviewModalOpen(false)} className="absolute top-4 right-4 text-gray-400"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                                {isReviewSubmitted ? (
+                                    <div className="py-10 flex flex-col items-center text-center animate-fade">
+                                        <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+                                        <h3 className="text-2xl font-serif font-bold mb-2">Спасибо!</h3>
+                                        <p className="text-sm">Ваш отзыв скоро появится.</p>
                                     </div>
-                                </div>
-                                <div className="p-6 pb-12 relative">
-                                    {isReviewSubmitted ? (
-                                        <div className="flex flex-col items-center justify-center p-6 text-center animate-fade">
-                                            <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mb-4 text-green-600 shadow-sm">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m9 11 3 3L22 4"/></svg>
-                                            </div>
-                                            <p className="font-serif text-xl text-[#1A1A1A]">Спасибо за эмоции!</p>
-                                            <p className="text-[13px] text-[#6B6B6B] mt-2 font-light">Ваш отзыв появится в списке.</p>
-                                        </div>
-                                    ) : (
-                                        <form onSubmit={handleSubmitReview} className="space-y-4">
-                                            <div>
-                                                <label className="block text-xs uppercase tracking-widest text-[#8C8C8C] mb-2 ml-1">Оценка</label>
-                                                <div className="flex gap-2 text-amber-400">
-                                                    {[1, 2, 3, 4, 5].map((star) => (
-                                                        <button type="button" key={star} onClick={() => setReviewForm({...reviewForm, rating: star})} className="active:scale-75 transition-all">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill={star <= reviewForm.rating ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                                        </button>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs uppercase tracking-widest text-[#8C8C8C] mb-1.5 ml-1">Ваше имя</label>
-                                                <input type="text" required value={reviewForm.name} onChange={(e) => setReviewForm({...reviewForm, name: e.target.value})} placeholder="Например: Мария" className="w-full bg-[#F9F8F6] border border-[#E5E5E5] text-[#242424] text-[15px] rounded-[10px] px-4 py-3.5 focus:outline-none focus:border-[#B85C47] transition-all font-light" />
-                                            </div>
-                                            <div>
-                                                <label className="block text-xs uppercase tracking-widest text-[#8C8C8C] mb-1.5 ml-1">Впечатления</label>
-                                                <textarea required rows="3" value={reviewForm.text} onChange={(e) => setReviewForm({...reviewForm, text: e.target.value})} placeholder="Пару слов об отдыхе..." className="w-full bg-[#F9F8F6] border border-[#E5E5E5] text-[#242424] text-[15px] rounded-[10px] px-4 py-3.5 focus:outline-none focus:border-[#B85C47] transition-all font-light resize-none"></textarea>
-                                            </div>
-                                            <button type="submit" disabled={isSubmitting} className="w-full bg-[#1A1A1A] text-white py-4 px-6 rounded-[10px] text-xs uppercase tracking-[0.15em] font-medium shadow-[0_8px_20px_-6px_rgba(0,0,0,0.5)] active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-6 disabled:opacity-70">
-                                                {isSubmitting ? (
-                                                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                                                ) : (
-                                                    <><span>Отправить отзыв</span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></>
-                                                )}
-                                            </button>
-                                        </form>
-                                    )}
-                                </div>
+                                ) : (
+                                    <form onSubmit={handleSubmitReview} className="flex flex-col gap-6">
+                                        <h3 className="text-2xl font-serif font-bold">Ваш отзыв</h3>
+                                        <div className="flex flex-col gap-2"><label className="text-xs uppercase tracking-wide">Оценка</label><div className="flex gap-2 text-amber-400">{[1, 2, 3, 4, 5].map((star) => <button type="button" key={star} onClick={() => setReviewForm({...reviewForm, rating: star})} className="active:scale-75 transition-all"><IconStar size={36} filled={star <= reviewForm.rating} /></button>)}</div></div>
+                                        <div className="flex flex-col gap-1"><label className="text-xs uppercase tracking-wide">Имя</label><input type="text" required value={reviewForm.name} onChange={(e) => setReviewForm({...reviewForm, name: e.target.value})} className="w-full bg-transparent border-b-2 border-[#d4af37]/30 focus:border-[#d4af37] transition-colors py-2 outline-none font-serif text-lg" placeholder="Например: Мария" /></div>
+                                        <div className="flex flex-col gap-1"><label className="text-xs uppercase tracking-wide">Впечатления</label><textarea required rows="3" value={reviewForm.text} onChange={(e) => setReviewForm({...reviewForm, text: e.target.value})} className="w-full bg-transparent border-b-2 border-[#d4af37]/30 focus:border-[#d4af37] transition-colors py-2 outline-none font-serif text-base resize-none" placeholder="Пару слов об отдыхе..."></textarea></div>
+                                        <button type="submit" disabled={isSubmitting} className="w-full bg-[#d4af37] text-white py-4 rounded-xl font-bold mt-2 shadow-lg active:scale-95 transition-all">{isSubmitting ? 'Отправка...' : 'Отправить отзыв'}</button>
+                                    </form>
+                                )}
                             </div>
                         </div>
                     )}
