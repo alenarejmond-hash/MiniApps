@@ -64,6 +64,14 @@
             overscroll-behavior-y: none;
             background-color: #F4F1EA;
             -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        /* Оставляем возможность писать текст в форме отзывов */
+        input, textarea {
+            -webkit-user-select: auto;
+            user-select: auto;
         }
         /* Убираем скроллбар для эстетики карусели */
         .no-scrollbar::-webkit-scrollbar {
@@ -81,7 +89,7 @@
         }
     </style>
 </head>
-<body class="text-graphite font-sans antialiased overflow-x-hidden">
+<body class="text-graphite font-sans antialiased overflow-x-hidden" oncontextmenu="return false;">
     <div id="root"></div>
 
     <script type="text/babel">
@@ -111,7 +119,7 @@
             links: {
                 telegram: "https://t.me/telegram", // Для записи и кнопки "Написать мне"
                 telegramChannel: "https://t.me/telegram_channel", // Ссылка для кнопки "Мой канал"
-                qrCodeUrl: "https://i.postimg.cc/VNjjw7mp/Remove-background-project-(1).png", // ⭐️ Ссылка на картинку с QR-кодом
+                qrCodeUrl: "https://i.postimg.cc/tgyzs0Sj/Remove-background-project-(1).png", // ⭐️ Ссылка на картинку с QR-кодом
                 freebieUrl: "#", // Ссылка на пост/файл
                 freebieTitle: "Полезное (Free)",
                 freebieSubtitle: "Гайд \"Снижение тревожности\"",
@@ -686,7 +694,7 @@
                             onTouchStart={onTouchStart}
                             onTouchEnd={(e) => onTouchEnd(e, () => setIsQrOpen(false))}
                         >
-                            <div className="glass-panel w-full max-w-xs rounded-[2.5rem] p-8 relative shadow-2xl border-white text-center" onClick={e => e.stopPropagation()}>
+                            <div className="glass-panel w-full max-w-sm rounded-[2.5rem] p-8 relative shadow-2xl border-white text-center" onClick={e => e.stopPropagation()}>
                                 <button 
                                     onClick={() => { triggerHaptic(); setIsQrOpen(false); }}
                                     className="absolute top-6 right-6 text-graphite/50 hover:text-graphite transition-colors bg-white/50 p-2 rounded-full"
@@ -699,13 +707,11 @@
                                     Мой канал
                                 </h2>
                                 
-                                <div className="bg-white p-4 rounded-[1.5rem] shadow-sm mb-4 inline-block">
-                                    <img 
-                                        src={CONFIG.links.qrCodeUrl} 
-                                        alt="" 
-                                        className="w-48 h-48 object-contain rounded-xl"
-                                    />
-                                </div>
+                                <img 
+                                    src={CONFIG.links.qrCodeUrl} 
+                                    alt="" 
+                                    className="w-full max-w-[280px] h-auto object-contain drop-shadow-xl mb-6 mx-auto"
+                                />
                                 
                                 <p className="text-sm font-light text-graphite/80 leading-relaxed italic px-2">
                                     Отсканируй, чтобы не потерять уютный канал ✨
