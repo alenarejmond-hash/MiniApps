@@ -129,6 +129,11 @@
             max-width: 85%;
         }
 
+        /* --- Блокировка скролла фона --- */
+        body.no-scroll {
+            overflow: hidden !important;
+        }
+
         /* --- Шторки (Bottom Sheets) --- */
         .sheet-overlay {
             position: fixed;
@@ -209,7 +214,7 @@
         const MY_DATA = {
             // --- 📸 ФОТО И ФОН ---
             // Ссылка на фоновое изображение (красиво смотрится космос, туманность или кристаллы)
-            backgroundPhoto: "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1080&auto=format&fit=crop",
+            backgroundPhoto: "https://i.postimg.cc/DfPxqyVV/unnamed-13.jpg",
             // Ваше главное фото (аватарка)
             avatarPhoto: "https://i.postimg.cc/pVjVpSp7/unnamed-(2).jpg",
             
@@ -217,6 +222,13 @@
             name: "Елена Световая",
             // Три главных слова под вашим именем (через запятую, в кавычках)
             tags: ["Руны", "Таро", "Энергия"],
+
+            // --- ⚙️ ИНТЕГРАЦИЯ С GOOGLE (ДЛЯ ОТЗЫВОВ) ---
+            // Чтобы активировать:
+            // 1. Вставьте ссылку на ваш Web App из Google Apps Script ниже
+            // 2. В функции submitReview (внизу кода) найдите закомментированный код для отправки и раскомментируйте его.
+            googleScriptUrl: "", // Вставьте сюда ссылку "https://script.google.com/macros/s/.../exec"
+            googleSheetUrl: "",  // Ссылка на саму таблицу (просто чтобы не потерять)
 
             // --- 🔗 ССЫЛКИ НА СОЦСЕТИ ---
             socialLinks: {
@@ -491,6 +503,7 @@
             sheet.classList.add('active');
             overlay.classList.add('active');
             activeSheet = sheet;
+            document.body.classList.add('no-scroll'); // Блокируем скролл фона
         }
 
         function closeAllSheets() {
@@ -500,6 +513,7 @@
                 activeSheet = null;
             }
             overlay.classList.remove('active');
+            document.body.classList.remove('no-scroll'); // Возвращаем скролл фона
         }
 
         // --- Логика Руны Дня ---
@@ -531,10 +545,13 @@
             event.preventDefault();
             const btn = document.getElementById('submit-btn');
             const msg = document.getElementById('form-message');
+            const name = document.getElementById('rev-name').value;
+            const text = document.getElementById('rev-text').value;
             
             btn.innerHTML = 'Отправка...';
             btn.disabled = true;
 
+            // === ЗАГЛУШКА (Удалите или закомментируйте этот блок, когда подключите Google Script) ===
             setTimeout(() => {
                 btn.innerHTML = 'Отправить';
                 btn.disabled = false;
@@ -543,6 +560,36 @@
                 msg.classList.remove('hidden', 'text-red-400');
                 msg.classList.add('text-gold');
             }, 1000);
+            // === КОНЕЦ ЗАГЛУШКИ ===
+
+            /* // === РЕАЛЬНАЯ ОТПРАВКА В GOOGLE SCRIPT (Раскомментируйте, когда добавите ссылку в MY_DATA) ===
+            if (MY_DATA.googleScriptUrl) {
+                const formData = new FormData();
+                formData.append('action', 'addReview');
+                formData.append('name', name);
+                formData.append('text', text);
+
+                fetch(MY_DATA.googleScriptUrl, {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors'
+                }).then(() => {
+                    btn.innerHTML = 'Отправить';
+                    btn.disabled = false;
+                    document.getElementById('review-form').reset();
+                    msg.innerHTML = 'Благодарю. Отзыв отправлен на модерацию ✨';
+                    msg.classList.remove('hidden', 'text-red-400');
+                    msg.classList.add('text-gold');
+                }).catch(err => {
+                    btn.innerHTML = 'Отправить';
+                    btn.disabled = false;
+                    msg.innerHTML = 'Произошла ошибка. Попробуйте позже.';
+                    msg.classList.remove('hidden', 'text-gold');
+                    msg.classList.add('text-red-400');
+                });
+            }
+            // === КОНЕЦ РЕАЛЬНОЙ ОТПРАВКИ ===
+            */
         }
 
         // --- МАГИЯ: ПОДСТАНОВКА ВАШИХ ДАННЫХ В ДИЗАЙН ---
