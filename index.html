@@ -3,680 +3,689 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Эзотерик | Премиум Визитка</title>
+    <title>Твой тревел-эксперт</title>
     
-    <!-- Telegram Web App JS -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    
-    <!-- Tailwind CSS -->
+    <!-- Подключаем Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Иконки Phosphor -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
-    <!-- Премиальные Google Шрифты -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
-    
+    <!-- Подключаем React -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Подключаем SDK и Парсер -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <!-- Современный шрифт как на макете -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        :root {
-            --gold: #d4af37;
-            --gold-light: #f3e5ab;
-            --glass-bg: rgba(20, 20, 25, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.15);
+        html, body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Inter', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
+            overscroll-behavior-y: none;
+            background-color: #000;
+            color: #fff;
         }
 
-        body {
-            font-family: 'Montserrat', sans-serif;
-            color: #e2e8f0;
-            background-color: #0f172a;
-            /* Разрешаем скролл, так как добавили карусель на главную */
-            overflow-x: hidden; 
-            overflow-y: auto;
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-            overscroll-behavior-y: none; /* Предотвращает оттягивание аппки вниз */
-        }
-        body::-webkit-scrollbar { display: none; }
-
-        h1, h2, h3, .font-serif {
-            font-family: 'Cormorant Garamond', serif;
-        }
-
-        /* --- Загрузочный экран (Loader) --- */
-        #global-loader {
-            position: fixed;
-            inset: 0;
-            background: #0f172a;
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.4s ease;
-        }
-        .spinner {
-            width: 48px;
-            height: 48px;
-            border: 2px solid rgba(212, 175, 55, 0.1);
-            border-top-color: #d4af37;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-        }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-
-        /* --- Плавный движущийся фон (Ken Burns Effect) --- */
-        .bg-photo {
-            position: fixed;
-            top: -10%; left: -10%;
-            width: 120%; height: 120%;
-            /* Замени ссылку на свое фото (звезды, дым, кристаллы, космос) */
-            background: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=1080&auto=format&fit=crop') center/cover no-repeat;
-            animation: slowPan 40s alternate infinite ease-in-out;
-            z-index: -2;
-        }
-        
-        .bg-overlay {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, rgba(10, 15, 25, 0.95) 100%);
-            z-index: -1;
-        }
-
-        @keyframes slowPan {
-            0% { transform: scale(1) translate(0, 0); }
-            100% { transform: scale(1.08) translate(-2%, -2%); }
-        }
-
-        /* --- Темный Глассморфизм --- */
-        .glass-dark {
-            background: var(--glass-bg);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-        }
-        
-        .glass-btn {
-            background: rgba(30, 30, 40, 0.5);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-        .glass-btn:active {
-            transform: scale(0.97);
-            background: rgba(40, 40, 50, 0.7);
-            border-color: var(--gold-light);
-        }
-
-        /* --- Карусель Отзывов --- */
-        .carousel-container {
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            gap: 1rem;
-            padding-bottom: 1rem;
-            /* Скрываем скроллбар */
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-        .carousel-container::-webkit-scrollbar { display: none; }
-        
-        .carousel-item {
-            scroll-snap-align: center;
-            min-width: 85%;
-            max-width: 85%;
-        }
-
-        /* --- Блокировка скролла фона --- */
-        body.no-scroll {
-            overflow: hidden !important;
-        }
-
-        /* --- Шторки (Bottom Sheets) --- */
-        .sheet-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-            z-index: 40;
-        }
-        .sheet-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .bottom-sheet {
-            position: fixed;
-            left: 0; right: 0; bottom: 0;
-            height: 85vh;
-            background: rgba(20, 20, 28, 0.95);
+        /* --- ЭФФЕКТ МАТОВОГО СТЕКЛА --- */
+        /* 👇 НАСТРОЙКА ДЛЯ ВАЙБКОДЕРА: МЕНЯЙ ПРОЗРАЧНОСТЬ И МУТНОСТЬ СТЕКЛА ЗДЕСЬ 👇 */
+        .glass-panel {
+            /* Прозрачность белого фона (0.15 = 15%). Можешь менять от 0.0 (полностью прозрачно) до 1.0 (сплошной белый) */
+            background: rgba(255, 255, 255, 0.15);
+            
+            /* Сила мутности (сейчас 24px). Чем больше цифра, тем сильнее размыт задний фон */
             backdrop-filter: blur(24px);
             -webkit-backdrop-filter: blur(24px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 28px 28px 0 0;
-            transform: translateY(100%);
-            transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.2, 1);
-            z-index: 50;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 -15px 50px rgba(0,0,0,0.5);
-        }
-        .bottom-sheet.active {
-            transform: translateY(0);
+            
+            /* Фикс от мерцания: заставляет телефон сразу прогружать мутность без скачков при анимации */
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+            
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+
+            /* ✨ НОВОЕ: Плавное появление мутности, как задуманная фишка ✨ */
+            /* 👇 ВРЕМЯ ПОЯВЛЕНИЯ: сейчас 4s (4 секунды). Можно сделать 2s (быстрее) или 6s (еще медленнее) 👇 */
+            animation: slowGlassBlur 4s ease-out forwards;
         }
 
-        .sheet-header {
-            padding: 1.25rem 1rem 0.5rem;
-            text-align: center;
+        /* 👇 Если будешь менять мутность (24px) или прозрачность (0.15), поменяй их и здесь в 100% 👇 */
+        @keyframes slowGlassBlur {
+            0% {
+                backdrop-filter: blur(0px);
+                -webkit-backdrop-filter: blur(0px);
+                background: rgba(255, 255, 255, 0);
+            }
+            40% {
+                /* Ждем пока карточка выезжает вверх, оставаясь прозрачной */
+                backdrop-filter: blur(0px);
+                -webkit-backdrop-filter: blur(0px);
+                background: rgba(255, 255, 255, 0);
+            }
+            100% {
+                /* Плавно становимся мутными */
+                backdrop-filter: blur(24px);
+                -webkit-backdrop-filter: blur(24px);
+                background: rgba(255, 255, 255, 0.15);
+            }
+        }
+        
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Анимации */
+        @keyframes slideUpFade {
+            0% { opacity: 0; transform: translateY(40px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        .animate-item {
+            animation: slideUpFade 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        .animate-fade {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        /* Убираем скроллбар */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .app-container {
+            min-height: 100dvh;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
             position: relative;
-        }
-        .sheet-drag-handle {
-            width: 36px; height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 2px;
-            margin: 0 auto 12px auto;
-        }
-        .sheet-content {
-            padding: 1rem 1.5rem 2.5rem;
+            overflow-x: hidden;
             overflow-y: auto;
-            flex-grow: 1;
+            background-color: #111;
         }
 
-        /* Золотое свечение для Руны */
-        .gold-glow {
-            text-shadow: 0 0 15px rgba(212, 175, 55, 0.5), 0 0 30px rgba(212, 175, 55, 0.3);
-            animation: pulseGold 2.5s infinite alternate;
+        /* Фиксированный фон для внутренних страниц */
+        .fixed-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 0;
+            pointer-events: none;
         }
-        @keyframes pulseGold {
-            from { text-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
-            to { text-shadow: 0 0 25px rgba(212, 175, 55, 0.8), 0 0 40px rgba(212, 175, 55, 0.5); }
+        .fixed-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(30px) brightness(0.4);
+            transform: scale(1.1); /* Убираем белые края от размытия */
         }
-
-        .text-gold { color: var(--gold); }
     </style>
 </head>
-<body class="relative w-full min-h-screen pb-10">
+<body>
+    <div id="root"></div>
 
-    <!-- Загрузочный экран -->
-    <div id="global-loader">
-        <div class="spinner"></div>
-    </div>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-    <!-- ======================================================== -->
-    <!-- ⬇️ ВАШ БЛОК ДЛЯ РЕДАКТИРОВАНИЯ (МЕНЯЙТЕ ДАННЫЕ ТОЛЬКО ЗДЕСЬ) ⬇️ -->
-    <!-- ======================================================== -->
-    <script>
-        const MY_DATA = {
-            // --- 📸 ФОТО И ФОН ---
-            // Ссылка на фоновое изображение (красиво смотрится космос, туманность или кристаллы)
-            backgroundPhoto: "https://i.postimg.cc/WbrgM5qb/unnamed-13.webp",
-            // Ваше главное фото (аватарка)
-            avatarPhoto: "https://i.postimg.cc/pVjVpSp7/unnamed-(2).jpg",
-            
-            // --- 📝 ОСНОВНАЯ ИНФОРМАЦИЯ ---
-            name: "Елена Световая",
-            // Три главных слова под вашим именем (через запятую, в кавычках)
-            tags: ["Руны", "Таро", "Энергия"],
+        // =========================================================================
+        // 👇👇👇 НАСТРОЙКИ ДЛЯ ВАЙБКОДЕРА (МЕНЯЙ ТЕКСТ И ССЫЛКИ ТОЛЬКО ЗДЕСЬ) 👇👇👇
+        //
+        // ШПАРГАЛКА ПО РАЗМЕРАМ ШРИФТА (Tailwind CSS):
+        // text-xs (очень маленький), text-sm (маленький), text-base (стандартный), 
+        // text-lg (большой), text-xl, text-2xl, text-3xl, text-4xl (огромный)
+        // Можно писать свои значения в скобках: text-[15px], text-[20px]
+        // =========================================================================
+        const CONFIG = {
+            // --- 1. ГЛАВНАЯ СТРАНИЦА ---
+            brandName: "Елена Майер", // Имя на главном экране
+            subtitle: "Незабываемые авторские туры", // ✨ НОВОЕ: Подзаголовок под именем
+            avatarUrl: "https://i.postimg.cc/qRP5mKJS/unnamed-6.jpg", // 🖼️ ССЫЛКА НА ФОТО: Большое фото на фоне
+            mainButtonText: "Горящие туры", // Текст на большой кнопке
+            mainButtonImage: "https://images.unsplash.com/photo-1499678329028-101435549a4e?auto=format&fit=crop&q=80&w=800", // 🖼️ ССЫЛКА НА ФОТО: Фон для кнопки "Горящие туры"
 
-            // --- ⚙️ ИНТЕГРАЦИЯ С GOOGLE (ДЛЯ ОТЗЫВОВ) ---
-            // Чтобы активировать:
-            // 1. Вставьте ссылку на ваш Web App из Google Apps Script ниже
-            // 2. В функции submitReview (внизу кода) найдите закомментированный код для отправки и раскомментируйте его.
-            googleScriptUrl: "", // Вставьте сюда ссылку "https://script.google.com/macros/s/.../exec"
-            googleSheetUrl: "",  // Ссылка на саму таблицу (просто чтобы не потерять)
-
-            // --- 🔗 ССЫЛКИ НА СОЦСЕТИ ---
-            socialLinks: {
-                telegram: "https://t.me/YOUR_USERNAME",
-                instagram: "https://instagram.com/YOUR_USERNAME",
-                whatsapp: "https://wa.me/YOUR_NUMBER" // укажите номер в международном формате, например 79991234567
+            // СТАТИСТИКА (цифры под именем на главной)
+            stats: {
+                toursCount: "150+",   // Количество туров
+                clientsCount: "5k+",  // Количество клиентов
+                rating: "5.0"         // Твой рейтинг
             },
 
-            // --- 🎁 БЕСПЛАТНЫЙ ГАЙД ---
-            guide: {
-                title: "Бесплатный гайд",
-                subtitle: "Знаки Вселенной",
-                link: "https://t.me/YOUR_USERNAME" // Ссылка на скачивание гайда или бота
+            // --- 2. КАРТИНКИ ДЛЯ КВАДРАТНЫХ КНОПОК МЕНЮ ---
+            menuImages: {
+                about: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=400", // 🖼️ ССЫЛКА НА ФОТО: Кнопка "Обо мне"
+                reviews: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&q=80&w=300", // 🖼️ ССЫЛКА НА ФОТО: Кнопка "Отзывы"
+                contacts: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&q=80&w=300" // 🖼️ ССЫЛКА НА ФОТО: Кнопка "Контакты"
             },
 
-            // --- 🔮 БЛОК «ОБО МНЕ» ---
+            // --- 3. ТЕКСТ "ОБО МНЕ" ---
             about: {
-                photo: "https://images.unsplash.com/photo-1608744882201-52a7f7f3dd22?q=80&w=800&auto=format&fit=crop", // фото внутри шторки
-                text: "Я работаю с тонкими материями более 7 лет. Мой подход исключает запугивание и фатализм. Будущее многовариантно, и карты лишь подсвечивают лучшую из дорог.",
-                quote: "«Мы сами творцы своей реальности. Магия — лишь инструмент, помогающий услышать голос Души.»",
-                tools: ["Скандинавские Руны", "Таро Тота", "Рейки", "Астрология"] // Ваши инструменты
+                title: "Обо мне",
+                text: "Привет! Я твой личный тревел-эксперт. Я помогаю людям находить идеальные места для отдыха, организую незабываемые туры и беру всю рутину с документами на себя. Моя цель — сделать так, чтобы ты просто собрал чемодан и наслаждался отпуском!"
             },
 
-            // --- 💎 ВАШИ УСЛУГИ И ЦЕНЫ ---
-            // Чтобы добавить новую услугу, скопируйте блок в фигурных скобках { ... } и поставьте запятую
-            services: [
-                {
-                    title: "Расклад «Путь»",
-                    price: "2 500 ₽",
-                    description: "Глубокий анализ текущей ситуации, диагностика блоков и просмотр вариантов будущего.",
-                    telegramMessage: "Здравствуйте! Записываюсь на расклад «Путь»." // Это сообщение клиент автоматически отправит вам в ЛС
-                },
-                {
-                    title: "Чистка Ауры",
-                    price: "5 000 ₽",
-                    description: "Снятие негативных программ, восстановление энергобаланса. Дистанционная работа.",
-                    telegramMessage: "Здравствуйте! Интересует чистка ауры."
-                }
-            ],
+            // --- 4. ТВОИ КОНТАКТЫ (ССЫЛКИ И ТЕЛЕФОН) ---
+            contacts: {
+                telegram: "https://t.me/aicreata", // ✈️ ССЫЛКА НА ТВОЙ ТЕЛЕГРАМ
+                instagram: "https://instagram.com/instagram", // 📸 ССЫЛКА НА ТВОЙ INSTAGRAM
+                phone: "+7 (999) 123-45-67" // Твой номер телефона
+            },
 
-            // --- ⭐ ОТЗЫВЫ НА ГЛАВНОЙ ---
-            reviews: [
-                {
-                    name: "Анна В.",
-                    date: "12 Мая 2024",
-                    text: "Делала расклад на отношения. Елена невероятно чуткий мастер. Всё встало на свои места, ушла тревога. Очень красивый и глубокий подход!"
-                },
-                {
-                    name: "Мария К.",
-                    date: "05 Мая 2024",
-                    text: "Энергетическая чистка просто вернула меня к жизни. Будто сняли тяжелый рюкзак, который я носила годами. Огромная благодарность."
-                },
-                {
-                    name: "Светлана",
-                    date: "28 Апр 2024",
-                    text: "Обращаюсь за рунической подсказкой перед важными сделками. Работает как швейцарские часы. Уровень профессионализма на высоте."
-                }
-            ]
+            // --- 5. ТАБЛИЦЫ И СИСТЕМНЫЕ ССЫЛКИ (БАЗА ДАННЫХ) ---
+            bookingLink: "https://t.me/aicreata", // ✈️ ССЫЛКА ДЛЯ БРОНИ: (запасная, если в таблице нет ссылки у тура)
+            googleSheetUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=0&single=true&output=csv", // 📊 ССЫЛКА НА ТАБЛИЦУ С ТУРАМИ (CSV)
+            reviewsCsvUrl: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSaRWByT--Ch96eWyxGr2fKuwK7NFITq0YG6g_k6fZkP78CreHlEHB96AU1x6fLyiRT9SxW2_xRTGsG/pub?gid=882822745&single=true&output=csv", // 📝 ССЫЛКА НА ТАБЛИЦУ С ОТЗЫВАМИ (CSV)
+            reviewsPostUrl: "https://script.google.com/macros/s/AKfycbwnSKpgdCJGand6-hgZ1L6_5a7RRxi9gpf4fa-sPvuOGJqTBp6GiBYtdjOzzjfvMfDR-Q/exec" // ⚙️ ССЫЛКА СКРИПТА GOOGLE (для отправки отзывов)
         };
-    </script>
-    <!-- ======================================================== -->
-    <!-- ⬆️ КОНЕЦ БЛОКА ДЛЯ РЕДАКТИРОВАНИЯ ⬆️ -->
-    <!-- ======================================================== -->
+        // =========================================================================
+        // 👆👆👆 КОНЕЦ НАСТРОЕК ВАЙБКОДЕРА 👆👆👆
+        // =========================================================================
 
-    <!-- Фоновые элементы -->
-    <div id="dynamic-bg" class="bg-photo"></div>
-    <div class="bg-overlay"></div>
+        // Иконки
+        const IconArrowLeft = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>;
+        const IconArrowRightTop = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>;
+        const IconInstagram = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>;
+        const IconSend = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>;
+        const IconPhone = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>;
+        const IconMapPin = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>;
+        const IconStar = ({size=24, filled=true, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill={filled ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>;
+        const IconEdit = ({size=24, className=""}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
 
-    <main class="w-full max-w-md mx-auto px-4 pt-10 relative z-10 flex flex-col items-center">
-        
-        <!-- Аватар и Заголовок -->
-        <div class="flex flex-col items-center mb-10 w-full">
-            <div class="relative mb-5 group">
-                <!-- Тонкая анимированная рамка вокруг фото -->
-                <div class="absolute inset-0 rounded-full border border-[#d4af37]/30 scale-[1.1] animate-pulse"></div>
-                <div class="absolute inset-0 rounded-full border border-[#d4af37]/50 scale-[1.05]"></div>
-                
-                <img id="dynamic-avatar" src="" 
-                     alt="Мастер" 
-                     class="w-28 h-28 rounded-full object-cover shadow-[0_0_20px_rgba(212,175,55,0.2)]">
-            </div>
-            <h1 id="dynamic-name" class="text-4xl text-white tracking-wide mb-1 text-center"></h1>
-            <div id="dynamic-tags" class="flex items-center gap-2 text-gold/80 text-xs tracking-[0.2em] uppercase font-light">
-                <!-- Теги загрузятся скриптом -->
-            </div>
-        </div>
+        function App() {
+            const [activeScreen, setActiveScreen] = useState('home');
+            const [tours, setTours] = useState([]);
+            const [isLoadingTours, setIsLoadingTours] = useState(true);
+            const [dynamicBookingLink, setDynamicBookingLink] = useState("");
+            const [sortOrder, setSortOrder] = useState('none');
+            const [touchStart, setTouchStart] = useState(null);
+            const [touchEnd, setTouchEnd] = useState(null);
+            const [reviews, setReviews] = useState([]);
+            const [isLoadingReviews, setIsLoadingReviews] = useState(true);
+            const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+            const [reviewForm, setReviewForm] = useState({ name: '', text: '', rating: 5 });
+            const [isReviewSubmitted, setIsReviewSubmitted] = useState(false);
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [isAppLoading, setIsAppLoading] = useState(true);
+            const [isAppFading, setIsAppFading] = useState(false);
 
-        <!-- Кнопка интерактива: Руна дня -->
-        <button onclick="drawRune()" class="w-full glass-dark rounded-2xl p-6 mb-8 flex flex-col items-center justify-center relative overflow-hidden active:scale-95 transition-transform duration-300">
-            <div class="absolute top-0 right-0 w-32 h-32 bg-[#d4af37] rounded-full blur-[80px] opacity-10"></div>
-            <span class="text-5xl mb-3 gold-glow text-[#f3e5ab]">ᛟ</span>
-            <span class="font-serif text-2xl text-white tracking-wide">Руна Дня</span>
-            <span class="text-xs text-gray-400 mt-2 font-light tracking-wider uppercase">Открыть послание</span>
-        </button>
-
-        <!-- Навигация (2 кнопки в ряд для стиля) -->
-        <div class="w-full grid grid-cols-2 gap-3 mb-3">
-            <button onclick="openSheet('services-sheet')" class="glass-btn p-4 rounded-xl flex flex-col items-center justify-center gap-2 group">
-                <i class="ph ph-sparkle text-2xl text-gold"></i>
-                <span class="font-serif text-lg tracking-wide">Услуги</span>
-            </button>
-            <button onclick="openSheet('about-sheet')" class="glass-btn p-4 rounded-xl flex flex-col items-center justify-center gap-2 group">
-                <i class="ph ph-moon-stars text-2xl text-gold"></i>
-                <span class="font-serif text-lg tracking-wide">Обо мне</span>
-            </button>
-        </div>
-
-        <!-- Блок: Гайд (Ссылка) -->
-        <a id="dynamic-guide-link" href="#" target="_blank" class="w-full glass-btn p-4 rounded-xl flex items-center justify-between mb-10 group relative overflow-hidden border border-white/5 hover:border-gold/30 transition-all">
-            <div class="absolute inset-0 bg-gradient-to-r from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div class="flex items-center gap-4 relative z-10">
-                <div class="w-11 h-11 rounded-full bg-black/30 border border-gold/20 flex items-center justify-center text-gold shadow-[0_0_10px_rgba(212,175,55,0.1)]">
-                    <i class="ph ph-book-open-text text-xl"></i>
-                </div>
-                <div class="text-left">
-                    <h3 id="dynamic-guide-title" class="font-serif text-lg text-white tracking-wide leading-tight"></h3>
-                    <p id="dynamic-guide-subtitle" class="text-[10px] text-gray-400 font-light uppercase tracking-widest mt-0.5"></p>
-                </div>
-            </div>
-            <div class="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center relative z-10 group-hover:bg-gold/10 transition-colors">
-                <i class="ph ph-arrow-right text-gold text-sm group-hover:translate-x-0.5 transition-transform"></i>
-            </div>
-        </a>
-
-        <!-- Раздел: Отзывы (Свайп-Карусель) -->
-        <div class="w-full mb-8">
-            <div class="flex justify-between items-end mb-4 px-1">
-                <h2 class="text-2xl text-white tracking-wide">Отзывы</h2>
-                <button onclick="openSheet('add-review-sheet')" class="text-xs text-gold/80 hover:text-gold uppercase tracking-wider">Оставить свой</button>
-            </div>
-            
-            <!-- Контейнер карусели -->
-            <div class="carousel-container -mx-4 px-4" id="reviews-carousel">
-                <!-- Отзывы загрузятся скриптом -->
-            </div>
-        </div>
-
-        <!-- Подвал / Соцсети -->
-        <footer class="w-full mt-4">
-            <div class="glass-dark rounded-2xl p-4 flex justify-center gap-8 items-center">
-                <a id="dynamic-tg" href="#" target="_blank" class="text-gray-400 hover:text-white transition-colors p-2">
-                    <i class="ph ph-telegram-logo text-3xl"></i>
-                </a>
-                <a id="dynamic-inst" href="#" target="_blank" class="text-gray-400 hover:text-white transition-colors p-2">
-                    <i class="ph ph-instagram-logo text-3xl"></i>
-                </a>
-                <a id="dynamic-wa" href="#" target="_blank" class="text-gray-400 hover:text-white transition-colors p-2">
-                    <i class="ph ph-whatsapp-logo text-3xl"></i>
-                </a>
-            </div>
-        </footer>
-
-    </main>
-
-
-    <!-- ==================== ШТОРКИ (MODALS) ==================== -->
-    <div id="overlay" class="sheet-overlay" onclick="closeAllSheets()"></div>
-
-    <!-- Шторка: Руна Дня -->
-    <div id="rune-sheet" class="bottom-sheet">
-        <div class="sheet-header" onclick="closeAllSheets()">
-            <div class="sheet-drag-handle"></div>
-            <button class="absolute top-4 right-4 text-gray-400 hover:text-white"><i class="ph ph-x text-xl"></i></button>
-        </div>
-        <div class="sheet-content flex flex-col items-center text-center">
-            <div class="w-32 h-40 glass-dark border border-[#d4af37]/30 rounded-2xl flex items-center justify-center mb-8 relative">
-                <!-- Декоративные уголки -->
-                <div class="absolute top-2 left-2 w-2 h-2 border-t border-l border-gold/50"></div>
-                <div class="absolute top-2 right-2 w-2 h-2 border-t border-r border-gold/50"></div>
-                <div class="absolute bottom-2 left-2 w-2 h-2 border-b border-l border-gold/50"></div>
-                <div class="absolute bottom-2 right-2 w-2 h-2 border-b border-r border-gold/50"></div>
-                
-                <span id="rune-symbol" class="text-7xl gold-glow text-[#f3e5ab]"></span>
-            </div>
-            <h3 id="rune-name" class="font-serif text-3xl text-white mb-4 tracking-widest uppercase"></h3>
-            <p id="rune-desc" class="text-gray-300 font-light leading-relaxed text-sm max-w-[280px]"></p>
-        </div>
-    </div>
-
-    <!-- Шторка: Услуги -->
-    <div id="services-sheet" class="bottom-sheet">
-        <div class="sheet-header" onclick="closeAllSheets()">
-            <div class="sheet-drag-handle"></div>
-            <h2 class="font-serif text-2xl text-white">Мои Услуги</h2>
-            <button class="absolute top-4 right-4 text-gray-400"><i class="ph ph-x text-xl"></i></button>
-        </div>
-        <div id="dynamic-services" class="sheet-content space-y-4 mt-2">
-            <!-- Услуги загрузятся скриптом -->
-        </div>
-    </div>
-
-    <!-- Шторка: Обо мне -->
-    <div id="about-sheet" class="bottom-sheet">
-        <div class="sheet-header" onclick="closeAllSheets()">
-            <div class="sheet-drag-handle"></div>
-            <h2 class="font-serif text-2xl text-white">О мастере</h2>
-            <button class="absolute top-4 right-4 text-gray-400"><i class="ph ph-x text-xl"></i></button>
-        </div>
-        <div class="sheet-content">
-            <img id="dynamic-about-img" src="" 
-                 alt="Эстетика" 
-                 class="w-full h-40 object-cover rounded-xl mb-6 shadow-lg opacity-80 border border-white/10">
-            
-            <div class="space-y-4 text-gray-300 font-light text-sm leading-relaxed">
-                <p id="dynamic-about-text"></p>
-                
-                <blockquote id="dynamic-about-quote" class="border-l-2 border-gold pl-4 py-1 italic text-gray-400">
-                </blockquote>
-                
-                <div class="pt-2">
-                    <h4 class="text-white font-serif text-lg mb-3">Мои инструменты:</h4>
-                    <div id="dynamic-about-tools" class="flex flex-wrap gap-2">
-                        <!-- Инструменты загрузятся скриптом -->
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Шторка: Оставить отзыв -->
-    <div id="add-review-sheet" class="bottom-sheet">
-        <div class="sheet-header" onclick="closeAllSheets()">
-            <div class="sheet-drag-handle"></div>
-            <h2 class="font-serif text-2xl text-white">Ваш отзыв</h2>
-            <button class="absolute top-4 right-4 text-gray-400"><i class="ph ph-x text-xl"></i></button>
-        </div>
-        <div class="sheet-content">
-            <form id="review-form" class="flex flex-col gap-4" onsubmit="submitReview(event)">
-                <input type="text" id="rev-name" placeholder="Ваше имя" required 
-                       class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white font-light focus:outline-none focus:border-gold/50 transition-colors placeholder:text-gray-600">
-                
-                <textarea id="rev-text" placeholder="Поделитесь впечатлениями..." required rows="4" 
-                          class="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3 text-white font-light focus:outline-none focus:border-gold/50 transition-colors resize-none placeholder:text-gray-600"></textarea>
-                
-                <button type="submit" id="submit-btn" class="mt-4 w-full bg-gold hover:bg-[#b5952f] text-black font-semibold py-3.5 rounded-xl uppercase tracking-widest text-sm transition-colors flex justify-center items-center">
-                    Отправить
-                </button>
-                <p id="form-message" class="text-sm text-center font-light hidden mt-2"></p>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // Инициализация Telegram
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready(); // Сообщает ТГ, что аппка готова (ускоряет отображение)
-        tg.setHeaderColor('#0f172a'); // Подстраиваем цвет шапки тг
-
-        // Запрещаем вертикальные свайпы, чтобы аппка не улетала при случайном касании
-        if (tg.disableVerticalSwipes) {
-            tg.disableVerticalSwipes();
-        }
-
-        // --- Убираем загрузчик после загрузки страницы ---
-        window.addEventListener('load', () => {
-            const loader = document.getElementById('global-loader');
-            if (loader) {
-                loader.style.opacity = '0';
-                setTimeout(() => loader.remove(), 400);
-            }
-        });
-
-        // --- Логика Шторок ---
-        const overlay = document.getElementById('overlay');
-        let activeSheet = null;
-
-        function openSheet(sheetId) {
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-            closeAllSheets();
-            const sheet = document.getElementById(sheetId);
-            sheet.classList.add('active');
-            overlay.classList.add('active');
-            activeSheet = sheet;
-            document.body.classList.add('no-scroll'); // Блокируем скролл фона
-        }
-
-        function closeAllSheets() {
-            if (activeSheet) {
-                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                activeSheet.classList.remove('active');
-                activeSheet = null;
-            }
-            overlay.classList.remove('active');
-            document.body.classList.remove('no-scroll'); // Возвращаем скролл фона
-        }
-
-        // --- Логика Руны Дня ---
-        const runes = [
-            { symbol: 'ᚠ', name: 'Феху', desc: 'Энергия созидания и ресурса. Сегодня прекрасный день для закладки финансового фундамента.' },
-            { symbol: 'ᚢ', name: 'Уруз', desc: 'Первозданная мощь. В вас скрыт огромный потенциал для прорыва. Действуйте смело.' },
-            { symbol: 'ᚱ', name: 'Райдо', desc: 'Дорога открыта. Доверьтесь потоку событий, ваш внутренний компас настроен верно.' },
-            { symbol: 'ᚨ', name: 'Ансуз', desc: 'Мудрость Вселенной. Обратите внимание на знаки, сны и случайно услышанные слова.' },
-            { symbol: 'ᚷ', name: 'Гебо', desc: 'Гармония обмена. Отдавая — получаете. Прекрасное время для союзов и искренней любви.' },
-            { symbol: 'ᚹ', name: 'Вуньо', desc: 'Радость и свет. Позвольте себе насладиться моментом, тьма отступила.' },
-            { symbol: 'ᛟ', name: 'Одал', desc: 'Связь с родом. Ваша опора сегодня — ваши корни и внутренний духовный дом.' },
-            { symbol: 'ᛉ', name: 'Альгиз', desc: 'Высшая защита. Вы под покровительством. Страхи иллюзорны, слушайте интуицию.' }
-        ];
-
-        function drawRune() {
-            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            
-            const randomRune = runes[Math.floor(Math.random() * runes.length)];
-            
-            document.getElementById('rune-symbol').innerText = randomRune.symbol;
-            document.getElementById('rune-name').innerText = randomRune.name;
-            document.getElementById('rune-desc').innerText = randomRune.desc;
-            
-            openSheet('rune-sheet');
-        }
-
-        // --- Заглушка отправки отзыва ---
-        function submitReview(event) {
-            event.preventDefault();
-            const btn = document.getElementById('submit-btn');
-            const msg = document.getElementById('form-message');
-            const name = document.getElementById('rev-name').value;
-            const text = document.getElementById('rev-text').value;
-            
-            btn.innerHTML = 'Отправка...';
-            btn.disabled = true;
-
-            // === ЗАГЛУШКА (Удалите или закомментируйте этот блок, когда подключите Google Script) ===
-            setTimeout(() => {
-                btn.innerHTML = 'Отправить';
-                btn.disabled = false;
-                document.getElementById('review-form').reset();
-                msg.innerHTML = 'Благодарю. Отзыв отправлен на модерацию ✨';
-                msg.classList.remove('hidden', 'text-red-400');
-                msg.classList.add('text-gold');
-            }, 1000);
-            // === КОНЕЦ ЗАГЛУШКИ ===
-
-            /* // === РЕАЛЬНАЯ ОТПРАВКА В GOOGLE SCRIPT (Раскомментируйте, когда добавите ссылку в MY_DATA) ===
-            if (MY_DATA.googleScriptUrl) {
-                const formData = new FormData();
-                formData.append('action', 'addReview');
-                formData.append('name', name);
-                formData.append('text', text);
-
-                fetch(MY_DATA.googleScriptUrl, {
-                    method: 'POST',
-                    body: formData,
-                    mode: 'no-cors'
-                }).then(() => {
-                    btn.innerHTML = 'Отправить';
-                    btn.disabled = false;
-                    document.getElementById('review-form').reset();
-                    msg.innerHTML = 'Благодарю. Отзыв отправлен на модерацию ✨';
-                    msg.classList.remove('hidden', 'text-red-400');
-                    msg.classList.add('text-gold');
-                }).catch(err => {
-                    btn.innerHTML = 'Отправить';
-                    btn.disabled = false;
-                    msg.innerHTML = 'Произошла ошибка. Попробуйте позже.';
-                    msg.classList.remove('hidden', 'text-gold');
-                    msg.classList.add('text-red-400');
-                });
-            }
-            // === КОНЕЦ РЕАЛЬНОЙ ОТПРАВКИ ===
-            */
-        }
-
-        // --- МАГИЯ: ПОДСТАНОВКА ВАШИХ ДАННЫХ В ДИЗАЙН ---
-        document.addEventListener('DOMContentLoaded', () => {
-            // Фон и Аватар
-            document.getElementById('dynamic-bg').style.backgroundImage = `url('${MY_DATA.backgroundPhoto}')`;
-            document.getElementById('dynamic-avatar').src = MY_DATA.avatarPhoto;
-            
-            // Имя и теги
-            document.getElementById('dynamic-name').innerText = MY_DATA.name;
-            const tagsContainer = document.getElementById('dynamic-tags');
-            MY_DATA.tags.forEach((tag, index) => {
-                tagsContainer.innerHTML += `<span>${tag}</span>`;
-                if (index < MY_DATA.tags.length - 1) {
-                    tagsContainer.innerHTML += `<span class="w-1 h-1 rounded-full bg-gold/50"></span>`;
+            useEffect(() => {
+                if (window.Telegram?.WebApp) {
+                    window.Telegram.WebApp.ready();
+                    window.Telegram.WebApp.expand();
+                    if (window.Telegram.WebApp.disableVerticalSwipes) {
+                        window.Telegram.WebApp.disableVerticalSwipes();
+                    }
                 }
-            });
 
-            // Гайд
-            document.getElementById('dynamic-guide-title').innerText = MY_DATA.guide.title;
-            document.getElementById('dynamic-guide-subtitle').innerText = MY_DATA.guide.subtitle;
-            document.getElementById('dynamic-guide-link').href = MY_DATA.guide.link;
+                if (window.Papa && CONFIG.googleSheetUrl) {
+                    window.Papa.parse(CONFIG.googleSheetUrl, {
+                        download: true,
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            let foundGlobalLink = "";
+                            const validTours = results.data.map(row => {
+                                const linkKey = Object.keys(row).find(k => k.trim().toLowerCase() === 'bookinglink');
+                                const rowLink = linkKey ? row[linkKey].trim() : '';
+                                if (rowLink && !foundGlobalLink) foundGlobalLink = rowLink;
+                                return { ...row, _actualLink: rowLink };
+                            }).filter(row => row.title && row.price);
+                            setDynamicBookingLink(foundGlobalLink);
+                            setTours(validTours);
+                            setIsLoadingTours(false);
+                        },
+                        error: function(err) {
+                            console.error("Ошибка загрузки туров:", err);
+                            setIsLoadingTours(false);
+                        }
+                    });
+                } else {
+                    setIsLoadingTours(false);
+                }
 
-            // Соцсети
-            document.getElementById('dynamic-tg').href = MY_DATA.socialLinks.telegram;
-            document.getElementById('dynamic-inst').href = MY_DATA.socialLinks.instagram;
-            document.getElementById('dynamic-wa').href = MY_DATA.socialLinks.whatsapp;
+                if (window.Papa && CONFIG.reviewsCsvUrl) {
+                    window.Papa.parse(CONFIG.reviewsCsvUrl, {
+                        download: true,
+                        header: true,
+                        skipEmptyLines: true,
+                        complete: function(results) {
+                            const fetchedReviews = results.data
+                                .filter(row => row.name && row.text)
+                                .map((row, index) => ({
+                                    id: index,
+                                    name: row.name,
+                                    date: row.date,
+                                    rating: parseInt(row.rating) || 5,
+                                    text: row.text
+                                })).reverse();
+                            setReviews(fetchedReviews);
+                            setIsLoadingReviews(false);
+                        },
+                        error: function(err) {
+                            console.error("Ошибка загрузки отзывов:", err);
+                            setIsLoadingReviews(false);
+                        }
+                    });
+                } else {
+                    setIsLoadingReviews(false);
+                }
+            }, []);
 
-            // Отзывы
-            const reviewsContainer = document.getElementById('reviews-carousel');
-            MY_DATA.reviews.forEach(rev => {
-                reviewsContainer.innerHTML += `
-                <div class="carousel-item glass-dark rounded-2xl p-5 flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <h4 class="font-serif text-lg text-white">${rev.name}</h4>
-                                <span class="text-[10px] text-gray-400 uppercase tracking-wider">${rev.date}</span>
+            // Загрузочный экран теперь ждет загрузку данных из таблиц
+            useEffect(() => {
+                if (!isLoadingTours && !isLoadingReviews) {
+                    const fadeTimer = setTimeout(() => setIsAppFading(true), 400);
+                    const removeTimer = setTimeout(() => setIsAppLoading(false), 900);
+                    return () => { clearTimeout(fadeTimer); clearTimeout(removeTimer); };
+                }
+            }, [isLoadingTours, isLoadingReviews]);
+
+            const triggerHaptic = () => {
+                if (window.Telegram?.WebApp?.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+                else if (navigator.vibrate) navigator.vibrate(50);
+            };
+
+            const navigateTo = (screen, customLink = null) => {
+                triggerHaptic();
+                if (screen === 'booking') {
+                    const linkToOpen = CONFIG.bookingLink;
+                    if (window.Telegram?.WebApp?.openLink) window.Telegram.WebApp.openLink(linkToOpen);
+                    else window.open(linkToOpen, '_blank');
+                    return;
+                }
+                if (screen === 'quiQuo') {
+                    const linkToOpen = customLink || dynamicBookingLink;
+                    if (!linkToOpen) { alert("Ссылка на подборку еще не добавлена!"); return; }
+                    if (window.Telegram?.WebApp?.openLink) window.Telegram.WebApp.openLink(linkToOpen);
+                    else window.open(linkToOpen, '_blank');
+                    return;
+                }
+                setActiveScreen(screen);
+                window.scrollTo(0, 0);
+            };
+
+            const extractPrice = (priceStr) => { if (!priceStr) return 0; return parseInt(priceStr.replace(/\D/g, ''), 10) || 0; };
+            const onTouchStart = (e) => { setTouchEnd(null); setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }); };
+            const onTouchMove = (e) => { setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY }); };
+            const onTouchEnd = () => {
+                if (!touchStart || !touchEnd) return;
+                const distanceX = touchEnd.x - touchStart.x;
+                const distanceY = Math.abs(touchEnd.y - touchStart.y);
+                const isEdgeSwipe = touchStart.x <= 30;
+                if (isEdgeSwipe && distanceX > 80 && distanceY < 50) {
+                    if (activeScreen !== 'home') navigateTo('home');
+                }
+            };
+
+            const handleSubmitReview = async (e) => {
+                e.preventDefault();
+                if (isSubmitting) return;
+                setIsSubmitting(true);
+                try {
+                    await fetch(CONFIG.reviewsPostUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(reviewForm) });
+                    setIsReviewSubmitted(true);
+                    const d = new Date();
+                    const newDateStr = `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
+                    setReviews(prev => [{ id: Date.now(), name: reviewForm.name, date: newDateStr, rating: reviewForm.rating, text: reviewForm.text }, ...prev]);
+                    setTimeout(() => { setIsReviewModalOpen(false); setIsReviewSubmitted(false); setReviewForm({ name: '', text: '', rating: 5 }); }, 3000);
+                } catch (error) { alert("Ошибка при отправке."); } finally { setIsSubmitting(false); }
+            };
+
+            // Разделяем имя на две строки, как на фото
+            const nameParts = CONFIG.brandName.split(' ');
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(' ');
+
+            return (
+                <div 
+                    className="app-container text-white hide-scrollbar selection:bg-white/30"
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                >
+                    {/* Обновленный загрузочный экран */}
+                    {isAppLoading && (
+                        <div className={`fixed inset-0 z-[100] bg-[#0a0a0a] flex flex-col items-center justify-center transition-opacity duration-500 ${isAppFading ? 'opacity-0' : 'opacity-100'}`}>
+                            <div className="w-14 h-14 border-[3px] border-white/20 border-t-white rounded-full animate-spin mb-5 shadow-[0_0_15px_rgba(255,255,255,0.1)]"></div>
+                            <div className="text-white/60 text-xs font-semibold tracking-[0.2em] uppercase animate-pulse">Загрузка</div>
+                        </div>
+                    )}
+
+                    {/* ========================================================= */}
+                    {/* --- ГЛАВНЫЙ ЭКРАН (КАК НА ФОТО) --- */}
+                    {/* ========================================================= */}
+                    {activeScreen === 'home' && (
+                        <div className="relative min-h-[100dvh] flex flex-col justify-end animate-fade">
+                            {/* Фоновое фото */}
+                            <div className="absolute inset-0 z-0">
+                                <img src={CONFIG.avatarUrl} alt="Background" className="w-full h-full object-cover" />
+                                {/* Легкий градиент снизу, чтобы карточка не сливалась с фото */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                             </div>
-                            <div class="flex text-gold text-sm gap-0.5">
-                                <i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i><i class="ph-fill ph-star"></i>
+
+                            {/* Стеклянная панель */}
+                            <div className="relative z-10 p-4 w-full animate-item" style={{animationDelay: '0.2s'}}>
+                                <div className="glass-panel rounded-[32px] p-6 pb-8 w-full">
+                                    
+                                    {/* Заголовок и иконка */}
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div>
+                                            {/* РАЗМЕР ШРИФТА (Имя): text-3xl (было 4xl) */}
+                                            <h1 className="text-3xl font-bold tracking-tight leading-[1.1]">
+                                                {CONFIG.brandName}
+                                            </h1>
+                                            {/* РАЗМЕР ШРИФТА (Подзаголовок): text-sm */}
+                                            <div className="text-white/80 text-sm font-medium mt-1.5">
+                                                {CONFIG.subtitle}
+                                            </div>
+                                        </div>
+                                        <div className="text-white mt-1">
+                                            <IconArrowRightTop size={20} />
+                                        </div>
+                                    </div>
+
+                                    {/* Статистика */}
+                                    <div className="flex justify-between items-center mb-6 border-b border-white/20 pb-6">
+                                        <div className="text-left">
+                                            {/* РАЗМЕР ШРИФТА (Цифра статистики): text-lg */}
+                                            <div className="font-bold text-lg">{CONFIG.stats.toursCount}</div>
+                                            {/* РАЗМЕР ШРИФТА (Подпись под цифрой): text-xs */}
+                                            <div className="text-xs text-white/70">Туров</div>
+                                        </div>
+                                        <div className="text-left">
+                                            {/* РАЗМЕР ШРИФТА (Цифра статистики): text-lg */}
+                                            <div className="font-bold text-lg">{CONFIG.stats.clientsCount}</div>
+                                            {/* РАЗМЕР ШРИФТА (Подпись под цифрой): text-xs */}
+                                            <div className="text-xs text-white/70">Клиентов</div>
+                                        </div>
+                                        <div className="text-left">
+                                            {/* РАЗМЕР ШРИФТА (Цифра статистики): text-lg */}
+                                            <div className="font-bold text-lg">{CONFIG.stats.rating}</div>
+                                            {/* РАЗМЕР ШРИФТА (Подпись под цифрой): text-xs */}
+                                            <div className="text-xs text-white/70">Рейтинг</div>
+                                        </div>
+                                    </div>
+
+                                    {/* 3 Квадратных превью = Навигация! */}
+                                    <div className="flex gap-3 mb-6">
+                                        <div onClick={() => navigateTo('about')} className="flex-1 aspect-square rounded-2xl overflow-hidden relative cursor-pointer active:scale-95 transition-all">
+                                            <img src={CONFIG.menuImages.about} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center backdrop-blur-[2px]">
+                                                {/* РАЗМЕР ШРИФТА (Подписи на квадратных кнопках): text-xs */}
+                                                <span className="text-white text-xs font-semibold tracking-wide">Обо мне</span>
+                                            </div>
+                                        </div>
+                                        <div onClick={() => navigateTo('reviews')} className="flex-1 aspect-square rounded-2xl overflow-hidden relative cursor-pointer active:scale-95 transition-all">
+                                            <img src={CONFIG.menuImages.reviews} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center backdrop-blur-[2px]">
+                                                {/* РАЗМЕР ШРИФТА (Подписи на квадратных кнопках): text-xs */}
+                                                <span className="text-white text-xs font-semibold tracking-wide">Отзывы</span>
+                                            </div>
+                                        </div>
+                                        <div onClick={() => navigateTo('contacts')} className="flex-1 aspect-square rounded-2xl overflow-hidden relative cursor-pointer active:scale-95 transition-all">
+                                            <img src={CONFIG.menuImages.contacts} className="w-full h-full object-cover" />
+                                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center backdrop-blur-[2px]">
+                                                {/* РАЗМЕР ШРИФТА (Подписи на квадратных кнопках): text-xs */}
+                                                <span className="text-white text-xs font-semibold tracking-wide">Контакты</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* РАЗМЕР ШРИФТА (Главная кнопка внизу "Горящие туры"): text-xl */}
+                                    {/* 👇 ВЫСОТА КНОПКИ: сейчас h-20. Можешь поменять на h-16 (меньше), h-24 (больше) или свой размер, например h-[100px] 👇 */}
+                                    <div onClick={() => navigateTo('tours')} className="w-full h-20 rounded-2xl overflow-hidden relative cursor-pointer active:scale-95 transition-all">
+                                        <img src={CONFIG.mainButtonImage} className="w-full h-full object-cover" />
+                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[2px]">
+                                            <span className="text-white text-xl font-bold tracking-wide uppercase">{CONFIG.mainButtonText}</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-300 font-light leading-relaxed mb-2">${rev.text}</p>
+                    )}
+
+                    {/* --- ОБЩИЙ РАЗМЫТЫЙ ФОН ДЛЯ ВНУТРЕННИХ СТРАНИЦ --- */}
+                    <div className={`fixed-bg transition-opacity duration-300 ${activeScreen !== 'home' ? 'opacity-100' : 'opacity-0'}`}>
+                        <img src={CONFIG.avatarUrl} alt="Blurred Background" />
                     </div>
-                </div>`;
-            });
 
-            // Услуги
-            const servicesContainer = document.getElementById('dynamic-services');
-            const tgLink = MY_DATA.socialLinks.telegram;
-            const tgDomain = tgLink.includes('/') ? tgLink.split('/').pop() : tgLink.replace('@', '');
-            
-            MY_DATA.services.forEach(srv => {
-                servicesContainer.innerHTML += `
-                <div class="glass-btn rounded-xl p-5 text-left border border-white/5">
-                    <div class="flex justify-between items-center mb-3">
-                        <h3 class="font-serif text-xl text-gold">${srv.title}</h3>
-                        <span class="text-sm tracking-wider font-light border border-gold/30 px-3 py-1 rounded-full text-gold">${srv.price}</span>
-                    </div>
-                    <p class="text-xs text-gray-400 font-light leading-relaxed mb-4">${srv.description}</p>
-                    <a href="tg://resolve?domain=${tgDomain}&text=${encodeURIComponent(srv.telegramMessage)}" 
-                       class="block w-full text-center bg-white/10 hover:bg-white/20 text-white text-sm py-3 rounded-lg uppercase tracking-widest transition-colors">
-                       Записаться
-                    </a>
-                </div>`;
-            });
+                    {/* ========================================================= */}
+                    {/* --- СТРАНИЦА: ОБО МНЕ --- */}
+                    {/* ========================================================= */}
+                    {activeScreen === 'about' && (
+                        <div className="relative min-h-screen p-6 animate-fade z-10">
+                            <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-8 font-medium text-white/80 active:opacity-50 transition-opacity">
+                                <IconArrowLeft size={20} /> Назад
+                            </button>
+                            
+                            <div className="glass-panel rounded-3xl p-6 shadow-2xl mx-auto">
+                                <img src={CONFIG.menuImages.about} alt="About" className="w-full h-64 object-cover rounded-2xl mb-6 shadow-md" />
+                                {/* РАЗМЕР ШРИФТА (Заголовок "Обо мне"): text-2xl */}
+                                <h2 className="text-2xl font-bold mb-4">{CONFIG.about.title}</h2>
+                                {/* РАЗМЕР ШРИФТА (Текст о тебе): text-sm */}
+                                <p className="text-white/80 leading-relaxed whitespace-pre-line text-sm">{CONFIG.about.text}</p>
+                            </div>
+                        </div>
+                    )}
 
-            // Обо мне
-            document.getElementById('dynamic-about-img').src = MY_DATA.about.photo;
-            document.getElementById('dynamic-about-text').innerText = MY_DATA.about.text;
-            document.getElementById('dynamic-about-quote').innerText = MY_DATA.about.quote;
-            const toolsContainer = document.getElementById('dynamic-about-tools');
-            MY_DATA.about.tools.forEach(tool => {
-                toolsContainer.innerHTML += `<span class="px-3 py-1 rounded-full glass-btn text-xs text-gold">${tool}</span>`;
-            });
+                    {/* ========================================================= */}
+                    {/* --- СТРАНИЦА: ТУРЫ --- */}
+                    {/* ========================================================= */}
+                    {activeScreen === 'tours' && (
+                        <div className="relative min-h-screen p-6 animate-fade z-10 pb-10">
+                            <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-white/80 active:opacity-50 transition-opacity">
+                                <IconArrowLeft size={20} /> Назад
+                            </button>
+                            
+                            {/* РАЗМЕР ШРИФТА (Заголовок "Горящие туры"): text-3xl */}
+                            <h2 className="text-3xl font-bold mb-2">Горящие туры</h2>
+                            
+                            <div className="w-full flex justify-between items-center mb-6 px-1">
+                                {/* РАЗМЕР ШРИФТА (Кнопка Сортировка): text-sm */}
+                                <button onClick={() => setSortOrder(prev => prev === 'none' ? 'asc' : prev === 'asc' ? 'desc' : 'none')} className="bg-transparent border-b border-white/40 text-sm outline-none py-1 text-white/90 active:opacity-50 transition-opacity flex items-center gap-1">
+                                    {sortOrder === 'none' ? 'Сортировка' : sortOrder === 'asc' ? 'Дешевле' : 'Дороже'}
+                                    {/* РАЗМЕР ШРИФТА (Стрелочка): text-[10px] */}
+                                    <span className="text-[10px]">{sortOrder === 'none' ? '↕' : sortOrder === 'asc' ? '↓' : '↑'}</span>
+                                </button>
+                                <div className="flex items-center gap-1.5">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.8)] animate-pulse"></span>
+                                    {/* РАЗМЕР ШРИФТА (Обновлено сегодня): text-[10px] */}
+                                    <span className="text-[10px] text-white/70">Обновлено сегодня</span>
+                                </div>
+                            </div>
 
-            // Добавляем виброотклик на все ссылки и кнопки (Telegram Haptics)
-            document.querySelectorAll('a, button').forEach(el => {
-                el.addEventListener('click', () => {
-                    // Игнорируем элементы, у которых уже прописан onclick с вибрацией
-                    if(tg.HapticFeedback && !el.hasAttribute('onclick')) {
-                        tg.HapticFeedback.impactOccurred('light');
-                    }
-                });
-            });
-        });
+                            {isLoadingTours ? (
+                                <div className="flex justify-center items-center h-40"><div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div></div>
+                            ) : (
+                                <div className="flex flex-col gap-4 w-full">
+                                    {[...tours].sort((a, b) => {
+                                        if (sortOrder === 'asc') return extractPrice(a.price) - extractPrice(b.price);
+                                        if (sortOrder === 'desc') return extractPrice(b.price) - extractPrice(a.price);
+                                        return 0;
+                                    }).map((tour, index) => (
+                                        <div key={index} onClick={() => navigateTo('quiQuo', tour._actualLink)} className="relative glass-panel p-3 rounded-2xl flex gap-4 active:scale-95 transition-all cursor-pointer">
+                                            {/* РАЗМЕР ШРИФТА (Рейтинг 5.0 на картинке тура): text-[11px] */}
+                                            <div className="absolute top-2 right-2 w-7 h-6 bg-white/20 backdrop-blur-md text-white text-[11px] font-bold rounded flex items-center justify-center z-10">{tour.rating || "5.0"}</div>
+                                            <div className="shrink-0"><img src={tour.imageUrl} className="w-24 h-full min-h-[105px] object-cover rounded-xl" /></div>
+                                            <div className="flex flex-col justify-between w-full min-w-0 py-0.5">
+                                                <div>
+                                                    {/* РАЗМЕР ШРИФТА (Название отеля): text-[14px] */}
+                                                    <div className="font-bold text-[14px] leading-snug truncate">{tour.hotel}</div>
+                                                    {/* РАЗМЕР ШРИФТА (Даты тура): text-[11px] */}
+                                                    <div className="text-[11px] text-white/60 truncate mt-1">{tour.dates}</div>
+                                                    {/* РАЗМЕР ШРИФТА (Локация тура): text-[11px] */}
+                                                    <div className="text-[11px] text-white/60 flex items-center gap-1 mt-0.5 truncate"><IconMapPin size={12} className="text-white/40" /><span>{tour.title}</span></div>
+                                                </div>
+                                                <div className="flex items-end justify-between mt-3">
+                                                    <div className="flex flex-col">
+                                                        {/* РАЗМЕР ШРИФТА (Старая зачеркнутая цена): text-[10px] */}
+                                                        <span className="line-through text-[10px] text-white/40 mb-0.5">{tour.oldPrice}</span>
+                                                        {/* РАЗМЕР ШРИФТА (Новая жирная цена): text-[16px] */}
+                                                        <span className="font-bold text-[16px]">{tour.price}</span>
+                                                    </div>
+                                                    {/* РАЗМЕР ШРИФТА (Кнопка "Подробнее"): text-[11px] */}
+                                                    <button className="bg-white text-black text-[11px] font-semibold py-2 px-3 rounded-xl">Подробнее</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* ========================================================= */}
+                    {/* --- СТРАНИЦА: КОНТАКТЫ --- */}
+                    {/* ========================================================= */}
+                    {activeScreen === 'contacts' && (
+                        <div className="relative min-h-screen p-6 animate-fade z-10 flex flex-col justify-center">
+                            <div className="absolute top-6 left-6">
+                                <button onClick={() => navigateTo('home')} className="flex items-center gap-2 font-medium text-white/80 active:opacity-50 transition-opacity">
+                                    <IconArrowLeft size={20} /> Назад
+                                </button>
+                            </div>
+                            
+                            {/* РАЗМЕР ШРИФТА (Заголовок "На связи"): text-3xl */}
+                            <h2 className="text-3xl font-bold mb-8 text-center">На связи</h2>
+                            
+                            <div className="w-full flex flex-col gap-4">
+                                <a href={CONFIG.contacts.telegram} target="_blank" className="flex items-center gap-4 glass-panel p-4 rounded-[20px] active:scale-95 transition-all">
+                                    <div className="bg-blue-500/20 p-3 rounded-full text-blue-400"><IconSend size={24} /></div>
+                                    {/* РАЗМЕР ШРИФТА (Текст "Telegram"): text-lg */}
+                                    <span className="text-lg font-medium">Telegram</span>
+                                </a>
+                                <a href={CONFIG.contacts.instagram} target="_blank" className="flex items-center gap-4 glass-panel p-4 rounded-[20px] active:scale-95 transition-all">
+                                    <div className="bg-pink-500/20 p-3 rounded-full text-pink-400"><IconInstagram size={24} /></div>
+                                    {/* РАЗМЕР ШРИФТА (Текст "Instagram"): text-lg */}
+                                    <span className="text-lg font-medium">Instagram</span>
+                                </a>
+                                <a href={`tel:${CONFIG.contacts.phone}`} className="flex items-center gap-4 glass-panel p-4 rounded-[20px] active:scale-95 transition-all">
+                                    <div className="bg-green-500/20 p-3 rounded-full text-green-400"><IconPhone size={24} /></div>
+                                    {/* РАЗМЕР ШРИФТА (Текст "Телефон"): text-lg */}
+                                    <span className="text-lg font-medium">{CONFIG.contacts.phone}</span>
+                                </a>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ========================================================= */}
+                    {/* --- СТРАНИЦА: ОТЗЫВЫ --- */}
+                    {/* ========================================================= */}
+                    {activeScreen === 'reviews' && (
+                        <div className="relative min-h-screen pt-6 px-6 animate-fade z-10 flex flex-col">
+                            <button onClick={() => navigateTo('home')} className="flex items-center gap-2 mb-6 font-medium text-white/80 shrink-0 active:opacity-50 transition-opacity">
+                                <IconArrowLeft size={20} /> Назад
+                            </button>
+                            
+                            {/* РАЗМЕР ШРИФТА (Заголовок "Отзывы"): text-3xl */}
+                            <h2 className="text-3xl font-bold mb-8 text-center">Отзывы</h2>
+                            
+                            <div className="flex flex-col gap-4 w-full pb-32">
+                                {isLoadingReviews ? (<div className="flex justify-center h-40 items-center"><div className="w-8 h-8 border-4 border-white/20 border-t-white rounded-full animate-spin"></div></div>) : (
+                                    reviews.map(review => (
+                                        <div key={review.id} className="glass-panel p-5 rounded-[20px] flex flex-col gap-3">
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    {/* РАЗМЕР ШРИФТА (Имя в отзыве): text-lg */}
+                                                    <h3 className="font-bold text-lg">{review.name}</h3>
+                                                    {/* РАЗМЕР ШРИФТА (Дата отзыва): text-[10px] */}
+                                                    <div className="text-[10px] text-white/50 mt-0.5">{review.date}</div>
+                                                </div>
+                                                <div className="flex gap-0.5 text-white/90">
+                                                    {[...Array(5)].map((_, i) => <IconStar key={i} size={14} filled={i < review.rating} className={i < review.rating ? "text-yellow-400" : "text-white/20"} />)}
+                                                </div>
+                                            </div>
+                                            {/* РАЗМЕР ШРИФТА (Сам текст отзыва): text-sm */}
+                                            <p className="text-white/80 text-sm leading-relaxed">"{review.text}"</p>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+
+                            {/* Фиксированная кнопка добавления отзыва */}
+                            <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[500px] pb-8 pt-16 px-6 bg-gradient-to-t from-black via-black/80 to-transparent flex justify-center z-20 pointer-events-none">
+                                {/* РАЗМЕР ШРИФТА (Кнопка "Написать отзыв" внизу): класс font-semibold означает среднюю жирность, размер стандартный */}
+                                <button onClick={() => setIsReviewModalOpen(true)} className="w-full max-w-sm flex justify-center items-center gap-2 bg-white text-black font-semibold rounded-[16px] py-4 active:scale-95 transition-all pointer-events-auto text-[16px]">
+                                    <IconEdit size={18} /> Написать отзыв
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ========================================================= */}
+                    {/* --- МОДАЛЬНОЕ ОКНО ДЛЯ ОТЗЫВОВ --- */}
+                    {/* ========================================================= */}
+                    {isReviewModalOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-fade">
+                            <div className="glass-panel w-full max-w-sm rounded-[32px] p-6 relative animate-item">
+                                <button onClick={() => setIsReviewModalOpen(false)} className="absolute top-5 right-5 text-white/50 hover:text-white transition-colors">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                </button>
+                                
+                                {isReviewSubmitted ? (
+                                    <div className="py-10 flex flex-col items-center text-center animate-fade">
+                                        <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4 text-white border border-white/20">
+                                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                        </div>
+                                        {/* РАЗМЕР ШРИФТА (Заголовок "Спасибо!"): text-2xl */}
+                                        <h3 className="text-2xl font-bold mb-2">Спасибо!</h3>
+                                        {/* РАЗМЕР ШРИФТА (Текст "Отзыв появится"): text-sm */}
+                                        <p className="text-white/70 text-sm">Ваш отзыв скоро появится.</p>
+                                    </div>
+                                ) : (
+                                    <form onSubmit={handleSubmitReview} className="flex flex-col gap-6">
+                                        {/* РАЗМЕР ШРИФТА (Заголовок формы): text-2xl */}
+                                        <h3 className="text-2xl font-bold">Оставить отзыв</h3>
+                                        
+                                        <div className="flex flex-col gap-2">
+                                            {/* РАЗМЕР ШРИФТА (Подпись "Оценка"): text-xs */}
+                                            <label className="text-xs text-white/50 uppercase tracking-wide">Оценка</label>
+                                            <div className="flex gap-2">
+                                                {[1, 2, 3, 4, 5].map((star) => (
+                                                    <button type="button" key={star} onClick={() => setReviewForm({...reviewForm, rating: star})} className="active:scale-75 transition-all">
+                                                        <IconStar size={36} filled={star <= reviewForm.rating} className={star <= reviewForm.rating ? "text-yellow-400" : "text-white/20"} />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="flex flex-col gap-1">
+                                            {/* РАЗМЕР ШРИФТА (Подпись "Имя"): text-xs */}
+                                            <label className="text-xs text-white/50 uppercase tracking-wide">Имя</label>
+                                            <input type="text" required value={reviewForm.name} onChange={(e) => setReviewForm({...reviewForm, name: e.target.value})} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white outline-none focus:border-white/50 transition-colors" placeholder="Например: Мария" />
+                                        </div>
+                                        
+                                        <div className="flex flex-col gap-1">
+                                            {/* РАЗМЕР ШРИФТА (Подпись "Впечатления"): text-xs */}
+                                            <label className="text-xs text-white/50 uppercase tracking-wide">Впечатления</label>
+                                            <textarea required rows="3" value={reviewForm.text} onChange={(e) => setReviewForm({...reviewForm, text: e.target.value})} className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white outline-none focus:border-white/50 transition-colors resize-none" placeholder="Пару слов об отдыхе..."></textarea>
+                                        </div>
+                                        
+                                        {/* РАЗМЕР ШРИФТА (Кнопка "Отправить" в форме): стандартный (base) */}
+                                        <button type="submit" disabled={isSubmitting} className="w-full bg-white text-black py-4 rounded-xl font-bold mt-2 active:scale-95 transition-all text-[16px]">
+                                            {isSubmitting ? 'Отправка...' : 'Отправить'}
+                                        </button>
+                                    </form>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
