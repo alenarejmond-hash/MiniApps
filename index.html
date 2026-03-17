@@ -60,6 +60,11 @@
             overflow-x: hidden;
             transition: background 0.5s ease;
             -webkit-tap-highlight-color: transparent; /* Убирает системный синий блик при тапе на кнопки */
+
+            /* 2. Запрет выделения и копирования текста */
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         /* --- Neumorphic Glassmorphism --- */
@@ -119,8 +124,8 @@
             width: 100%;
             max-width: 500px; /* Ограничение ширины для ПК и планшетов */
             margin: 0 auto; /* Центрирование на больших экранах */
-            /* Учет безопасных зон для челки сверху и свайпа снизу */
-            padding: calc(100px + env(safe-area-inset-top)) 20px calc(130px + env(safe-area-inset-bottom));
+            /* Учет безопасных зон для челки сверху и свайпа снизу. Отступ настроен так, чтобы кнопки не перекрывали контент */
+            padding: calc(85px + env(safe-area-inset-top)) 20px calc(130px + env(safe-area-inset-bottom));
             box-sizing: border-box;
             flex-direction: column;
             align-items: center;
@@ -337,8 +342,8 @@
         
         .controls {
             position: fixed;
-            /* Опустили кнопки ниже системной плашки + учет "челки" */
-            top: calc(75px + env(safe-area-inset-top)); 
+            /* 3. Подняли кнопки выше, но строго привязали к "челке", чтобы не уезжали под системную шторку */
+            top: calc(20px + env(safe-area-inset-top)); 
             right: 20px;
             display: flex;
             gap: 15px;
@@ -366,7 +371,7 @@
         }
     </style>
 </head>
-<body data-theme="light" data-lang="ru">
+<body data-theme="light" data-lang="ru" oncontextmenu="return false;">
 
     <div class="controls">
         <button class="icon-btn" onclick="toggleTheme()"><i id="theme-icon">💡</i></button>
@@ -391,7 +396,7 @@
 
     <!-- Секция Услуг -->
     <section id="services-section" class="section">
-        <h2 class="lang" data-ru="Мои Услуги" data-en="My Services" style="font-family: 'Playfair Display', serif; color: var(--text-primary); margin-bottom: 20px;">Мои Услуги</h2>
+        <h2 class="lang" id="ui-services-title" data-ru="" data-en="" style="font-family: 'Playfair Display', serif; color: var(--text-primary); margin-bottom: 20px;"></h2>
         <div class="service-list" id="ui-services">
             <!-- Услуги генерируются из настроек -->
         </div>
@@ -399,7 +404,7 @@
 
     <!-- Секция Портфолио -->
     <section id="portfolio-section" class="section">
-        <h2 class="lang" data-ru="Портфолио-Журнал" data-en="Portfolio Magazine" style="font-family: 'Playfair Display', serif; color: var(--text-primary); margin-bottom: 20px;">Портфолио-Журнал</h2>
+        <h2 class="lang" id="ui-portfolio-title" data-ru="" data-en="" style="font-family: 'Playfair Display', serif; color: var(--text-primary); margin-bottom: 20px;"></h2>
         <div id="magazine-wrapper">
             <div class="portfolio-magazine" id="magazine">
                 <!-- Страницы генерируются из настроек -->
@@ -427,6 +432,13 @@
                 role: { ru: "Web Designer & Code Alchemist", en: "Web Designer & Code Alchemist" },
                 photo: "photo.jpg" // ССЫЛКА НА ВАШЕ ФОТО
             },
+
+            // 5. Названия разделов визитки
+            sectionTitles: {
+                services: { ru: "Мои Услуги", en: "My Services" },
+                portfolio: { ru: "Портфолио-Журнал", en: "Portfolio Magazine" }
+            },
+
             scannerBtn: { ru: "Считать вайб", en: "Read Vibe" },
             scannerMessages: {
                 scanning: { ru: "Считываю ваш вайб...", en: "Reading your vibe..." },
@@ -442,9 +454,23 @@
                 { icon: "🤖", title: { ru: "Интеграция ИИ", en: "AI Integration" }, desc: { ru: "Автоматизация процессов", en: "Process automation" } },
                 { icon: "💡", title: { ru: "Менторство", en: "Mentorship" }, desc: { ru: "Обучение вайбкодингу", en: "Vibecoding lessons" } }
             ],
+
+            // 4. Тексты и фото главной и задней обложки журнала (ссылки на свои фото)
+            magazineCover: {
+                title: "Digital Zen",
+                subtitle: "Design & Code Alchemist",
+                img: "" // Пример: "https://example.com/cover.jpg"
+            },
+            magazineBack: {
+                title: "Vibe Art",
+                subtitle: "@alena_it_vizitka",
+                img: "" // Пример: "https://example.com/back.jpg"
+            },
+
+            // 4. Портфолио (в img можно вставлять прямые ссылки на ваши фото из интернета!)
             portfolio: [
-                { title: {ru: 'Кейс 1', en: 'Case 1'}, desc: {ru: 'Психолог Александра', en: 'Psychologist Alexandra'}, img: 'case1.jpg' },
-                { title: {ru: 'Кейс 2', en: 'Case 2'}, desc: {ru: 'Тревел-агент', en: 'Travel Agent'}, img: 'case2.jpg' },
+                { title: {ru: 'Кейс 1', en: 'Case 1'}, desc: {ru: 'Психолог Александра', en: 'Psychologist Alexandra'}, img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop' },
+                { title: {ru: 'Кейс 2', en: 'Case 2'}, desc: {ru: 'Тревел-агент', en: 'Travel Agent'}, img: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=400&auto=format&fit=crop' },
                 { title: {ru: 'Кейс 3', en: 'Case 3'}, desc: {ru: 'Сервис медитаций', en: 'Meditation App'}, img: 'case3.jpg' }
             ],
             footerText: "design & code by Elena Sotnikova"
@@ -457,6 +483,10 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
+
+        // 1. Защита от закрытия шторки при легком свайпе вниз (для новых версий TG)
+        try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch(e) {}
+        try { if (tg.enableClosingConfirmation) tg.enableClosingConfirmation(); } catch(e) {}
         
         // 2. Открываем сразу на весь экран (для новых версий TG)
         try { 
@@ -495,6 +525,17 @@
         // --- Инициализация контента из APP_CONTENT ---
         function initContent() {
             const lang = document.body.getAttribute('data-lang');
+
+            // 5. Заголовки секций
+            const servicesTitleEl = document.getElementById('ui-services-title');
+            servicesTitleEl.setAttribute('data-ru', APP_CONTENT.sectionTitles.services.ru);
+            servicesTitleEl.setAttribute('data-en', APP_CONTENT.sectionTitles.services.en);
+            servicesTitleEl.innerText = APP_CONTENT.sectionTitles.services[lang];
+
+            const portfolioTitleEl = document.getElementById('ui-portfolio-title');
+            portfolioTitleEl.setAttribute('data-ru', APP_CONTENT.sectionTitles.portfolio.ru);
+            portfolioTitleEl.setAttribute('data-en', APP_CONTENT.sectionTitles.portfolio.en);
+            portfolioTitleEl.innerText = APP_CONTENT.sectionTitles.portfolio[lang];
 
             // Профиль
             const nameEl = document.getElementById('ui-name');
@@ -647,7 +688,11 @@
             const magazineEl = document.getElementById('magazine');
 
             // Hard density first page (Cover simulation)
-            magazineEl.innerHTML += `<div class="page" data-density="hard"><div class="page-content"><h3>Digital Zen</h3><p>Design & Code Alchemist</p></div></div>`;
+            let coverHtml = `<h3>${APP_CONTENT.magazineCover.title}</h3><p>${APP_CONTENT.magazineCover.subtitle}</p>`;
+            if (APP_CONTENT.magazineCover.img) {
+                coverHtml += `<img src="${APP_CONTENT.magazineCover.img}" alt="Cover" class="page-img" onerror="this.style.display='none'">`;
+            }
+            magazineEl.innerHTML += `<div class="page" data-density="hard"><div class="page-content">${coverHtml}</div></div>`;
 
             // Case pages
             APP_CONTENT.portfolio.forEach(p => {
@@ -663,7 +708,11 @@
             });
 
             // Hard density last page
-            magazineEl.innerHTML += `<div class="page" data-density="hard"><div class="page-content"><h3>Vibe Art</h3><p>@alena_it_vizitka</p></div></div>`;
+            let backHtml = `<h3>${APP_CONTENT.magazineBack.title}</h3><p>${APP_CONTENT.magazineBack.subtitle}</p>`;
+            if (APP_CONTENT.magazineBack.img) {
+                backHtml += `<img src="${APP_CONTENT.magazineBack.img}" alt="Back Cover" class="page-img" onerror="this.style.display='none'">`;
+            }
+            magazineEl.innerHTML += `<div class="page" data-density="hard"><div class="page-content">${backHtml}</div></div>`;
 
             pageFlip = new St.PageFlip(magazineEl, {
                 width: magWidth, height: magHeight, // Используем адаптивные размеры
