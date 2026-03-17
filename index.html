@@ -75,8 +75,8 @@
         /* --- TabBar (Pill Shape from mockup) --- */
         .tabbar {
             position: fixed;
-            /* 4. Приподнято меню, чтобы не перекрывать текст футера */
-            bottom: 45px;
+            /* 4. Приподнято меню, чтобы не перекрывать текст футера, + учет безопасной зоны снизу */
+            bottom: calc(45px + env(safe-area-inset-bottom));
             left: 50%;
             transform: translateX(-50%);
             width: 85%;
@@ -117,7 +117,10 @@
         .section {
             display: none;
             width: 100%;
-            padding: 60px 20px 130px; /* Увеличен нижний отступ, чтобы не перекрывалось меню */
+            max-width: 500px; /* Ограничение ширины для ПК и планшетов */
+            margin: 0 auto; /* Центрирование на больших экранах */
+            /* Учет безопасных зон для челки сверху и свайпа снизу */
+            padding: calc(100px + env(safe-area-inset-top)) 20px calc(130px + env(safe-area-inset-bottom));
             box-sizing: border-box;
             flex-direction: column;
             align-items: center;
@@ -145,25 +148,30 @@
         /* --- Page 1: Home --- */
         #home-section h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 34px;
+            font-size: clamp(26px, 8vw, 38px); /* Плавное изменение размера шрифта */
             margin-bottom: 5px;
             color: var(--text-primary);
             animation: fadeIn 1s ease;
+            text-align: center;
         }
         
         #home-section p {
             color: var(--text-secondary);
+            font-size: clamp(14px, 4vw, 16px);
+            text-align: center;
         }
 
         .scanner-container {
             position: relative;
-            margin: 40px 0;
+            margin: 40px auto;
             animation: fadeIn 1s ease;
+            display: flex;
+            justify-content: center;
         }
 
         .avatar-frame {
-            width: 160px;
-            height: 160px;
+            width: clamp(140px, 45vw, 180px); /* Адаптивный размер аватара */
+            height: clamp(140px, 45vw, 180px);
             border-radius: 50%;
             padding: 8px;
             background: var(--bg-gradient);
@@ -230,9 +238,11 @@
 
         /* --- Page 2: 3D Magazine --- */
         .portfolio-magazine {
-            width: 320px; 
-            height: 440px;
-            margin: 20px 0;
+            width: 100%; 
+            max-width: 320px;
+            aspect-ratio: 320 / 440; /* Сохраняем пропорции на любых экранах */
+            height: auto;
+            margin: 20px auto;
             animation: fadeIn 1s ease;
             border-radius: 15px;
             box-shadow: var(--card-shadow);
@@ -261,7 +271,8 @@
         /* --- Page 3: Services (New UI from mockup) --- */
         .service-list {
             width: 100%;
-            max-width: 350px;
+            max-width: 400px; /* Чуть шире для гармоничности на ПК */
+            margin: 0 auto;
             display: flex;
             flex-direction: column;
             gap: 20px;
@@ -317,16 +328,17 @@
             font-size: 12px;
             color: var(--text-secondary);
             padding: 10px 0;
-            /* 4. Позиционирование футера: жестко внизу экрана под меню */
+            /* 4. Позиционирование футера: жестко внизу экрана под меню, + учет безопасной зоны */
             position: fixed;
-            bottom: 10px;
+            bottom: calc(10px + env(safe-area-inset-bottom));
             cursor: pointer;
             z-index: 10;
         }
         
         .controls {
             position: fixed;
-            top: 20px;
+            /* Опустили кнопки ниже системной плашки + учет "челки" */
+            top: calc(75px + env(safe-area-inset-top)); 
             right: 20px;
             display: flex;
             gap: 15px;
@@ -619,6 +631,11 @@
         function initMagazine() {
             const lang = document.body.getAttribute('data-lang');
             
+            // Расчет идеальных размеров книги под любой экран (защита от горизонтального скролла)
+            const screenWidth = window.innerWidth;
+            const magWidth = Math.min(320, screenWidth - 40); // 40px это отступы по краям
+            const magHeight = magWidth * (440 / 320); // Сохраняем книжную пропорцию
+            
             // Destroy instance if exists to re-render properly
             if (pageFlip) {
                 pageFlip.destroy();
@@ -649,9 +666,9 @@
             magazineEl.innerHTML += `<div class="page" data-density="hard"><div class="page-content"><h3>Vibe Art</h3><p>@alena_it_vizitka</p></div></div>`;
 
             pageFlip = new St.PageFlip(magazineEl, {
-                width: 320, height: 440,
+                width: magWidth, height: magHeight, // Используем адаптивные размеры
                 size: "fixed", // Жесткая фиксация размера убирает дергания
-                minWidth: 320, minHeight: 440,
+                minWidth: magWidth, minHeight: magHeight,
                 showCover: false, 
                 flippingTime: 800, // Сделали анимацию чуть быстрее
                 usePortrait: true,
