@@ -2,750 +2,1665 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Elena Sotnikova | IT-Визитка будущего</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Навигатор Канала</title>
+    <!-- Подключение Telegram Web App API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключение шрифта -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Иконки Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        app: {
+                            bg: '#e2e2e6',
+                            card: 'rgba(255, 255, 255, 0.6)',
+                            dark: '#1c1c1e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
     <style>
-        /* --- Quiet Luxury Fonts --- */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@700&display=swap');
-
+        /* ========================================================================= */
+        /* 🌈 НАСТРОЙКИ ЦВЕТА ФОНА (АНИМИРОВАННЫЙ ГРАДИЕНТ) 🌈 */
+        /* Меняйте цвета ниже. Можно использовать HEX-коды или английские названия */
+        /* ========================================================================= */
         :root {
-            /* Light Theme (Rose Gold / Neumorphism) */
-            --bg-gradient: linear-gradient(180deg, #fdf8f6 0%, #f4e0d9 100%);
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.7);
-            --text-primary: #5a3d36;
-            --text-secondary: #9c7b73;
-            --accent: #b07d6f;
-            --accent-gradient: linear-gradient(135deg, #e4b6a9 0%, #c48c7c 100%);
-            --shadow-light: rgba(255, 255, 255, 0.9);
-            --shadow-dark: rgba(214, 190, 184, 0.6);
-            --card-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
-            --btn-shadow: 5px 5px 12px var(--shadow-dark), -5px -5px 12px var(--shadow-light);
-            --btn-inset: inset 3px 3px 8px var(--shadow-dark), inset -3px -3px 8px var(--shadow-light);
+            --bg-color-1: #ffcf00; /* Желтый */
+            --bg-color-2: #ff7700; /* Оранжевый */
+            --bg-color-3: #b000ff; /* Фиолетовый */
         }
 
-        [data-theme="dark"] {
-            /* Dark Theme (Noble Black & Gray) */
-            --bg-gradient: linear-gradient(180deg, #222222 0%, #181818 100%);
-            --glass-bg: rgba(30, 30, 30, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.05);
-            --text-primary: #f5f5f5;
-            --text-secondary: #999999;
-            --accent: #e0e0e0;
-            --accent-gradient: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
-            --shadow-light: rgba(255, 255, 255, 0.04);
-            --shadow-dark: rgba(0, 0, 0, 0.6);
-            --card-shadow: 10px 10px 20px var(--shadow-dark), -10px -10px 20px var(--shadow-light);
-            --btn-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light);
-            --btn-inset: inset 3px 3px 8px var(--shadow-dark), inset -3px -3px 8px var(--shadow-light);
+        .dynamic-bg {
+            background: linear-gradient(-45deg, var(--bg-color-1), var(--bg-color-2), var(--bg-color-3), var(--bg-color-1));
+            background-size: 300% 300%;
+            animation: gradient-bg 12s ease infinite;
+        }
+
+        @keyframes gradient-bg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        html, body {
+            overscroll-behavior-y: none; /* Запрет прыжков/резинки при скролле (п.6) */
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg-gradient);
-            color: var(--text-primary);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* 3. Адаптация под TG: динамическая высота и безопасные зоны */
-            min-height: var(--tg-viewport-height, 100vh);
-            padding-bottom: env(safe-area-inset-bottom);
-            overflow-x: hidden;
-            transition: background 0.5s ease;
-            -webkit-tap-highlight-color: transparent; /* Убирает системный синий блик при тапе на кнопки */
-
-            /* 2. Запрет выделения и копирования текста */
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
+            color: #1c1c1e;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none; /* Запрет долгого нажатия на iOS (п.1) */
+            -webkit-user-select: none; /* Запрет выделения в Safari (п.1) */
+            user-select: none; /* Запрет выделения текста (п.1) */
         }
 
-        /* --- Neumorphic Glassmorphism --- */
-        .glass {
-            background: var(--glass-bg);
+        /* Парящие тени как на референсе */
+        .floating-shadow {
+            box-shadow: 0 35px 60px -15px rgba(0, 0, 0, 0.3), 0 20px 30px -10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Воздушные полупрозрачные карточки (Чистый эффект парения) */
+        .card-shadow {
+            background: rgba(20, 20, 24, 0.5) !important;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 25px;
-            border: 1px solid var(--glass-border);
-            box-shadow: var(--card-shadow);
+            /* Аккуратная тень без "грязи" вокруг и легкий стеклянный блик, чтобы элементы не сливались */
+            box-shadow: 0 25px 40px -15px rgba(0, 0, 0, 0.5), 
+                        0 10px 20px -10px rgba(0, 0, 0, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transform: translateZ(0);
         }
 
-        /* --- TabBar (Pill Shape from mockup) --- */
-        .tabbar {
-            position: fixed;
-            /* 4. Приподнято меню, чтобы не перекрывать текст футера, + учет безопасной зоны снизу */
-            bottom: calc(45px + env(safe-area-inset-bottom));
-            left: 50%;
-            transform: translateX(-50%);
-            width: 85%;
-            max-width: 350px;
-            height: 65px;
-            border-radius: 35px; /* Fully rounded pill */
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 100;
-            padding: 0 15px;
-            box-sizing: border-box;
-            background: var(--bg-gradient);
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--glass-border);
+        /* Кнопка "Subscribe" стайл */
+        .black-pill-btn {
+            background-color: #1a1a1c;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+        }
+        .black-pill-btn:active {
+            transform: scale(0.97);
+            background-color: #000000;
         }
 
-        .tab {
-            color: var(--text-secondary);
-            font-size: 22px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 50%;
-            user-select: none; /* Запрет выделения текста на кнопках */
+        /* Кастомный скроллбар (скрыт для красоты) */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
         }
 
-        .tab.active {
-            color: var(--accent);
-            box-shadow: var(--btn-inset); /* Depressed effect for active tab */
-        }
-
-        /* --- Sections --- */
-        .section {
+        .hide-scrollbar::-webkit-scrollbar {
             display: none;
-            width: 100%;
-            max-width: 500px; /* Ограничение ширины для ПК и планшетов */
-            margin: 0 auto; /* Центрирование на больших экранах */
-            /* Учет безопасных зон для челки сверху и свайпа снизу. Отступ настроен так, чтобы кнопки не перекрывали контент */
-            padding: calc(85px + env(safe-area-inset-top)) 20px calc(130px + env(safe-area-inset-bottom));
-            box-sizing: border-box;
-            flex-direction: column;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.5s ease;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        .section.active {
-            display: flex;
-            opacity: 1;
+        /* Плавное появление */
+        .fade-in {
+            animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
-
-        /* --- Global Animations --- */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); box-shadow: 0 0 15px var(--accent); }
-            50% { transform: scale(1.02); box-shadow: 0 0 25px var(--accent); }
-            100% { transform: scale(1); box-shadow: 0 0 15px var(--accent); }
-        }
-
-        /* --- Page 1: Home --- */
-        #home-section h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(26px, 8vw, 38px); /* Плавное изменение размера шрифта */
-            margin-bottom: 5px;
-            color: var(--text-primary);
-            animation: fadeIn 1s ease;
-            text-align: center;
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
         
-        #home-section p {
-            color: var(--text-secondary);
-            font-size: clamp(14px, 4vw, 16px);
-            text-align: center;
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+
+        /* =======================================================
+           ФИКС ДЛЯ МОБИЛЬНЫХ БРАУЗЕРОВ (Хром/Сафари) 
+           Убираем "дыру" снизу и запрещаем скролл фона
+           ======================================================= */
+        div[id$="-sheet"]:not(#sheet-overlay) {
+            bottom: -150px !important; /* Уводим запасной фон под экран */
+            padding-bottom: calc(150px + env(safe-area-inset-bottom, 0px)) !important;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
-        .scanner-container {
-            position: relative;
-            margin: 40px auto;
-            animation: fadeIn 1s ease;
-            display: flex;
-            justify-content: center;
+        /* 3. Большие шторки (Обо мне, Обучение, Услуги) - 80% */
+        #about-sheet, #training-sheet, #service-details-sheet {
+            height: calc(90vh + 150px) !important;
         }
 
-        .avatar-frame {
-            width: clamp(140px, 45vw, 180px); /* Адаптивный размер аватара */
-            height: clamp(140px, 45vw, 180px);
-            border-radius: 50%;
-            padding: 8px;
-            background: var(--bg-gradient);
-            box-shadow: var(--card-shadow);
-            border: 2px solid var(--glass-border);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* 2. Шторка Рубрик (Огненные, Танцы, Лагерь) - 50% */
+        #posts-sheet {
+            height: calc(50vh + 150px) !important;
         }
 
-        .avatar {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            object-fit: cover;
+        /* 1. Компактные шторки (Отзывы, Предсказания) - по размеру контента */
+        #fortune-sheet, #review-sheet {
+            height: auto !important;
+            max-height: calc(85vh + 150px) !important;
         }
 
-        .scanner-line {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 12px 4px var(--accent);
-            border-radius: 5px;
-            animation: scan 2s linear infinite;
-            display: none;
+        #sheet-overlay {
+            touch-action: none; /* Жесткий запрет скролла/свайпа через затемненный фон */
+            -webkit-touch-callout: none;
         }
 
-        @keyframes scan {
-            0% { top: 0; }
-            50% { top: 100%; }
-            100% { top: 0; }
+        /* Скрываем шторки за пределами экрана */
+        .sheet-hidden {
+            transform: translateY(100%) !important; /* Смещаем вниз на 100%. Запас в 150px надежно скроет все тени */
         }
 
-        #scan-btn {
-            background: var(--bg-gradient);
-            color: var(--accent);
-            border: none;
-            padding: 18px 40px;
-            border-radius: 30px;
-            font-weight: 600;
-            font-size: 16px;
-            cursor: pointer;
-            margin-bottom: 20px;
-            box-shadow: var(--btn-shadow);
-            transition: all 0.2s ease;
-            animation: fadeIn 1s ease;
-        }
-        
-        #scan-btn:active {
-            box-shadow: var(--btn-inset);
-            transform: scale(0.98);
-        }
-
-        #vibe-result {
-            font-style: italic;
-            color: var(--accent);
-            text-align: center;
-            min-height: 40px;
-            font-weight: 600;
-        }
-
-        /* --- Page 2: 3D Magazine --- */
-        .portfolio-magazine {
-            width: 100%; 
-            max-width: 320px;
-            aspect-ratio: 320 / 440; /* Сохраняем пропорции на любых экранах */
-            height: auto;
-            margin: 20px auto;
-            animation: fadeIn 1s ease;
-            border-radius: 15px;
-            box-shadow: var(--card-shadow);
-        }
-
-        .page {
-            background: var(--bg-gradient);
-            overflow: hidden;
-            border-right: 1px solid var(--glass-border);
-        }
-
-        .page-content {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-            box-sizing: border-box;
-            color: var(--text-primary);
-        }
-
-        .page-content h3 { font-family: 'Playfair Display', serif; margin: 0; }
-        .page-content p { font-size: 14px; margin: 10px 0; color: var(--text-secondary); }
-        .page-img { width: 100%; height: 65%; object-fit: cover; border-radius: 15px; box-shadow: var(--btn-shadow); pointer-events: none; }
-
-        /* --- Page 3: Services (New UI from mockup) --- */
-        .service-list {
-            width: 100%;
-            max-width: 400px; /* Чуть шире для гармоничности на ПК */
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            animation: fadeIn 1s ease;
-        }
-
-        .service-item {
-            display: flex;
-            align-items: center;
-            padding: 15px 20px;
-            border-radius: 40px; /* Pill shape for items */
-            background: var(--bg-gradient);
-            box-shadow: var(--btn-shadow);
-            transition: transform 0.3s ease;
-            cursor: pointer;
-            border: 1px solid var(--glass-border);
-        }
-        
-        .service-item:active {
-            box-shadow: var(--btn-inset);
-        }
-
-        .service-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--bg-gradient);
-            box-shadow: var(--btn-inset);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 22px;
-            margin-right: 15px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .service-info h3 {
-            margin: 0;
-            font-size: 16px;
-            color: var(--text-primary);
-        }
-        
-        .service-info p {
-            margin: 4px 0 0 0;
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        /* --- Easter Egg & Controls --- */
-        .footer {
-            width: 100%;
-            text-align: center;
-            font-size: 12px;
-            color: var(--text-secondary);
-            padding: 10px 0;
-            /* 4. Позиционирование футера: жестко внизу экрана под меню, + учет безопасной зоны */
-            position: fixed;
-            bottom: calc(10px + env(safe-area-inset-bottom));
-            cursor: pointer;
-            z-index: 10;
-        }
-        
-        .controls {
-            position: fixed;
-            /* 3. Подняли кнопки выше, но строго привязали к "челке", чтобы не уезжали под системную шторку */
-            top: calc(20px + env(safe-area-inset-top)); 
-            right: 20px;
-            display: flex;
-            gap: 15px;
-            z-index: 101;
-        }
-        
-        .icon-btn {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: var(--bg-gradient);
-            box-shadow: var(--btn-shadow);
-            color: var(--text-primary);
-            font-size: 20px;
-            cursor: pointer;
-            border: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.2s ease;
-        }
-        
-        .icon-btn:active {
-            box-shadow: var(--btn-inset);
+        /* 4. ЖЕЛЕЗОБЕТОННАЯ БЛОКИРОВКА СДВИГА ФОНА ПРИ СКРОЛЛЕ ШТОРКИ */
+        .custom-scrollbar {
+            overscroll-behavior: contain !important; /* Запрещает передавать скролл от шторки к главному экрану */
         }
     </style>
 </head>
-<body data-theme="light" data-lang="ru" oncontextmenu="return false;">
+<body class="dynamic-bg min-h-screen flex items-center justify-center p-0 md:p-6 overflow-x-hidden">
 
-    <div class="controls">
-        <button class="icon-btn" onclick="toggleTheme()"><i id="theme-icon">💡</i></button>
-        <button class="icon-btn" onclick="toggleLang()"><i id="lang-icon">🇬🇧</i></button>
+    <!-- ЗАГРУЗОЧНЫЙ ЭКРАН (Огненный лоадер) -->
+    <div id="app-loader" class="fixed inset-0 z-[100] dynamic-bg flex items-center justify-center transition-opacity duration-500">
+        <div class="relative w-20 h-20 flex items-center justify-center">
+            <div class="absolute inset-0 rounded-full border-4 border-orange-500/20"></div>
+            <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-orange-500 border-r-red-500 border-b-yellow-400 animate-spin shadow-[0_0_30px_rgba(249,115,22,0.6)]"></div>
+            <i class="ph-fill ph-fire text-orange-500 text-3xl animate-pulse"></i>
+        </div>
     </div>
 
-    <!-- Контент сюда будет подгружаться автоматически из блока настроек ниже -->
-    <section id="home-section" class="section active">
-        <h1 class="lang" id="ui-name" data-ru="" data-en=""></h1>
-        <p class="lang" id="ui-role" data-ru="" data-en=""></p>
+    <!-- ============================================== -->
+    <!-- BLUR GUIDE OVERLAY (Подсказка смахнуть вниз) -->
+    <!-- ============================================== -->
+    <div id="blur-guide-overlay" class="fixed inset-0 z-[110] bg-black/60 backdrop-blur-md hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300">
+        <!-- Маленький еле заметный крестик -->
+        <button onclick="closeBlurGuide()" class="absolute top-6 right-6 text-white/30 hover:text-white/80 p-4 z-10 active:scale-95 transition-all">
+            <i class="ph-bold ph-x text-[20px]"></i>
+        </button>
         
-        <div class="scanner-container">
-            <div class="avatar-frame">
-                <img id="ui-photo" src="" alt="Avatar" class="avatar">
-            </div>
-            <div class="scanner-line"></div>
+        <div class="flex flex-col items-center justify-center text-center px-8 pointer-events-none">
+            <i class="ph-bold ph-arrow-down text-white/80 text-6xl mb-6 animate-bounce drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]"></i>
+            <h3 class="text-2xl font-extrabold text-white mb-3 tracking-tight drop-shadow-md">Пост открыт в фоне!</h3>
+            <p class="text-[15px] text-gray-200 font-medium leading-relaxed drop-shadow-md">
+                Потяни за самый верх экрана вниз 👇<br>
+                Канал уже ждет тебя под визиткой.
+            </p>
         </div>
+    </div>
 
-        <button id="scan-btn" class="lang" data-ru="" data-en="" onclick="startScan()"></button>
-        <p id="vibe-result"></p>
-    </section>
-
-    <!-- Секция Услуг -->
-    <section id="services-section" class="section">
-        <h2 class="lang" id="ui-services-title" data-ru="" data-en="" style="font-family: 'Playfair Display', serif; color: var(--text-primary); margin-bottom: 20px;"></h2>
-        <div class="service-list" id="ui-services">
-            <!-- Услуги генерируются из настроек -->
-        </div>
-    </section>
-
-    <!-- Секция Портфолио -->
-    <section id="portfolio-section" class="section">
-        <h2 class="lang" id="ui-portfolio-title" data-ru="" data-en="" style="font-family: 'Playfair Display', serif; color: var(--text-primary); margin-bottom: 20px;"></h2>
-        <div id="magazine-wrapper">
-            <div class="portfolio-magazine" id="magazine">
-                <!-- Страницы генерируются из настроек -->
-            </div>
-        </div>
-    </section>
-
-    <!-- 2. Исправленные кнопки меню (передаем this для точного переключения) -->
-    <nav class="tabbar glass">
-        <div class="tab active" onclick="showSection('home-section', this)">🏠</div>
-        <div class="tab" onclick="showSection('services-section', this)">✨</div>
-        <div class="tab" onclick="showSection('portfolio-section', this)">📚</div>
-    </nav>
-
-    <!-- 4. Текст теперь всегда внизу -->
-    <div class="footer" id="ui-footer" onclick="triggerEasterEgg()"></div>
-
+    <!-- ========================================================================= -->
+    <!-- 🛑 НАСТРОЙКИ: МЕНЯЙТЕ ФОТО, ТЕКСТЫ И ССЫЛКИ ТОЛЬКО ЗДЕСЬ 🛑 -->
+    <!-- ========================================================================= -->
     <script>
-        // =========================================================================
-        // 1. БЛОК НАСТРОЕК (МЕНЯЙТЕ ТЕКСТ, ФОТО, ССЫЛКИ И ПЕРЕВОДЫ ТОЛЬКО ЗДЕСЬ)
-        // =========================================================================
-        const APP_CONTENT = {
-            profile: {
-                name: { ru: "Elena Sotnikova", en: "Elena Sotnikova" },
-                role: { ru: "Web Designer & Code Alchemist", en: "Web Designer & Code Alchemist" },
-                photo: "photo.jpg" // ССЫЛКА НА ВАШЕ ФОТО
-            },
+        // ==========================================
+        // 👩‍💻 НАСТРОЙКИ РАЗРАБОТЧИКА (ТВОИ ДАННЫЕ В ПОДВАЛЕ) 👩‍💻
+        // ==========================================
+        const MY_DEVELOPER_NAME = "design & code by Elena Sotnikova"; // Твоя подпись
+        const MY_DEVELOPER_LINK = "https://t.me/aicreata"; // Ссылка на твой канал или личку
 
-            // 5. Названия разделов визитки
-            sectionTitles: {
-                services: { ru: "Мои Услуги", en: "My Services" },
-                portfolio: { ru: "Портфолио-Журнал", en: "Portfolio Magazine" }
-            },
-
-            scannerBtn: { ru: "Считать вайб", en: "Read Vibe" },
-            scannerMessages: {
-                scanning: { ru: "Считываю ваш вайб...", en: "Reading your vibe..." },
-                results: [
-                    { ru: "Вайб: Творческий поток ✨. Идеально для новой IT-визитки!", en: "Vibe: Creative Flow ✨. Perfect for a new IT-visiting card!" },
-                    { ru: "Вайб: Техно-Дзен 🧘‍♀️. Пора упрощать сложные системы!", en: "Vibe: Tech Zen 🧘‍♀️. Time to simplify complex systems!" },
-                    { ru: "Вайб: Весеннее Обострение (в хорошем смысле) 🌸!", en: "Vibe: Spring Fever (the good kind) 🌸!" }
-                ]
-            },
-            services: [
-                { icon: "📱", title: { ru: "Mini App Визитка", en: "Mini App Card" }, desc: { ru: "В стиле Quiet Luxury", en: "In Quiet Luxury style" } },
-                { icon: "✨", title: { ru: "UI/UX Дизайн", en: "UI/UX Design" }, desc: { ru: "Современные тренды", en: "Modern design trends" } },
-                { icon: "🤖", title: { ru: "Интеграция ИИ", en: "AI Integration" }, desc: { ru: "Автоматизация процессов", en: "Process automation" } },
-                { icon: "💡", title: { ru: "Менторство", en: "Mentorship" }, desc: { ru: "Обучение вайбкодингу", en: "Vibecoding lessons" } }
-            ],
-
-            // 4. Тексты и фото главной и задней обложки журнала (ссылки на свои фото)
-            magazineCover: {
-                title: "Digital Zen",
-                subtitle: "Design & Code Alchemist",
-                img: "" // Пример: "https://example.com/cover.jpg"
-            },
-            magazineBack: {
-                title: "Vibe Art",
-                subtitle: "@alena_it_vizitka",
-                img: "" // Пример: "https://example.com/back.jpg"
-            },
-
-            // 4. Портфолио (в img можно вставлять прямые ссылки на ваши фото из интернета!)
-            portfolio: [
-                { title: {ru: 'Кейс 1', en: 'Case 1'}, desc: {ru: 'Психолог Александра', en: 'Psychologist Alexandra'}, img: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=400&auto=format&fit=crop' },
-                { title: {ru: 'Кейс 2', en: 'Case 2'}, desc: {ru: 'Тревел-агент', en: 'Travel Agent'}, img: 'https://images.unsplash.com/photo-1557672172-298e090bd0f1?q=80&w=400&auto=format&fit=crop' },
-                { title: {ru: 'Кейс 3', en: 'Case 3'}, desc: {ru: 'Сервис медитаций', en: 'Meditation App'}, img: 'case3.jpg' }
-            ],
-            footerText: "design & code by Elena Sotnikova"
-        };
-        // =========================================================================
-        // КОНЕЦ БЛОКА НАСТРОЕК (Дальше идет технический код, его лучше не трогать)
-        // =========================================================================
-
-        // Initialize Telegram WebApp & 3. Адаптация высоты
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-
-        // 1. Защита от закрытия шторки при легком свайпе вниз (для новых версий TG)
-        try { if (tg.disableVerticalSwipes) tg.disableVerticalSwipes(); } catch(e) {}
-        try { if (tg.enableClosingConfirmation) tg.enableClosingConfirmation(); } catch(e) {}
+        // ==========================================
+        // 💬 ШАБЛОНЫ СООБЩЕНИЙ ДЛЯ КНОПОК "ЗАПИСАТЬСЯ" 💬
+        // ==========================================
+        // Текст для кнопки в разделе "Обучение"
+        const MSG_TRAINING_RU = "Здравствуйте! Расскажите, пожалуйста, подробнее о курсе.";
+        const MSG_TRAINING_EN = "Hello! Could you please tell me more about the course.";
         
-        // 2. Открываем сразу на весь экран (для новых версий TG)
-        try { 
-            if (tg.isVersionAtLeast && tg.isVersionAtLeast('8.0')) {
-                tg.requestFullscreen(); 
-            }
-        } catch(e) {}
+        // Текст для кнопки в разделе "Мои услуги" (название услуги подставится автоматически!)
+        const MSG_SERVICE_RU = "Здравствуйте! Меня заинтересовала ваша услуга:";
+        const MSG_SERVICE_EN = "Hello! I am interested in your service:";
 
-        // 3. Функция обновления цвета шторки TG под дизайн
-        function updateTgAppColors(theme) {
-            try {
-                if (theme === 'dark') {
-                    tg.setHeaderColor('#222222');
-                    tg.setBackgroundColor('#222222');
-                } else {
-                    tg.setHeaderColor('#fdf8f6');
-                    tg.setBackgroundColor('#fdf8f6');
+        // ==========================================
+        // 🖥️ НАСТРОЙКИ ДЛЯ ПК ВЕРСИИ (DESKTOP СТЕНД) 🖥️
+        // ==========================================
+        const DESKTOP_TITLE = "";
+        const DESKTOP_DESC = "Открой Smart-визитку на смартфоне, чтобы почувствовать магию 3D-эффектов, плавных анимаций и тактильного отклика.";
+        const DESKTOP_QR_LINK = "https://t.me/polishaputeshestvennitsa"; // Ссылка для QR-кода
+
+        // ==========================================
+        // 🔗 ИНТЕГРАЦИЯ С GOOGLE ТАБЛИЦАМИ 🔗
+        // ==========================================
+        
+        // 1. Вставь сюда ID твоей Google таблицы (длинный код из ссылки)
+        const GOOGLE_SHEET_ID = "https://docs.google.com/spreadsheets/d/1Vgx1rjlg_IRJ7Egw2Qke9LMIFjy_mRaC5xxmRC6oz6s/edit?gid=43301387#gid=43301387"; 
+        
+        // 2. Вставь сюда ссылку на развернутый Google Web App Script 
+        // (Он нужен для того, чтобы отправлять отзывы во вкладку "Новые отзывы")
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxM1MiLA1eTeDbGRizn-iAU7WXcIqlCoKhLCn7pAS9AW4imJI8Y7vxVNx69zTC9CfhH/exec"; 
+
+        // Названия вкладок (листов) в твоей таблице:
+        const TAB_FIRE = "Огненные";
+        const TAB_ACRO = "Акробатика";
+        const TAB_CAMP = "Лагерь";
+        const TAB_SERVICES = "Услуги";
+        const TAB_REVIEWS_PUB = "Опубликованные отзывы"; 
+        // Вкладка "Новые отзывы" будет прописана внутри самого Google Script!
+
+        const APP_DATA = {
+            // ================= РУССКИЙ ЯЗЫК =================
+            ru: {
+                profile: {
+                    name: "Полина Чубакина", 
+                    avatar: "https://i.postimg.cc/L6StxpRR/unnamed-1.jpg", 
+                    bio: "Зажигаю сердца и сцены. Фаер-шоу, акробатика и жизнь в движении 🔥"
+                },
+                about: {
+                    photo: "https://i.postimg.cc/vT8f0F1c/photo-2026-03-13-17-39-13.jpg", 
+                    photos: [
+                        "https://i.postimg.cc/yN3jwyG1/P9086197_resized.jpg",
+                        "https://i.postimg.cc/rwsC6NHW/IMG-2289.jpg",
+                        "https://i.postimg.cc/x1pYs9rD/IMG-6587.jpg",
+                        "https://i.postimg.cc/T3dHHsn8/P5251351.jpg",
+                        "https://i.postimg.cc/SQt08kM5/773A0C43-4070-40AB-9777-1F770E33A1D3-1-201-a.jpg",
+                        "https://i.postimg.cc/rmmnFRQN/IMG-20250704-170817-590.jpg",
+                        "https://i.postimg.cc/CMZZbM2t/IMG-20240505-WA0106.jpg",
+                        "https://i.postimg.cc/SR77qyCZ/2025-11-25-15-09-15.jpg",
+                        "https://i.postimg.cc/Z5nX5gnS/2026-01-25-20-06-44.jpg"
+                    ],
+                    text: "Привет! Меня зовут Полина. И мое имя отлично меня описывает, ведь Полина — значит «многогранная»!<br><br><b>Образование и танцы</b><br>С детства живу танцем: училась в ДШИ им. С.Т. Рихтера и училище им. Л.М. Лавровского. Затем окончила школу-студию при ГААНТ им. Игоря Моисеева (куда берут раз в 5 лет с конкурсом 10 человек на место!) и получила диплом артистки балета и педагога. После этого я поступила сразу в два института — МГАХ и ГИТИС. Выбирала, где именно учиться, уже после поступления: в итоге выбрала ГИТИС и окончила его с красным дипломом.<br><br><b>Тренерская работа</b><br>Еще студенткой стала тренером по хореографии в центре гимнастики «Чемпионы». Мне нравится работать именно со спортсменами: здесь есть четкая цель, упорный труд и здоровая конкуренция. Фитнес-формат — не мое, я привыкла работать исключительно на результат и постоянно ищу новые, более эффективные методики.<br><br><b>Лагерь «Чайка» — дело жизни</b><br>Мой первый опыт работы с детьми случился в семейном лагере «Чайка \"Новая Цивилизация\"». Его девиз «Добро, Здоровье и Созидание» стал моим жизненным кредо. Работаю там вожатой уже 10 лет, и лагерь научил меня всему: от планирования времени и решения конфликтов до умения вести за собой. Сейчас мы делаем зимние театральные интенсивы, программы одного дня (Масленица, фольклор, туризм), а в разработке находится лагерь для взрослых.<br><br><b>Сцена, чир-спорт и огненное шоу</b><br>Чтобы не терять форму после выпуска, я занялась акробатикой и чир-спортом (получила 3-й спортивный разряд!). А затем в моей жизни появилась новая искра — фаер-шоу. Танцы с огненным реквизитом — это опасно, страшно, но безумно красиво. Сейчас я развиваюсь как артистка огненного и светового шоу в потрясающем коллективе The best show (рук. Ксения Сафи) и выступаю на соревнованиях с группой поддержки Project Hollywood (руководителя тоже зовут Ксения 🙃).<br><br><b>Остеопрактика и здоровье</b><br>Танцоры и спортсмены работают на износ, выступая с улыбкой даже через сильную боль. Меня саму в свое время спасали остеопаты. Пройдя через это, я решила помогать другим. В этом году я попала на семинары к А.Е. Смирнову и прошла 3 курса «Остеопрактики». Обучение продолжается, но уже после первого курса я начала успешно применять техники и избавлять людей от боли и дискомфорта.<br><br>Когда меня спрашивают, кто я, ответить действительно сложно. Один хороший человек назвал меня многофункциональной 🤣 — получается, так оно и есть!" 
+                },
+                categories: [
+                    { 
+                        title: "Огненные выступления", 
+                        icon: "🔥", badge: "Хит!", action: "posts",
+                        posts: []
+                    },
+                    { 
+                        title: "Танцы<br>Спорт", 
+                        icon: "🤸‍♀️", badge: null, action: "posts",
+                        posts: []
+                    },
+                    { 
+                        title: "Лагерь", 
+                        icon: '<i class="ph-bold ph-tent"></i>', subtitle: "Летние смены", badge: "Лето 2026", action: "posts", type: "wide",
+                        posts: []
+                    },
+                    { 
+                        title: "Обучение", 
+                        icon: '<i class="ph-bold ph-graduation-cap"></i>', subtitle: "Индивидуальные занятия", badge: "Идет набор", action: "training", type: "wide"
+                    },
+                    { 
+                        title: "Мои услуги", 
+                        icon: '<i class="ph-bold ph-sparkle"></i>', subtitle: "Путь к совершенству тела", badge: "New!", action: "services", type: "wide"
+                    }
+                ],
+                training: {
+                    photo: "https://i.postimg.cc/bJ99WHhW/HS6A3814.jpg", 
+                    text: "Балет для всех — онлайн-курс, который превращает мечту в реальность!<br><br>Всегда хотели почувствовать себя балериной, но думали, что уже поздно? Этот курс докажет обратное.<br><br>Онлайн-курс «Балет для всех» — чтобы начать с нуля и влюбиться в движение.<br><br>Без страшных слов и жёстких рамок:<br>только ты, музыка и красивый процесс.<br><br>Вы получите:<br>+ красивую осанку и подтянутое тело<br>+ гибкость, лёгкость и пластичность<br>+ уверенность в движении и в себе<br>+ базу классического танца, которая пригодится в любом стиле<br><br>Внутри вас ждёт не просто обучение, а целое балетное пространство: видеоуроки, поддержка, живые встречи, творческие задания и атмосфера, в которую хочется возвращаться.<br><br>Начни с одного plié — и не заметишь, как изменится всё тело. Начните свой путь в балете уже сегодня. 💫<br><br>",
+                    // 👇 ВСТАВЬ СВОЮ ССЫЛКУ НА КУРС В КАВЫЧКИ НИЖЕ 👇
+                    buttonLink: "https://t.me/chupolinka17"
+                },
+                services: [],
+                fortunes: [
+                    { text: "Сегодня ты горишь ярче дедлайнов. Действуй!" },
+                    { text: "Искра, буря, безумие! Идеальный план на сегодня." },
+                    { text: "Если что-то идет не так — сделай сальто. Ситуация не изменится, но выглядеть будет эффектно." },
+                    { text: "Твой внутренний огонь сегодня согреет даже самых душных коллег." },
+                    { text: "Выдохни. Даже огню нужен кислород, чтобы гореть ярче." },
+                    { text: "Сегодня ты магнит для удачи. И для восторженных взглядов!" },
+                    { text: "Не жди подходящего момента, зажигай прямо сейчас." },
+                    { text: "Ты сегодня как бенгальский огонь — искришь и создаешь праздник!" },
+                    { text: "Гибкость — твое главное оружие. Подстройся под ситуацию и забери свое." },
+                    { text: "Звезды говорят: пора выпить кофе и пойти покорять этот мир." },
+                    { text: "Баланс — это не только про акробатику. Найди точку опоры и лети!" },
+                    { text: "Сегодня можно всё. Ну, почти всё. Главное — с улыбкой!" },
+                    { text: "Если закрывается одна дверь, открой её с ноги. Ты же можешь!" },
+                    { text: "Твоя энергия сегодня пробьет любой потолок. Осторожнее в помещениях!" },
+                    { text: "Секрет успеха на сегодня: улыбаемся и пашем. Но красиво!" },
+                    { text: "Ты не просто искра, ты — целый фейерверк возможностей." },
+                    { text: "Даже если страшно — шагай вперед. В крайнем случае скажешь, что так и было задумано." },
+                    { text: "Сегодня отличный день, чтобы стать чьей-то причиной для улыбки." },
+                    { text: "Оставь сомнения в прошлом. Впереди только свет софитов и аплодисменты." },
+                    { text: "Гори своим делом, но не выгорай. Водичку пей!" },
+                    { text: "Пластичность ума сегодня важнее шпагата. Хотя шпагат тоже не помешает." },
+                    { text: "В любой непонятной ситуации крути пои. Или хотя бы мысленно." },
+                    { text: "Сегодня твой день. Впрочем, как и всегда." },
+                    { text: "Риск — дело благородное, особенно когда ты знаешь, как правильно падать." },
+                    { text: "Спотыкаться можно, главное — делать из этого элегантное танцевальное па." },
+                    { text: "Зарядись позитивом: съешь вкусняшку и иди менять мир к лучшему." },
+                    { text: "Ты сегодня просто пушка, петарда, ракета! Лети к целям!" },
+                    { text: "Не пытайся быть нормальной. Быть уникальной гораздо веселее!" },
+                    { text: "Твой талант сжигать мосты сегодня не пригодится. А вот зажигать сердца — самое то!" },
+                    { text: "Сегодня удача на твоей стороне. Держи спину ровно и верь в себя." },
+                    { text: "Пусть твое настроение сегодня будет таким же горячим, как твое любимое шоу." },
+                    { text: "Сомнения — в мусорку. Ты всё можешь, я узнавала!" },
+                    { text: "Включай внутреннюю рок-звезду и иди наводить суету (в хорошем смысле)." },
+                    { text: "Сегодняшний день создан для твоих побед. Больших и маленьких." },
+                    { text: "Не бойся выделяться. Серости в этом мире и так хватает, добавь огня!" },
+                    { text: "Как говорил классик: «Вижу цель, не вижу препятствий». Это твой девиз на сегодня." },
+                    { text: "Если жизнь подкидывает лимоны — попроси еще текилу и соль." },
+                    { text: "Твоя харизма сегодня способна растопить ледники." },
+                    { text: "Помни: ты не странная, ты — лимитированная версия!" },
+                    { text: "Настрой на сегодня: максимум продуктивности, минимум стресса и чашечка вкусного чая." },
+                    { text: "Делай то, что любишь. Остальное приложится или отвалится за ненадобностью." },
+                    { text: "Сегодня ты — режиссер своей жизни. Снимай блокбастер!" },
+                    { text: "Держи баланс между «хочу» и «надо». И пусть «хочу» перевесит." },
+                    { text: "Твое призвание — сиять. Не смей выключать этот свет!" },
+                    { text: "Никаких оправданий. Только действия, только вперед!" },
+                    { text: "Вселенная шепчет: «У тебя всё получится». Прислушайся!" },
+                    { text: "Сегодня отличный день, чтобы похвалить себя. Ты молодец!" },
+                    { text: "Не обращай внимания на хейтеров. Они просто завидуют твоей растяжке и смелости." },
+                    { text: "Будь как огонь: согревай своих и обжигай тех, кто лезет без спроса." },
+                    { text: "Этот мир еще не готов к твоей грандиозности, но это его проблемы. Зажигай!" }
+                ],
+                reviews: [],
+                socials: {
+                    telegram: "https://t.me/polishaputeshestvennitsa", instagram: "https://www.instagram.com/zabava_____?igsh=bDVzbGxqaDU2cTll", tiktok: "https://www.tiktok.com/@polechka177?_r=1&_t=ZS-94jKlT7ylZX", vk: "https://vk.ru/chiipolinka"
+                },
+                ui: {
+                    aboutBtnTitle: "Давайте знакомиться", aboutBtnSub: "Моя история и путь",
+                    reviewsTitle: "Отзывы", writeReview: "Написать отзыв",
+                    fortuneBtnTitle: "Пожелание дня", fortuneBtnSub: "Получи заряд вдохновения",
+                    socialsTitle: "Мои социальные сети", servicesPageTitle: "Мои услуги",
+                    aboutSheetTitle: "Обо мне", trainingSheetTitle: "Обучение",
+                    enrollBtn: "Записаться", fortuneSheetTitle: "Твое пожелание на день",
+                    reviewSheetTitle: "Оставить отзыв", reviewNamePlaceholder: "Ваше имя",
+                    reviewTextPlaceholder: "Поделитесь впечатлениями...", reviewSubmitBtn: "Отправить отзыв",
+                    moreBtn: "Подробнее", toastSuccess: "Отзыв успешно отправлен! 💖", toastWarning: "Пожалуйста, поставьте оценку"
                 }
-            } catch(e) {}
-        }
+            },
+
+            // ================= АНГЛИЙСКИЙ ЯЗЫК =================
+            en: {
+                profile: {
+                    name: "Polina Chubakina", 
+                    avatar: "https://i.postimg.cc/L6StxpRR/unnamed-1.jpg", 
+                    bio: "Igniting hearts and stages. Fire shows, acrobatics, and life in motion 🔥"
+                },
+                about: {
+                    photo: "https://i.postimg.cc/vT8f0F1c/photo-2026-03-13-17-39-13.jpg", 
+                    photos: [
+                        "https://i.postimg.cc/yN3jwyG1/P9086197_resized.jpg",
+                        "https://i.postimg.cc/rwsC6NHW/IMG-2289.jpg",
+                        "https://i.postimg.cc/x1pYs9rD/IMG-6587.jpg",
+                        "https://i.postimg.cc/T3dHHsn8/P5251351.jpg",
+                        "https://i.postimg.cc/SQt08kM5/773A0C43-4070-40AB-9777-1F770E33A1D3-1-201-a.jpg",
+                        "https://i.postimg.cc/rmmnFRQN/IMG-20250704-170817-590.jpg",
+                        "https://i.postimg.cc/CMZZbM2t/IMG-20240505-WA0106.jpg",
+                        "https://i.postimg.cc/SR77qyCZ/2025-11-25-15-09-15.jpg",
+                        "https://i.postimg.cc/Z5nX5gnS/2026-01-25-20-06-44.jpg"
+                    ],
+                    text: "Hi! My name is Polina. And my name describes me perfectly, because Polina means \"multifaceted\"!<br><br><b>Education and Dance</b><br>I've lived through dance since childhood: I studied at the S.T. Richter Children's School of Arts and the L.M. Lavrovsky College. Then I graduated from the school-studio at the Igor Moiseyev State Academic Ensemble of Popular Dance (where they only accept students once every 5 years with a competition of 10 people per spot!) and received a diploma as a ballet dancer and teacher. After that, I entered two institutes at once — the Moscow State Academy of Choreography (MGAH) and GITIS. I chose where exactly to study after admission: in the end, I chose GITIS and graduated with honors.<br><br><b>Coaching</b><br>Even as a student, I became a choreography coach at the \"Champions\" gymnastics center. I like working specifically with athletes: there is a clear goal, hard work, and healthy competition here. The fitness format is not for me; I am used to working exclusively for results and am constantly looking for new, more effective methods.<br><br><b>Camp \"Chaika\" — My Life's Work</b><br>My first experience working with children happened at the \"Chaika 'New Civilization'\" family camp. Its motto \"Goodness, Health, and Creation\" became my life credo. I have been working there as a counselor for 10 years, and the camp has taught me everything: from time management and conflict resolution to the ability to lead. Now we make winter theatrical intensives, one-day programs (Maslenitsa, folklore, tourism), and a camp for adults is currently in development.<br><br><b>Stage, Cheerleading, and Fire Show</b><br>To stay in shape after graduation, I took up acrobatics and cheer sports (got the 3rd sports category!). And then a new spark appeared in my life — the fire show. Dancing with fire props is dangerous, scary, but incredibly beautiful. Now I am developing as a fire and light show artist in the amazing collective The Best Show (directed by Ksenia Safi) and perform at competitions with the cheerleading team Project Hollywood (the director is also named Ksenia 🙃).<br><br><b>Osteopractic and Health</b><br>Dancers and athletes work to their limits, performing with a smile even through severe pain. I myself was saved by osteopaths in my time. Having gone through this, I decided to help others. This year I attended seminars by A.E. Smirnov and completed 3 courses of \"Osteopractic\". The training continues, but even after the first course, I successfully started applying techniques and relieving people of pain and discomfort.<br><br>When people ask me who I am, it's really hard to answer. One good person called me multifunctional 🤣 — turns out, it's true!" 
+                },
+                categories: [
+                    { 
+                        title: "Fire Performances", 
+                        icon: "🔥", badge: "Hit!", action: "posts",
+                        posts: []
+                    },
+                    { 
+                        title: "Dancing<br>Sports", 
+                        icon: "🤸‍♀️", badge: null, action: "posts",
+                        posts: []
+                    },
+                    { 
+                        title: "Camp", 
+                        icon: '<i class="ph-bold ph-tent"></i>', subtitle: "Summer camp", badge: "Summer 2026", action: "posts", type: "wide",
+                        posts: []
+                    },
+                    { 
+                        title: "Training", 
+                        icon: '<i class="ph-bold ph-graduation-cap"></i>', subtitle: "Individual lessons", badge: "Hiring", action: "training", type: "wide"
+                    },
+                    { 
+                        title: "My Services", 
+                        icon: '<i class="ph-bold ph-sparkle"></i>', subtitle: "The path to body perfection", badge: "New!", action: "services", type: "wide"
+                    }
+                ],
+                training: {
+                    photo: "https://i.postimg.cc/bJ99WHhW/HS6A3814.jpg", 
+                    text: "Ballet for everyone — an online course that turns dreams into reality!<br><br>Always wanted to feel like a ballerina but thought it was too late? This course proves otherwise.<br><br>Online course \"Ballet for everyone\" — to start from scratch and fall in love with movement.<br><br>No scary words or strict boundaries:<br>just you, music, and a beautiful process.<br><br>You will get:<br>+ beautiful posture and a toned body<br>+ flexibility, lightness, and grace<br>+ confidence in movement and in yourself<br>+ classical dance foundation useful for any style<br><br>Inside, it's not just training, but an entire ballet space: video lessons, support, live meetings, creative tasks, and an atmosphere you'll want to return to.<br><br>Start with one plié — and you won't notice how your whole body changes. Start your ballet journey today. 💫<br><br>",
+                    // 👇 ВСТАВЬ СВОЮ ССЫЛКУ НА КУРС В КАВЫЧКИ НИЖЕ 👇
+                    buttonLink: "https://t.me/chupolinka17"
+                },
+                services: [],
+                fortunes: [
+                    { text: "Today you burn brighter than deadlines. Take action!" },
+                    { text: "Spark, storm, madness! The perfect plan for today." },
+                    { text: "If something goes wrong, do a backflip. It won't change the situation, but it will look spectacular." },
+                    { text: "Your inner fire will warm up even the most boring colleagues today." },
+                    { text: "Exhale. Even fire needs oxygen to burn brighter." },
+                    { text: "Today you are a magnet for luck. And for admiring glances!" },
+                    { text: "Don't wait for the right moment, ignite right now." },
+                    { text: "You are like a sparkler today — sparking and creating a holiday vibe!" },
+                    { text: "Flexibility is your main weapon. Adapt to the situation and take what's yours." },
+                    { text: "The stars say: it's time to drink coffee and go conquer this world." },
+                    { text: "Balance is not only about acrobatics. Find your fulcrum and fly!" },
+                    { text: "Today you can do anything. Well, almost anything. The main thing is to smile!" },
+                    { text: "If one door closes, kick it open. You can do it!" },
+                    { text: "Your energy will break any ceiling today. Be careful indoors!" },
+                    { text: "The secret of success for today: smile and work hard. But make it look good!" },
+                    { text: "You are not just a spark, you are a whole fireworks display of opportunities." },
+                    { text: "Even if you're scared, step forward. In the worst case, say it was intended that way." },
+                    { text: "Today is a great day to be someone's reason to smile." },
+                    { text: "Leave doubts in the past. Only spotlights and applause are ahead." },
+                    { text: "Burn for your work, but don't burn out. Drink some water!" },
+                    { text: "Mental flexibility is more important than the splits today. Although the splits wouldn't hurt either." },
+                    { text: "In any incomprehensible situation, spin poi. Or at least mentally." },
+                    { text: "Today is your day. As always, actually." },
+                    { text: "Risk is a noble cause, especially when you know how to fall properly." },
+                    { text: "You can stumble, the main thing is to turn it into an elegant dance step." },
+                    { text: "Recharge with positivity: eat a yummy treat and go change the world for the better." },
+                    { text: "You are simply a rocket today! Fly to your goals!" },
+                    { text: "Don't try to be normal. Being unique is much more fun!" },
+                    { text: "Your talent for burning bridges won't be needed today. But igniting hearts is exactly it!" },
+                    { text: "Luck is on your side today. Keep your back straight and believe in yourself." },
+                    { text: "Let your mood today be as hot as your favorite show." },
+                    { text: "Throw your doubts in the trash. You can do anything, I checked!" },
+                    { text: "Turn on your inner rock star and go make some noise (in a good way)." },
+                    { text: "Today is made for your victories. Big and small." },
+                    { text: "Don't be afraid to stand out. There is enough grayness in this world, add some fire!" },
+                    { text: "As the classic said: 'I see the goal, I don't see obstacles'. That's your motto for today." },
+                    { text: "If life gives you lemons, ask for tequila and salt." },
+                    { text: "Your charisma today can melt glaciers." },
+                    { text: "Remember: you are not weird, you are a limited edition!" },
+                    { text: "Mood for today: maximum productivity, minimum stress, and a cup of delicious tea." },
+                    { text: "Do what you love. The rest will follow or fall off as unnecessary." },
+                    { text: "Today you are the director of your life. Shoot a blockbuster!" },
+                    { text: "Keep the balance between 'I want' and 'I have to'. And let 'I want' outweigh." },
+                    { text: "Your calling is to shine. Don't you dare turn off this light!" },
+                    { text: "No excuses. Only actions, only forward!" },
+                    { text: "The universe whispers: 'You will succeed'. Listen closely!" },
+                    { text: "Today is a great day to praise yourself. You are doing great!" },
+                    { text: "Don't pay attention to haters. They are just jealous of your flexibility and courage." },
+                    { text: "Be like fire: warm your people and burn those who cross the line." },
+                    { text: "This world is not yet ready for your awesomeness, but that's its problem. Ignite!" }
+                ],
+                reviews: [],
+                socials: {
+                    telegram: "https://t.me/polishaputeshestvennitsa", instagram: "https://www.instagram.com/zabava_____?igsh=bDVzbGxqaDU2cTll", tiktok: "https://www.tiktok.com/@polechka177?_r=1&_t=ZS-94jKlT7ylZX", vk: "https://vk.ru/chiipolinka"
+                },
+                ui: {
+                    aboutBtnTitle: "Let's get acquainted", aboutBtnSub: "My story and journey",
+                    reviewsTitle: "Reviews", writeReview: "Write a review",
+                    fortuneBtnTitle: "Wish of the day", fortuneBtnSub: "Get inspired for the day",
+                    socialsTitle: "My social networks", servicesPageTitle: "My Services",
+                    aboutSheetTitle: "About Me", trainingSheetTitle: "Training",
+                    enrollBtn: "Sign up", fortuneSheetTitle: "Your wish for today",
+                    reviewSheetTitle: "Leave a review", reviewNamePlaceholder: "Your name",
+                    reviewTextPlaceholder: "Share your impressions...", reviewSubmitBtn: "Submit Review",
+                    moreBtn: "Details", toastSuccess: "Review sent successfully! 💖", toastWarning: "Please rate us with stars"
+                }
+            }
+        };
+
+        // Текущий выбранный язык
+        let currentLang = 'ru';
+        let CONFIG = APP_DATA[currentLang];
+    </script>
+    <!-- ========================================================================= -->
+    <!-- 🛑 КОНЕЦ НАСТРОЕК 🛑 -->
+    <!-- ========================================================================= -->
+
+    <!-- ============================================== -->
+    <!-- MASTER DESKTOP WRAPPER (Стеклянный стенд для ПК) -->
+    <!-- ============================================== -->
+    <div class="w-full max-w-5xl mx-auto md:bg-black/20 md:backdrop-blur-3xl md:border md:border-white/10 md:rounded-[3rem] md:shadow-[0_30px_80px_rgba(0,0,0,0.5)] md:flex md:h-[90vh] md:overflow-hidden relative z-10">
         
-        // Устанавливаем правильный цвет при старте
-        updateTgAppColors(document.body.getAttribute('data-theme'));
+        <!-- MOBILE APP CONTAINER (Экран телефона) -->
+        <div class="w-full max-w-md mx-auto md:mx-0 md:w-[420px] md:shrink-0 md:border-r md:border-white/10 relative md:overflow-hidden flex flex-col h-full min-h-screen md:min-h-0 bg-transparent">
+            
+            <!-- TOAST УВЕДОМЛЕНИЕ (Перенесено сюда для центрирования в мобильной колонке) -->
+            <div id="toast" class="fixed md:absolute top-4 left-1/2 -translate-x-1/2 z-[100] bg-white/20 backdrop-blur-xl border border-white/40 text-white px-5 py-3 rounded-full flex items-center gap-2 shadow-[0_10px_40px_rgba(0,0,0,0.3)] transition-all duration-300 transform -translate-y-24 opacity-0 font-medium text-sm w-max"></div>
 
-        // 1. Вспомогательная функция для вибрации
-        function triggerVibration() {
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-        }
+            <!-- Scrollable Content Area -->
+            <div class="w-full h-full md:overflow-y-auto hide-scrollbar pb-12 pt-6 px-5 custom-scrollbar relative" id="app-scroll-container">
 
-        function updateTgHeight() {
-            document.documentElement.style.setProperty('--tg-viewport-height', `${tg.viewportHeight}px`);
-        }
-        updateTgHeight();
-        tg.onEvent('viewportChanged', updateTgHeight);
+                <!-- ============================================== -->
+                <!-- ГЛАВНЫЙ ЭКРАН -->
+                <!-- ============================================== -->
+                <div id="main-screen" class="w-full max-w-md mx-auto space-y-6">
 
-        // --- Инициализация контента из APP_CONTENT ---
-        function initContent() {
-            const lang = document.body.getAttribute('data-lang');
+        <!-- ВЕРХНЯЯ ПАНЕЛЬ (Воздушная, без плашки) -->
+        <div class="w-full flex justify-end items-center gap-3 px-2 -mt-4 -mb-4 fade-in relative z-10">
+            <button id="lang-btn" onclick="toggleLanguage()" class="text-white hover:text-gray-200 font-extrabold text-[11px] uppercase transition-colors active:scale-95 font-sans tracking-widest drop-shadow-md">
+                EN
+            </button>
+            <button id="share-btn" onclick="shareProfile()" class="text-white hover:text-gray-200 transition-colors active:scale-95 drop-shadow-md">
+                <i class="ph-bold ph-share-network text-[18px]"></i>
+            </button>
+        </div>
 
-            // 5. Заголовки секций
-            const servicesTitleEl = document.getElementById('ui-services-title');
-            servicesTitleEl.setAttribute('data-ru', APP_CONTENT.sectionTitles.services.ru);
-            servicesTitleEl.setAttribute('data-en', APP_CONTENT.sectionTitles.services.en);
-            servicesTitleEl.innerText = APP_CONTENT.sectionTitles.services[lang];
+        <!-- ГЛАВНОЕ ФОТО (С 3D-ЭФФЕКТОМ TILT) -->
+        <div class="w-full fade-in">
+            <div id="tilt-card" class="relative w-full aspect-[3.5/4] rounded-[2.5rem] overflow-hidden floating-shadow transform-gpu will-change-transform">
+                <img id="profile-avatar" src="" alt="Avatar" class="absolute inset-0 w-full h-full object-cover z-0">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10"></div>
+                
+                <!-- Блик для 3D эффекта -->
+                <div id="tilt-glare" class="absolute inset-0 pointer-events-none opacity-0 transition-opacity duration-300 z-20 mix-blend-overlay"></div>
+                
+                <!-- Инфо и кнопки (Элегантный Вариант 2) -->
+                <div class="absolute bottom-5 left-5 right-5 text-white z-30 flex items-end justify-between gap-3">
+                    <h1 class="text-[28px] sm:text-3xl font-serif font-bold flex items-center gap-1.5 tracking-tight min-w-0">
+                        <span id="profile-name" class="truncate"></span>
+                        <i class="ph-fill ph-check-circle text-white/90 text-[20px] shrink-0 mt-1"></i>
+                    </h1>
+                </div>
+            </div>
+        </div>
 
-            const portfolioTitleEl = document.getElementById('ui-portfolio-title');
-            portfolioTitleEl.setAttribute('data-ru', APP_CONTENT.sectionTitles.portfolio.ru);
-            portfolioTitleEl.setAttribute('data-en', APP_CONTENT.sectionTitles.portfolio.en);
-            portfolioTitleEl.innerText = APP_CONTENT.sectionTitles.portfolio[lang];
+        <!-- КРАТКАЯ ИНФОРМАЦИЯ И КНОПКИ УПРАВЛЕНИЯ -->
+        <div class="w-full relative px-2 fade-in delay-1">
+            <p id="profile-bio" class="text-gray-900 font-bold text-sm leading-relaxed text-center px-4"></p>
+        </div>
+
+        <!-- КНОПКА "ДАВАЙТЕ ЗНАКОМИТЬСЯ" -->
+        <div class="w-full fade-in delay-2 pt-2">
+            <button onclick="openSheet()" class="w-full relative rounded-3xl p-5 card-shadow transition-transform active:scale-[0.98] flex items-center justify-between text-left">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center shadow-sm bg-black/30 text-white">
+                        <i class="ph-bold ph-user text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-[16px] font-bold text-white" id="ui-about-btn-title">Давайте знакомиться</h3>
+                        <p class="text-[13px] font-medium text-gray-300" id="ui-about-btn-sub">Моя история и путь</p>
+                    </div>
+                </div>
+                <i class="ph-bold ph-caret-right text-gray-400 text-xl"></i>
+            </button>
+        </div>
+
+        <!-- КАРТОЧКИ-РУБРИКИ (Сетка) -->
+        <div class="grid grid-cols-2 gap-3 fade-in delay-2 mt-3" id="links-container">
+            <!-- Карточки сгенерируются через JS -->
+        </div>
+
+        <!-- ОТЗЫВЫ (Карусель без квадратов) -->
+        <div class="pt-5 fade-in delay-2">
+            <div class="flex items-center justify-between mb-3 px-1">
+                <h2 class="text-[18px] font-bold text-gray-900" id="ui-reviews-title">Отзывы</h2>
+                <button onclick="openReviewSheet()" id="ui-write-review-btn" class="text-[12px] font-bold text-white bg-black/30 px-4 py-2 rounded-full backdrop-blur-md active:scale-95 transition-transform shadow-lg">
+                    Написать отзыв
+                </button>
+            </div>
+            
+            <div id="reviews-container" class="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 hide-scrollbar">
+                <!-- Отзывы генерируются через JS -->
+            </div>
+        </div>
+
+        <!-- ИНТЕРАКТИВНАЯ КНОПКА "ПРЕДСКАЗАНИЕ" -->
+        <div class="pt-4 fade-in delay-3">
+            <button onclick="openFortuneSheet()" class="w-full relative card-shadow text-white rounded-[2rem] py-4 px-5 flex items-center justify-between transition-transform active:scale-[0.98] overflow-hidden group">
+                <div class="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-purple-500/10 opacity-70"></div>
+                <div class="flex items-center gap-4 relative z-10">
+                    <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-2xl border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                        🔮
+                    </div>
+                    <div class="text-left">
+                        <h3 class="text-[16px] font-bold text-white leading-tight" id="ui-fortune-btn-title">Пожелание дня</h3>
+                        <p class="text-[13px] font-medium text-gray-300 mt-0.5" id="ui-fortune-btn-sub">Получи заряд вдохновения</p>
+                    </div>
+                </div>
+                <i class="ph-bold ph-sparkle text-orange-400 relative z-10 animate-pulse text-2xl"></i>
+            </button>
+            
+            <!-- Футер -->
+            <div class="mt-6 text-center space-y-2">
+                <p class="text-xs text-gray-700 font-bold" id="ui-socials-title">Мои социальные сети</p>
+                <div class="flex justify-center gap-4 text-xs text-gray-800 font-bold">
+                    <a id="social-tg" href="#" target="_blank" rel="noopener noreferrer" onclick="tg.HapticFeedback.impactOccurred('light')" class="hover:text-black transition-colors">Telegram</a>
+                    <span>|</span>
+                    <a id="social-inst" href="#" target="_blank" rel="noopener noreferrer" onclick="tg.HapticFeedback.impactOccurred('light')" class="hover:text-black transition-colors">Instagram</a>
+                    <span>|</span>
+                    <a id="social-yt" href="#" target="_blank" rel="noopener noreferrer" onclick="tg.HapticFeedback.impactOccurred('light')" class="hover:text-black transition-colors">TikTok</a>
+                    <span>|</span>
+                    <a id="social-vk" href="#" target="_blank" rel="noopener noreferrer" onclick="tg.HapticFeedback.impactOccurred('light')" class="hover:text-black transition-colors">ВКонтакте</a>
+                </div>
+                
+                <!-- 👩‍💻 ССЫЛКА НА РАЗРАБОТЧИКА 👩‍💻 -->
+                <!-- Теперь эта ссылка управляется из настроек в самом начале кода! -->
+                <div class="pt-6 pb-2">
+                    <a id="developer-link-el" href="#" target="_blank" rel="noopener noreferrer" class="text-[10px] text-gray-500/50 font-medium uppercase tracking-widest" style="color: rgba(107, 114, 128, 0.5) !important; -webkit-tap-highlight-color: transparent;">
+                        <span id="developer-name-el"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ============================================== -->
+    <!-- ЭКРАН "МОИ УСЛУГИ" (Отдельная страница) -->
+    <!-- ============================================== -->
+    <div id="services-screen" class="w-full max-w-md mx-auto space-y-6 hidden">
+        <!-- Кнопка назад и заголовок -->
+        <div class="flex items-center gap-4 mb-2">
+            <button onclick="closeServicesPage()" class="w-12 h-12 rounded-full border border-white/20 shadow-sm bg-black/30 text-white flex items-center justify-center text-xl active:scale-95 transition-transform">
+                <i class="ph-bold ph-arrow-left"></i>
+            </button>
+            <h2 class="text-2xl font-bold text-gray-900 tracking-tight" id="ui-services-page-title">Мои услуги</h2>
+        </div>
+        
+        <!-- Список услуг -->
+        <div id="services-list" class="space-y-3 pb-8">
+            <!-- Сюда вставятся карточки услуг -->
+        </div>
+    </div>
+
+            </div> <!-- Конец app-scroll-container -->
+
+    <!-- ============================================== -->
+    <!-- ШТОРКА "ДАВАЙТЕ ЗНАКОМИТЬСЯ" -->
+    <!-- ============================================== -->
+    <!-- Фикс №1: ontouchmove="event.preventDefault()" убивает свайп по темному фону -->
+    <div id="sheet-overlay" class="fixed md:absolute inset-0 bg-black/50 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300" onclick="closeSheet()" ontouchmove="event.preventDefault()"></div>
+    
+    <div id="about-sheet" class="fixed md:absolute bottom-0 left-0 w-full bg-black/45 backdrop-blur-2xl border-t border-white/10 rounded-t-[2.5rem] z-50 transform sheet-hidden transition-transform duration-300 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
+        <div class="w-full flex justify-center py-4 drag-handle" onclick="closeSheet()">
+            <div class="w-14 h-1.5 bg-white/30 rounded-full"></div>
+        </div>
+        <button onclick="closeSheet()" class="absolute top-4 right-6 text-white/30 hover:text-white/80 p-2 z-10 active:scale-95 transition-all"><i class="ph-bold ph-x text-[20px]"></i></button>
+        <div class="overflow-y-auto px-6 pb-12 custom-scrollbar">
+            <h2 class="text-2xl font-bold mb-5 tracking-tight text-white" id="ui-about-sheet-title">Обо мне</h2>
+            <!-- Галерея вместо статичного фото -->
+            <div id="about-gallery-container"></div>
+            <div id="about-text" class="text-gray-200 space-y-3 leading-relaxed text-[15px] font-medium"></div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- ШТОРКА "ПОСТЫ РУБРИКИ" -->
+    <!-- ============================================== -->
+    <div id="posts-sheet" class="fixed md:absolute bottom-0 left-0 w-full bg-black/45 backdrop-blur-2xl border-t border-white/10 rounded-t-[2.5rem] z-50 transform sheet-hidden transition-transform duration-300 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
+        <div class="w-full flex justify-center py-4 drag-handle" onclick="closeSheet()">
+            <div class="w-14 h-1.5 bg-white/30 rounded-full"></div>
+        </div>
+        <button onclick="closeSheet()" class="absolute top-4 right-6 text-white/30 hover:text-white/80 p-2 z-10 active:scale-95 transition-all"><i class="ph-bold ph-x text-[20px]"></i></button>
+        <div class="overflow-y-auto px-6 pb-12 custom-scrollbar">
+            <h2 id="posts-sheet-title" class="text-2xl font-bold mb-5 tracking-tight text-white text-center"></h2>
+            <div id="posts-sheet-list" class="space-y-3">
+                <!-- Ссылки на посты -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- ШТОРКА "ОБУЧЕНИЕ" -->
+    <!-- ============================================== -->
+    <div id="training-sheet" class="fixed md:absolute bottom-0 left-0 w-full bg-black/45 backdrop-blur-2xl border-t border-white/10 rounded-t-[2.5rem] z-50 transform sheet-hidden transition-transform duration-300 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
+        <div class="w-full flex justify-center py-4 drag-handle shrink-0" onclick="closeSheet()">
+            <div class="w-14 h-1.5 bg-white/30 rounded-full"></div>
+        </div>
+        <button onclick="closeSheet()" class="absolute top-4 right-6 text-white/30 hover:text-white/80 p-2 z-10 active:scale-95 transition-all"><i class="ph-bold ph-x text-[20px]"></i></button>
+
+        <!-- Блок с текстом: увеличен нижний отступ (pb-32), чтобы текст можно было доскроллить до конца из-под кнопки -->
+        <div class="overflow-y-auto px-6 pb-32 custom-scrollbar flex-1 min-h-0">
+            <h2 class="text-2xl font-bold mb-5 tracking-tight text-white" id="ui-training-sheet-title">Обучение</h2>
+            <img id="training-photo" src="" alt="Training" class="w-full aspect-square object-contain bg-black/20 rounded-[2rem] mb-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+            <div id="training-text" class="text-gray-200 space-y-3 leading-relaxed text-[15px] font-medium mb-4"></div>
+        </div>
+
+        <!-- Настоящая парящая кнопка ВНИЗУ (Абсолютное позиционирование поверх текста) -->
+        <div class="absolute left-0 w-full px-6 z-20 pointer-events-none" style="bottom: calc(150px + env(safe-area-inset-bottom, 0px) + 32px);">
+            <a id="training-btn" href="#" target="_blank" rel="noopener noreferrer" onclick="tg.HapticFeedback.impactOccurred('medium')" class="block w-full text-center bg-white text-black rounded-full py-4 px-6 font-bold text-[15px] shadow-[0_10px_40px_rgba(0,0,0,0.5)] active:scale-[0.98] transition-transform pointer-events-auto">
+                Записаться
+            </a>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- ШТОРКА "ОПИСАНИЕ УСЛУГИ" -->
+    <!-- ============================================== -->
+    <div id="service-details-sheet" class="fixed md:absolute bottom-0 left-0 w-full bg-black/45 backdrop-blur-2xl border-t border-white/10 rounded-t-[2.5rem] z-50 transform sheet-hidden transition-transform duration-300 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
+        <div class="w-full flex justify-center py-4 drag-handle shrink-0" onclick="closeSheet()">
+            <div class="w-14 h-1.5 bg-white/30 rounded-full"></div>
+        </div>
+        <button onclick="closeSheet()" class="absolute top-4 right-6 text-white/30 hover:text-white/80 p-2 z-10 active:scale-95 transition-all"><i class="ph-bold ph-x text-[20px]"></i></button>
+        
+        <!-- Блок с текстом: увеличен нижний отступ (pb-32), чтобы текст можно было доскроллить до конца из-под кнопки -->
+        <div class="overflow-y-auto px-6 pb-32 custom-scrollbar flex-1 min-h-0">
+            <h2 id="service-sheet-title" class="text-2xl font-bold mb-5 tracking-tight text-white leading-tight"></h2>
+            <!-- Галерея вместо статичного фото -->
+            <div id="service-gallery-container"></div>
+            
+            <div class="flex items-baseline gap-3 mb-5 px-1">
+                <span id="service-sheet-new-price" class="text-white font-extrabold text-[28px] drop-shadow-md tracking-tight"></span>
+                <span id="service-sheet-old-price" class="text-gray-400 font-medium text-[16px] line-through"></span>
+            </div>
+
+            <div id="service-sheet-desc" class="text-gray-200 space-y-3 leading-relaxed text-[15px] font-medium mb-4"></div>
+        </div>
+        
+        <!-- Настоящая парящая кнопка ВНИЗУ (Абсолютное позиционирование поверх текста) -->
+        <div class="absolute left-0 w-full px-6 z-20 pointer-events-none" style="bottom: calc(150px + env(safe-area-inset-bottom, 0px) + 32px);">
+            <a id="service-sheet-btn" href="#" target="_blank" rel="noopener noreferrer" onclick="tg.HapticFeedback.impactOccurred('medium')" class="block w-full text-center bg-white text-black rounded-full py-4 px-6 font-bold text-[15px] shadow-[0_10px_40px_rgba(0,0,0,0.5)] active:scale-[0.98] transition-transform pointer-events-auto">
+                Записаться
+            </a>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- ШТОРКА "ПРЕДСКАЗАНИЕ НА ДЕНЬ" -->
+    <!-- ============================================== -->
+    <div id="fortune-sheet" class="fixed md:absolute bottom-0 left-0 w-full bg-black/45 backdrop-blur-2xl border-t border-white/10 rounded-t-[2.5rem] z-50 transform sheet-hidden transition-transform duration-300 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
+        <div class="w-full flex justify-center py-4 drag-handle" onclick="closeSheet()">
+            <div class="w-14 h-1.5 bg-white/30 rounded-full"></div>
+        </div>
+        <button onclick="closeSheet()" class="absolute top-4 right-6 text-white/30 hover:text-white/80 p-2 z-10 active:scale-95 transition-all"><i class="ph-bold ph-x text-[20px]"></i></button>
+        <div class="overflow-y-auto px-6 pb-12 custom-scrollbar text-center">
+            <div class="w-20 h-20 mx-auto rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-4xl mb-4 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                🔮
+            </div>
+            <h2 class="text-2xl font-bold mb-4 tracking-tight text-white" id="ui-fortune-sheet-title">Твое пожелание на день</h2>
+            <p id="fortune-text" class="text-gray-200 text-[16px] leading-relaxed font-medium mb-6 italic"></p>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- ШТОРКА "НАПИСАТЬ ОТЗЫВ" (Модальное окно) -->
+    <!-- ============================================== -->
+    <div id="review-sheet" class="fixed md:absolute bottom-0 left-0 w-full bg-black/45 backdrop-blur-2xl border-t border-white/10 rounded-t-[2.5rem] z-50 transform sheet-hidden transition-transform duration-300 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
+        <div class="w-full flex justify-center py-4 drag-handle" onclick="closeSheet()">
+            <div class="w-14 h-1.5 bg-white/30 rounded-full"></div>
+        </div>
+        <button onclick="closeSheet()" class="absolute top-4 right-6 text-white/30 hover:text-white/80 p-2 z-10 active:scale-95 transition-all"><i class="ph-bold ph-x text-[20px]"></i></button>
+        <div class="overflow-y-auto px-6 pb-12 custom-scrollbar text-center">
+            <h2 class="text-2xl font-bold mb-6 tracking-tight text-white" id="ui-review-sheet-title">Оставить отзыв</h2>
+            
+            <!-- Интерактивные звезды -->
+            <div class="flex justify-center gap-3 mb-6" id="star-rating">
+                <i class="ph-fill ph-star text-4xl text-gray-500 transition-colors cursor-pointer" onclick="setRating(1)"></i>
+                <i class="ph-fill ph-star text-4xl text-gray-500 transition-colors cursor-pointer" onclick="setRating(2)"></i>
+                <i class="ph-fill ph-star text-4xl text-gray-500 transition-colors cursor-pointer" onclick="setRating(3)"></i>
+                <i class="ph-fill ph-star text-4xl text-gray-500 transition-colors cursor-pointer" onclick="setRating(4)"></i>
+                <i class="ph-fill ph-star text-4xl text-gray-500 transition-colors cursor-pointer" onclick="setRating(5)"></i>
+            </div>
+
+            <!-- Поля ввода -->
+            <input type="text" id="review-input-name" placeholder="Ваше имя" class="w-full bg-white/10 text-white placeholder-gray-400 border-none rounded-2xl px-5 py-4 mb-4 focus:outline-none focus:ring-2 focus:ring-orange-500/50 font-medium">
+            <textarea id="review-input-text" placeholder="Поделитесь впечатлениями..." rows="4" class="w-full bg-white/10 text-white placeholder-gray-400 border-none rounded-2xl px-5 py-4 mb-6 focus:outline-none focus:ring-2 focus:ring-orange-500/50 resize-none font-medium"></textarea>
+            
+            <button onclick="submitReview()" id="review-submit-btn" class="block w-full text-center bg-white text-black rounded-full py-4 px-6 font-bold text-[15px] shadow-[0_10px_30px_rgba(255,255,255,0.2)] active:scale-[0.98] transition-transform">
+                Отправить отзыв
+            </button>
+        </div>
+    </div>
+
+        </div> <!-- Конец MOBILE APP CONTAINER -->
+
+        <!-- ============================================== -->
+        <!-- DESKTOP QR PANEL (Right Side on PC) -->
+        <!-- ============================================== -->
+        <div class="hidden md:flex flex-1 flex-col items-center justify-center relative p-12 overflow-hidden bg-white/5 rounded-r-[3rem]">
+            <!-- Glowing Orbs -->
+            <div class="absolute -top-32 -right-32 w-96 h-96 bg-purple-600/30 rounded-full blur-[100px] pointer-events-none"></div>
+            <div class="absolute -bottom-32 -left-32 w-96 h-96 bg-orange-500/30 rounded-full blur-[100px] pointer-events-none"></div>
+
+            <div class="relative z-10 flex flex-col items-center mt-20">
+                <div class="mb-10 relative group cursor-default">
+                    <div class="absolute inset-0 bg-gradient-to-r from-orange-500 to-purple-500 rounded-[2.5rem] blur-xl opacity-40 group-hover:opacity-70 transition-opacity duration-700"></div>
+                    <div class="relative bg-black/40 backdrop-blur-2xl border border-white/20 p-8 rounded-[2rem] shadow-2xl transform transition-transform duration-700 group-hover:scale-105 flex flex-col items-center">
+                        <div class="bg-white p-3 rounded-2xl mb-5 shadow-[inset_0_2px_10px_rgba(0,0,0,0.1)]">
+                            <!-- Подставляем основную ссылку Полины в QR -->
+                            <img id="desktop-qr" src="" alt="QR" class="w-48 h-48 object-contain">
+                        </div>
+                        <div class="flex items-center gap-2 text-white/90">
+                            <i class="ph-bold ph-scan text-xl text-orange-400"></i>
+                            <span class="font-bold tracking-widest uppercase text-[12px] opacity-90">Наведи камеру</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <h2 id="desktop-title" class="text-4xl sm:text-[42px] font-black text-white mb-5 tracking-tight text-center drop-shadow-lg leading-tight font-serif">
+                </h2>
+                <p id="desktop-desc" class="text-gray-200 text-center max-w-sm text-[16px] leading-relaxed font-medium drop-shadow-md">
+                </p>
+            </div>
+        </div>
+
+    </div> <!-- Конец MASTER DESKTOP WRAPPER -->
+
+    <!-- ОСНОВНАЯ ЛОГИКА -->
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+        
+        try {
+            tg.disableVerticalSwipes();
+        } catch(e) {}
+        
+        tg.setHeaderColor('#b000ff');
+
+        // Запрет правой кнопки мыши (контекстного меню, п.1)
+        document.addEventListener('contextmenu', event => event.preventDefault());
+
+        function renderApp() {
+            // Переводы статических элементов интерфейса
+            document.getElementById('ui-about-btn-title').textContent = CONFIG.ui.aboutBtnTitle;
+            document.getElementById('ui-about-btn-sub').textContent = CONFIG.ui.aboutBtnSub;
+            document.getElementById('ui-reviews-title').textContent = CONFIG.ui.reviewsTitle;
+            document.getElementById('ui-write-review-btn').textContent = CONFIG.ui.writeReview;
+            document.getElementById('ui-fortune-btn-title').textContent = CONFIG.ui.fortuneBtnTitle;
+            document.getElementById('ui-fortune-btn-sub').textContent = CONFIG.ui.fortuneBtnSub;
+            document.getElementById('ui-socials-title').textContent = CONFIG.ui.socialsTitle;
+            document.getElementById('ui-services-page-title').textContent = CONFIG.ui.servicesPageTitle;
+            document.getElementById('ui-about-sheet-title').textContent = CONFIG.ui.aboutSheetTitle;
+            document.getElementById('ui-training-sheet-title').textContent = CONFIG.ui.trainingSheetTitle;
+            document.getElementById('training-btn').textContent = CONFIG.ui.enrollBtn;
+            document.getElementById('service-sheet-btn').textContent = CONFIG.ui.enrollBtn;
+            document.getElementById('ui-fortune-sheet-title').textContent = CONFIG.ui.fortuneSheetTitle;
+            document.getElementById('ui-review-sheet-title').textContent = CONFIG.ui.reviewSheetTitle;
+            document.getElementById('review-input-name').placeholder = CONFIG.ui.reviewNamePlaceholder;
+            document.getElementById('review-input-text').placeholder = CONFIG.ui.reviewTextPlaceholder;
+            document.getElementById('review-submit-btn').textContent = CONFIG.ui.reviewSubmitBtn;
+
+            // Настройки разработчика (Твой копирайт)
+            document.getElementById('developer-link-el').href = MY_DEVELOPER_LINK;
+            document.getElementById('developer-name-el').textContent = MY_DEVELOPER_NAME;
+
+            // Настройки ПК-стенда
+            document.getElementById('desktop-title').innerHTML = DESKTOP_TITLE;
+            document.getElementById('desktop-desc').innerHTML = DESKTOP_DESC;
+            document.getElementById('desktop-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(DESKTOP_QR_LINK)}&bgcolor=ffffff&color=000000&margin=1`;
 
             // Профиль
-            const nameEl = document.getElementById('ui-name');
-            nameEl.setAttribute('data-ru', APP_CONTENT.profile.name.ru);
-            nameEl.setAttribute('data-en', APP_CONTENT.profile.name.en);
-            nameEl.innerText = APP_CONTENT.profile.name[lang];
+            document.getElementById('profile-avatar').src = CONFIG.profile.avatar;
+            document.getElementById('profile-name').textContent = CONFIG.profile.name;
+            document.getElementById('profile-bio').textContent = CONFIG.profile.bio;
 
-            const roleEl = document.getElementById('ui-role');
-            roleEl.setAttribute('data-ru', APP_CONTENT.profile.role.ru);
-            roleEl.setAttribute('data-en', APP_CONTENT.profile.role.en);
-            roleEl.innerText = APP_CONTENT.profile.role[lang];
+            // Шторка "Давайте знакомиться" (Рендерим галерею)
+            renderGallery('about-gallery-container', CONFIG.about.photos || [CONFIG.about.photo]);
+            document.getElementById('about-text').innerHTML = CONFIG.about.text;
 
-            document.getElementById('ui-photo').src = APP_CONTENT.profile.photo;
+            // Генерация квадратных карточек-рубрик
+            const container = document.getElementById('links-container');
+            container.innerHTML = '';
+            
+            CONFIG.categories.forEach((item, index) => {
+                let onClickAction = `openPostsSheet(${index})`;
+                if (item.action === 'training') onClickAction = `openTrainingSheet()`;
+                if (item.action === 'services') onClickAction = `openServicesPage()`;
 
-            // Кнопка сканера
-            const scanBtnEl = document.getElementById('scan-btn');
-            scanBtnEl.setAttribute('data-ru', APP_CONTENT.scannerBtn.ru);
-            scanBtnEl.setAttribute('data-en', APP_CONTENT.scannerBtn.en);
-            scanBtnEl.innerText = APP_CONTENT.scannerBtn[lang];
+                if (item.type === 'wide') {
+                    const badgeHtml = item.badge 
+                        ? `<div class="absolute -top-3 left-6 bg-white text-black text-[10px] font-extrabold px-3 py-1 w-max rounded-full shadow-[0_5px_15px_rgba(255,255,255,0.3)] z-10">${item.badge}</div>` 
+                        : '';
 
-            // Услуги
-            const servicesContainer = document.getElementById('ui-services');
-            servicesContainer.innerHTML = '';
-            APP_CONTENT.services.forEach(item => {
-                servicesContainer.innerHTML += `
-                    <div class="service-item">
-                        <div class="service-icon">${item.icon}</div>
-                        <div class="service-info">
-                            <h3 class="lang" data-ru="${item.title.ru}" data-en="${item.title.en}">${item.title[lang]}</h3>
-                            <p class="lang" data-ru="${item.desc.ru}" data-en="${item.desc.en}">${item.desc[lang]}</p>
+                    container.innerHTML += `
+                        <button onclick="${onClickAction}" class="col-span-2 block relative rounded-3xl p-5 card-shadow transition-transform active:scale-[0.98] flex items-center justify-between text-left w-full mt-1">
+                            ${badgeHtml}
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full border border-white/40 flex items-center justify-center bg-white/10 text-white text-2xl shadow-sm shrink-0">
+                                    ${item.icon}
+                                </div>
+                                <div>
+                                    <h3 class="text-[16px] font-bold text-white">${item.title}</h3>
+                                    ${item.subtitle ? `<p class="text-[13px] font-medium text-gray-300 mt-0.5">${item.subtitle}</p>` : ''}
+                                </div>
+                            </div>
+                            <i class="ph-bold ph-caret-right text-gray-400 text-xl"></i>
+                        </button>
+                    `;
+                } else {
+                    const badgeHtml = item.badge 
+                        ? `<div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-black text-[10px] font-extrabold px-3 py-1 w-max rounded-full shadow-[0_5px_15px_rgba(255,255,255,0.3)] z-10">${item.badge}</div>` 
+                        : '';
+
+                    container.innerHTML += `
+                        <button onclick="${onClickAction}" class="block relative rounded-3xl p-4 card-shadow transition-transform active:scale-[0.98] flex flex-col items-center justify-center aspect-square w-full text-center">
+                            ${badgeHtml}
+                            <div class="w-12 h-12 rounded-full border border-white/40 flex items-center justify-center mb-3 bg-white/10 text-2xl text-white">
+                                ${item.icon}
+                            </div>
+                            <h3 class="text-[14px] font-bold text-white leading-tight">${item.title}</h3>
+                        </button>
+                    `;
+                }
+            });
+
+            // Рендер списка услуг для отдельной страницы
+            const servicesList = document.getElementById('services-list');
+            servicesList.innerHTML = '';
+            CONFIG.services.forEach((s, index) => {
+                const thumb = s.photos && s.photos.length > 0 ? s.photos[0] : s.photo;
+                servicesList.innerHTML += `
+                    <div class="card-shadow rounded-[2rem] p-4 flex flex-col gap-4 active:scale-[0.98] transition-transform text-left cursor-pointer" onclick="openServiceDetails(${index})">
+                        <!-- Большое фото на всю ширину карточки -->
+                        <img src="${thumb}" class="w-full h-48 md:h-56 rounded-2xl object-cover shadow-lg border border-white/10">
+                        
+                        <!-- Блок с текстом и кнопками -->
+                        <div class="flex flex-col flex-grow">
+                            <h3 class="text-white font-bold text-[16px] mb-2 leading-tight">${s.title}</h3>
+                            <p class="text-gray-300 text-[12px] line-clamp-3 leading-relaxed mb-4">${(s.shortDesc || '').replace(/\n/g, '<br>')}</p>
+                            
+                            <!-- Подвал карточки: цена и кнопка (прижаты к низу) -->
+                            <div class="flex items-end justify-between mt-auto pt-4 border-t border-white/10">
+                                <div class="flex flex-col">
+                                    ${s.oldPrice ? `<span class="text-gray-400 text-[11px] line-through leading-none mb-1">${s.oldPrice}</span>` : ''}
+                                    <span class="text-white font-black text-[18px] leading-none drop-shadow-md">${s.newPrice}</span>
+                                </div>
+                                <div class="text-[12px] font-bold text-white bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-full shadow-lg flex items-center gap-1">
+                                    ${CONFIG.ui.moreBtn} <i class="ph-bold ph-caret-right"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
             });
 
-            // Футер
-            document.getElementById('ui-footer').innerText = APP_CONTENT.footerText;
+            // Рендер карусели отзывов (Премиальные стеклянные плашки)
+            const reviewsContainer = document.getElementById('reviews-container');
+            reviewsContainer.innerHTML = '';
+            CONFIG.reviews.forEach(review => {
+                let starsHtml = '';
+                for(let i=0; i<5; i++) {
+                    if(i < review.stars) {
+                        starsHtml += '<i class="ph-fill ph-star text-orange-400 drop-shadow-md"></i>';
+                    } else {
+                        starsHtml += '<i class="ph ph-star text-gray-500"></i>';
+                    }
+                }
+                
+                reviewsContainer.innerHTML += `
+                    <div class="snap-start shrink-0 w-[85%] bg-black/40 backdrop-blur-2xl border border-white/10 rounded-[1.5rem] p-5 flex flex-col justify-between relative overflow-hidden ml-1 my-2">
+                        <!-- Декоративный легкий блик -->
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+                        
+                        <div class="relative z-10">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="flex items-center gap-2.5">
+                                    <!-- Аватарка (первая буква имени) -->
+                                    <div class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white font-bold text-xs border border-white/20 shadow-sm">
+                                        ${review.name.charAt(0)}
+                                    </div>
+                                    <h4 class="text-white font-bold text-[15px]">${review.name}</h4>
+                                </div>
+                                <span class="text-gray-300 text-[11px] font-medium opacity-80">${review.date}</span>
+                            </div>
+                            <div class="flex gap-1 mb-3 text-[14px]">
+                                ${starsHtml}
+                            </div>
+                            <p class="text-gray-100 text-[13px] leading-relaxed font-medium italic">"${review.text}"</p>
+                        </div>
+                    </div>
+                `;
+            });
 
-            // Обновляем журнал только если секция активна, иначе откладываем
-            if (document.getElementById('portfolio-section').classList.contains('active')) {
-                initMagazine();
-            } else {
-                magazineInitialized = false;
-            }
+            // Соцсети
+            document.getElementById('social-tg').href = CONFIG.socials.telegram;
+            document.getElementById('social-inst').href = CONFIG.socials.instagram;
+            document.getElementById('social-yt').href = CONFIG.socials.tiktok;
+            document.getElementById('social-vk').href = CONFIG.socials.vk;
         }
 
-        // --- Multi-language Logic ---
-        function toggleLang() {
-            triggerVibration(); // 1. Вибрация
-            const currentLang = document.body.getAttribute('data-lang');
-            const newLang = currentLang === 'ru' ? 'en' : 'ru';
-            document.body.setAttribute('data-lang', newLang);
-            document.getElementById('lang-icon').innerText = newLang === 'ru' ? '🇬🇧' : '🇷🇺';
-
-            // Find all lang elements and update text
-            document.querySelectorAll('.lang').forEach(el => {
-                el.innerText = el.getAttribute(`data-${newLang}`);
+        // --- ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА ---
+        function toggleLanguage() {
+            tg.HapticFeedback.impactOccurred('medium');
+            const langBtn = document.getElementById('lang-btn');
+            
+            // Находим главные экраны для эффекта плавного затухания
+            const screens = [document.getElementById('main-screen'), document.getElementById('services-screen')];
+            
+            // Плавно прячем контент
+            screens.forEach(s => { 
+                if(s) {
+                    s.style.transition = 'opacity 0.2s ease'; 
+                    s.style.opacity = '0'; 
+                }
             });
             
-            // Если мы на странице портфолио, перерисовываем журнал для обновления языка
-            if (document.getElementById('portfolio-section').classList.contains('active')) {
-                initMagazine();
-            } else {
-                magazineInitialized = false;
-            }
-        }
-
-        // --- Dark/Light Mode Logic ---
-        function toggleTheme() {
-            triggerVibration(); // 1. Вибрация
-            const currentTheme = document.body.getAttribute('data-theme');
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.setAttribute('data-theme', newTheme);
-            document.getElementById('theme-icon').innerText = newTheme === 'light' ? '💡' : '🌙';
-            
-            updateTgAppColors(newTheme); // 3. Обновляем цвет шторки TG
-
-            // Re-init magazine on theme change for best look
-            if (document.getElementById('portfolio-section').classList.contains('active')) {
-                setTimeout(initMagazine, 100);
-            } else {
-                magazineInitialized = false;
-            }
-        }
-
-        // --- 2. Исправленная логика переключения секций ---
-        let magazineInitialized = false;
-
-        function showSection(sectionId, clickedTab) {
-            triggerVibration(); // 1. Вибрация при переключении меню
-
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-            // Remove active from all tabs
-            document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
-
-            // Show target section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Точно активируем нажатую кнопку (исправление бага)
-            if (clickedTab) {
-                clickedTab.classList.add('active');
-            }
-            
-            if(sectionId === 'portfolio-section' && !magazineInitialized) {
-                initMagazine();
-                magazineInitialized = true;
-            }
-        }
-
-        // --- Vibe-Scanner Logic ---
-        function startScan() {
-            triggerVibration(); // 1. Вибрация
-            const lang = document.body.getAttribute('data-lang');
-            const resultEl = document.getElementById('vibe-result');
-            const scanLine = document.querySelector('.scanner-line');
-            const scanBtn = document.getElementById('scan-btn');
-
-            resultEl.innerText = APP_CONTENT.scannerMessages.scanning[lang];
-            scanLine.style.display = 'block';
-            scanBtn.disabled = true;
-
+            // Меняем язык через 200мс (пока контент скрыт)
             setTimeout(() => {
-                const results = APP_CONTENT.scannerMessages.results;
-                const randomResult = results[Math.floor(Math.random() * results.length)];
-                resultEl.innerText = randomResult[lang];
-                scanLine.style.display = 'none';
-                scanBtn.disabled = false;
-            }, 3000); // 3 seconds scan simulation
+                currentLang = currentLang === 'ru' ? 'en' : 'ru';
+                langBtn.textContent = currentLang === 'ru' ? 'EN' : 'RU';
+                
+                // Берем нужный конфиг (APP_DATA.ru или APP_DATA.en)
+                CONFIG = APP_DATA[currentLang];
+                
+                // Перерисовываем интерфейс с новыми данными
+                renderApp();
+                
+                // Плавно возвращаем контент
+                screens.forEach(s => { 
+                    if(s) s.style.opacity = '1'; 
+                });
+            }, 200);
         }
 
-        // --- 3D Magazine Logic ---
-        let pageFlip;
-        function initMagazine() {
-            const lang = document.body.getAttribute('data-lang');
+        // --- ЛОГИКА ФОРМЫ ОТЗЫВОВ ---
+        let currentRating = 0;
+        let globalScrollPos = 0; // Сохраняем позицию скролла
+
+        // Блокировка и разблокировка скролла главного экрана
+        function lockScroll() {
+            globalScrollPos = window.scrollY || window.pageYOffset;
             
-            // Расчет идеальных размеров книги под любой экран (защита от горизонтального скролла)
-            const screenWidth = window.innerWidth;
-            const magWidth = Math.min(320, screenWidth - 40); // 40px это отступы по краям
-            const magHeight = magWidth * (440 / 320); // Сохраняем книжную пропорцию
+            // Фикс №2: 100% железобетонный блок для iOS/Android: фиксируем сам body
+            document.body.style.position = 'fixed';
+            document.body.style.top = `-${globalScrollPos}px`;
+            document.body.style.width = '100%';
             
-            // Destroy instance if exists to re-render properly
-            if (pageFlip) {
-                pageFlip.destroy();
+            document.body.style.overflow = 'hidden';
+            document.documentElement.style.overflow = 'hidden';
+            document.body.style.overscrollBehavior = 'none'; 
+            
+            const scrollContainer = document.getElementById('app-scroll-container');
+            if (scrollContainer) {
+                scrollContainer.style.overflow = 'hidden';
+                scrollContainer.style.touchAction = 'none'; 
+                scrollContainer.style.pointerEvents = 'none'; 
+            }
+        }
+        
+        function unlockScroll() {
+            // Возвращаем body в исходное состояние
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            
+            document.body.style.overflow = '';
+            document.documentElement.style.overflow = '';
+            document.body.style.overscrollBehavior = ''; 
+            
+            // Восстанавливаем прокрутку, чтобы экран не прыгал наверх
+            window.scrollTo(0, globalScrollPos);
+            
+            const scrollContainer = document.getElementById('app-scroll-container');
+            if (scrollContainer) {
+                scrollContainer.style.overflow = '';
+                scrollContainer.style.touchAction = ''; 
+                scrollContainer.style.pointerEvents = ''; 
+            }
+        }
+
+        function setRating(stars) {
+            currentRating = stars;
+            tg.HapticFeedback.impactOccurred('light');
+            const starElements = document.querySelectorAll('#star-rating i');
+            starElements.forEach((el, index) => {
+                if (index < stars) {
+                    el.classList.remove('text-gray-500');
+                    el.classList.add('text-orange-400');
+                } else {
+                    el.classList.remove('text-orange-400');
+                    el.classList.add('text-gray-500');
+                }
+            });
+        }
+
+        function openReviewSheet() {
+            tg.HapticFeedback.impactOccurred('medium');
+            lockScroll(); 
+            
+            // Сброс формы перед открытием
+            setRating(0);
+            document.getElementById('review-input-name').value = '';
+            document.getElementById('review-input-text').value = '';
+
+            const sheet = document.getElementById('review-sheet');
+            const overlay = document.getElementById('sheet-overlay');
+            
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                sheet.classList.remove('sheet-hidden');
+            }, 10);
+        }
+
+        function submitReview() {
+            if (currentRating === 0) {
+                tg.HapticFeedback.notificationOccurred('warning');
+                showToast(CONFIG.ui.toastWarning, 'ph-fill ph-warning-circle');
+                return; // Не даем отправить без оценки
             }
             
-            // Восстанавливаем контейнер, так как destroy() мог его удалить
-            const wrapper = document.getElementById('magazine-wrapper');
-            wrapper.innerHTML = '<div class="portfolio-magazine" id="magazine"></div>';
-            const magazineEl = document.getElementById('magazine');
+            const name = document.getElementById('review-input-name').value || "Аноним";
+            const text = document.getElementById('review-input-text').value || "";
 
-            // Hard density first page (Cover simulation)
-            let coverHtml = `<h3>${APP_CONTENT.magazineCover.title}</h3><p>${APP_CONTENT.magazineCover.subtitle}</p>`;
-            if (APP_CONTENT.magazineCover.img) {
-                coverHtml += `<img src="${APP_CONTENT.magazineCover.img}" alt="Cover" class="page-img" onerror="this.style.display='none'">`;
+            // Если указана ссылка на скрипт, отправляем данные в "Новые отзывы"
+            if (GOOGLE_SCRIPT_URL) {
+                try {
+                    // Защита от автоформатирования Гугл Таблиц
+                    const safeRating = currentRating + ' ⭐';
+                    
+                    // ФИНАЛЬНОЕ ИСПРАВЛЕНИЕ: Отправляем как классическую веб-форму (URLSearchParams).
+                    // Это 100% неубиваемый способ, который не блокируется браузерами Телеграма.
+                    const formData = new URLSearchParams();
+                    formData.append('action', 'addReview');
+                    formData.append('name', name);
+                    formData.append('text', text);
+                    formData.append('rating', safeRating);
+
+                    fetch(GOOGLE_SCRIPT_URL, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        body: formData
+                    }).catch(err => console.log('Отправка в фоне', err));
+                    
+                } catch(e) { console.log('Ошибка отправки отзыва', e); }
             }
-            magazineEl.innerHTML += `<div class="page" data-density="hard"><div class="page-content">${coverHtml}</div></div>`;
 
-            // Case pages
-            APP_CONTENT.portfolio.forEach(p => {
-                magazineEl.innerHTML += `
-                    <div class="page">
-                        <div class="page-content">
-                            <h3>${p.title[lang]}</h3>
-                            <p>${p.desc[lang]}</p>
-                            <img src="${p.img}" alt="${p.title[lang]}" class="page-img" onerror="this.style.display='none'">
-                        </div>
-                    </div>
+            showToast(CONFIG.ui.toastSuccess, 'ph-fill ph-heart');
+            closeSheet();
+        }
+
+        // Открытие шторки Предсказания
+        function openFortuneSheet() {
+            tg.HapticFeedback.impactOccurred('medium');
+            lockScroll(); 
+
+            const randomIndex = Math.floor(Math.random() * CONFIG.fortunes.length);
+            const fortune = CONFIG.fortunes[randomIndex];
+
+            document.getElementById('fortune-text').innerHTML = `«${fortune.text}»`;
+
+            const sheet = document.getElementById('fortune-sheet');
+            const overlay = document.getElementById('sheet-overlay');
+            
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                sheet.classList.remove('sheet-hidden');
+            }, 10);
+        }
+
+        // --- ЛОГИКА ОТКРЫТИЯ ЭКРАНОВ И ШТОРОК ---
+
+        // Открытие страницы Услуг
+        function openServicesPage() {
+            tg.HapticFeedback.impactOccurred('light');
+            document.getElementById('main-screen').classList.add('hidden');
+            const servicesScreen = document.getElementById('services-screen');
+            servicesScreen.classList.remove('hidden');
+            servicesScreen.classList.add('fade-in');
+            window.scrollTo(0, 0);
+            const scrollContainer = document.getElementById('app-scroll-container');
+            if (scrollContainer) scrollContainer.scrollTo(0, 0);
+        }
+
+        // Закрытие страницы Услуг
+        function closeServicesPage() {
+            tg.HapticFeedback.impactOccurred('light');
+            document.getElementById('services-screen').classList.add('hidden');
+            document.getElementById('main-screen').classList.remove('hidden');
+            window.scrollTo(0, 0);
+            const scrollContainer = document.getElementById('app-scroll-container');
+            if (scrollContainer) scrollContainer.scrollTo(0, 0);
+        }
+
+        // Открытие шторки с конкретной услугой
+        function openServiceDetails(index) {
+            tg.HapticFeedback.impactOccurred('light');
+            lockScroll();
+
+            const service = CONFIG.services[index];
+            document.getElementById('service-sheet-title').textContent = service.title;
+            renderGallery('service-gallery-container', service.photos || [service.photo]);
+            document.getElementById('service-sheet-desc').innerHTML = (service.fullDesc || '').replace(/\n/g, '<br>');
+            document.getElementById('service-sheet-new-price').textContent = service.newPrice;
+            document.getElementById('service-sheet-old-price').textContent = service.oldPrice || '';
+            
+            // Формируем умную ссылку с готовым сообщением для Услуг
+            let servLink = service.buttonLink || '#';
+            servLink = String(servLink).trim();
+            
+            // Автоматически исправляем ссылку, если ввели без https:// или просто @
+            if (servLink.startsWith('@')) {
+                servLink = 'https://t.me/' + servLink.substring(1);
+            } else if (servLink.includes('t.me') && !servLink.startsWith('http')) {
+                servLink = 'https://' + servLink;
+            }
+
+            const msg = currentLang === 'ru' ? MSG_SERVICE_RU : MSG_SERVICE_EN;
+            if (servLink.includes('t.me')) {
+                servLink += (servLink.includes('?') ? '&' : '?') + 'text=' + encodeURIComponent(msg + ' "' + service.title + '"');
+            }
+            
+            const btn = document.getElementById('service-sheet-btn');
+            btn.href = servLink;
+            
+            // Надежное открытие ссылки внутри Telegram API
+            btn.onclick = function(e) {
+                openWithBlurGuide(e, this.href);
+            };
+
+            const sheet = document.getElementById('service-details-sheet');
+            const overlay = document.getElementById('sheet-overlay');
+
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                sheet.classList.remove('sheet-hidden');
+            }, 10);
+        }
+
+        // Открытие шторки Обучения
+        function openTrainingSheet() {
+            tg.HapticFeedback.impactOccurred('light');
+            lockScroll(); 
+
+            document.getElementById('training-photo').src = CONFIG.training.photo;
+            document.getElementById('training-text').innerHTML = (CONFIG.training.text || '').replace(/\n/g, '<br>');
+            
+            // Формируем умную ссылку с готовым сообщением для Обучения
+            let trainLink = CONFIG.training.buttonLink;
+            const msg = currentLang === 'ru' ? MSG_TRAINING_RU : MSG_TRAINING_EN;
+            if (trainLink.includes('t.me')) {
+                trainLink += (trainLink.includes('?') ? '&' : '?') + 'text=' + encodeURIComponent(msg);
+            }
+            const btn = document.getElementById('training-btn');
+            btn.href = trainLink;
+            btn.onclick = function(e) {
+                openWithBlurGuide(e, this.href);
+            };
+
+            const sheet = document.getElementById('training-sheet');
+            const overlay = document.getElementById('sheet-overlay');
+            
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                sheet.classList.remove('sheet-hidden');
+            }, 10);
+        }
+
+        // Открытие шторки с постами
+        function openPostsSheet(index) {
+            tg.HapticFeedback.impactOccurred('light');
+            lockScroll(); 
+            
+            const category = CONFIG.categories[index];
+            document.getElementById('posts-sheet-title').innerHTML = category.title;
+            
+            const list = document.getElementById('posts-sheet-list');
+            list.innerHTML = '';
+            category.posts.forEach(post => {
+                list.innerHTML += `
+                    <a href="${post.link}" onclick="openWithBlurGuide(event, this.href)" class="block p-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 transition-colors flex items-center justify-between active:scale-[0.98]">
+                        <span class="text-[14px] font-bold text-white text-left">${post.title}</span>
+                        <i class="ph-bold ph-caret-right text-gray-300"></i>
+                    </a>
                 `;
             });
 
-            // Hard density last page
-            let backHtml = `<h3>${APP_CONTENT.magazineBack.title}</h3><p>${APP_CONTENT.magazineBack.subtitle}</p>`;
-            if (APP_CONTENT.magazineBack.img) {
-                backHtml += `<img src="${APP_CONTENT.magazineBack.img}" alt="Back Cover" class="page-img" onerror="this.style.display='none'">`;
-            }
-            magazineEl.innerHTML += `<div class="page" data-density="hard"><div class="page-content">${backHtml}</div></div>`;
-
-            pageFlip = new St.PageFlip(magazineEl, {
-                width: magWidth, height: magHeight, // Используем адаптивные размеры
-                size: "fixed", // Жесткая фиксация размера убирает дергания
-                minWidth: magWidth, minHeight: magHeight,
-                showCover: false, 
-                flippingTime: 800, // Сделали анимацию чуть быстрее
-                usePortrait: true,
-                maxShadowOpacity: 0.3 // Мягкие тени
-            });
+            const sheet = document.getElementById('posts-sheet');
+            const overlay = document.getElementById('sheet-overlay');
             
-            pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                sheet.classList.remove('sheet-hidden');
+            }, 10);
+        }
 
-            // 1. Добавляем вибрацию при перелистывании страниц книги
-            pageFlip.on('flip', (e) => {
-                triggerVibration();
+        // Открытие шторки "Обо мне"
+        function openSheet() {
+            tg.HapticFeedback.impactOccurred('light');
+            lockScroll(); 
+            const sheet = document.getElementById('about-sheet');
+            const overlay = document.getElementById('sheet-overlay');
+            
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                sheet.classList.remove('sheet-hidden');
+            }, 10);
+        }
+
+        // Универсальное закрытие любой шторки
+        function closeSheet() {
+            unlockScroll(); 
+            const aboutSheet = document.getElementById('about-sheet');
+            const postsSheet = document.getElementById('posts-sheet');
+            const trainingSheet = document.getElementById('training-sheet');
+            const serviceDetailsSheet = document.getElementById('service-details-sheet');
+            const fortuneSheet = document.getElementById('fortune-sheet');
+            const reviewSheet = document.getElementById('review-sheet');
+            const overlay = document.getElementById('sheet-overlay');
+            
+            overlay.classList.add('opacity-0');
+            aboutSheet.classList.add('sheet-hidden');
+            postsSheet.classList.add('sheet-hidden');
+            trainingSheet.classList.add('sheet-hidden');
+            serviceDetailsSheet.classList.add('sheet-hidden');
+            fortuneSheet.classList.add('sheet-hidden');
+            reviewSheet.classList.add('sheet-hidden');
+            
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- ЛОГИКА BLUR-GUIDE (ПОДСКАЗКА СМАХНУТЬ ВНИЗ) ---
+        window.openWithBlurGuide = function(e, url) {
+            e.preventDefault();
+            tg.HapticFeedback.impactOccurred('medium');
+            
+            // Открываем ссылку (Телеграм откроет ее в фоне)
+            if (url.includes('t.me')) {
+                tg.openTelegramLink(url);
+            } else {
+                tg.openLink(url);
+            }
+
+            // Показываем блюр поверх текущей шторки
+            const blurGuide = document.getElementById('blur-guide-overlay');
+            blurGuide.classList.remove('hidden');
+            setTimeout(() => {
+                blurGuide.classList.remove('opacity-0');
+            }, 10);
+        };
+
+        window.closeBlurGuide = function() {
+            tg.HapticFeedback.impactOccurred('light');
+            const blurGuide = document.getElementById('blur-guide-overlay');
+            blurGuide.classList.add('opacity-0');
+            setTimeout(() => {
+                blurGuide.classList.add('hidden');
+            }, 300);
+        };
+
+        // --- НОВЫЕ ФУНКЦИИ (ТОСТЫ, ГАЛЕРЕЯ, ПОДЕЛИТЬСЯ) ---
+        
+        // Всплывающее уведомление (Toast)
+        let toastTimeout;
+        function showToast(message, iconClass = 'ph-fill ph-check-circle') {
+            tg.HapticFeedback.notificationOccurred('success');
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `<i class="${iconClass} text-orange-400 text-lg"></i><span>${message}</span>`;
+            
+            toast.classList.remove('-translate-y-24', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-24', 'opacity-0');
+            }, 2500);
+        }
+
+        // Кнопка Поделиться (Share)
+        function shareProfile() {
+            tg.HapticFeedback.impactOccurred('medium');
+            
+            // ==========================================
+            // 🔗 ССЫЛКА ДЛЯ КНОПКИ "ПОДЕЛИТЬСЯ" (ВЕРХНИЙ ПРАВЫЙ УГОЛ) 🔗
+            // ==========================================
+            // Вставь ниже прямую ссылку на саму визитку (Mini App). 
+            // Обычно она выглядит так: https://t.me/имя_бота/название_аппа
+            const shareUrl = "https://t.me/polinachubakina_bot/polina"; // <-- МЕНЯТЬ ССЫЛКУ ЗДЕСЬ!
+            
+            // Текст, который будет отправляться вместе со ссылкой
+            const shareText = "Полина - хореограф, артистка фаер-шоу, педагог... Открой мою визитку здесь! ✨"; // <-- МЕНЯТЬ ТЕКСТ ЗДЕСЬ!
+            // ==========================================
+            
+            const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`;
+            tg.openTelegramLink(telegramUrl);
+        }
+
+        // Рендер галереи-свайпера с точками
+        function renderGallery(containerId, photos) {
+            const wrapper = document.getElementById(containerId);
+            if (!photos || photos.length === 0) return;
+            
+            // Задаем квадратные фото для всех галерей (включая услуги)
+            const aspectClass = 'aspect-square';
+            
+            let html = `
+            <div class="relative w-full ${aspectClass} rounded-[2rem] overflow-hidden mb-5 shadow-[0_10px_30px_rgba(0,0,0,0.5)] bg-black/20">
+                <div class="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar h-full w-full" id="${containerId}-scroll" onscroll="updateGalleryDots('${containerId}')">
+                    ${photos.map(p => `<img src="${p}" class="w-full h-full object-cover shrink-0 snap-center">`).join('')}
+                </div>
+                ${photos.length > 1 ? `
+                <div class="absolute bottom-4 left-0 w-full flex flex-wrap justify-center gap-2 z-10 px-4" id="${containerId}-dots">
+                    ${photos.map((_, i) => `<div class="w-2 h-2 shrink-0 rounded-full bg-white transition-all duration-300 shadow-md ${i === 0 ? 'opacity-100 scale-125' : 'opacity-40'}"></div>`).join('')}
+                </div>
+                ` : ''}
+            </div>
+            `;
+            wrapper.innerHTML = html;
+        }
+
+        // Обновление активной точки при свайпе галереи
+        function updateGalleryDots(containerId) {
+            const scrollContainer = document.getElementById(`${containerId}-scroll`);
+            const dotsContainer = document.getElementById(`${containerId}-dots`);
+            if (!scrollContainer || !dotsContainer) return;
+            
+            const scrollLeft = scrollContainer.scrollLeft;
+            const width = scrollContainer.clientWidth;
+            const index = Math.round(scrollLeft / width);
+            
+            Array.from(dotsContainer.children).forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.remove('opacity-40');
+                    dot.classList.add('opacity-100', 'scale-125');
+                } else {
+                    dot.classList.remove('opacity-100', 'scale-125');
+                    dot.classList.add('opacity-40');
+                }
             });
         }
 
-        // --- Easter Egg Logic (3 taps) ---
-        let footerTapCount = 0;
-        function triggerEasterEgg() {
-            footerTapCount++;
-            if (footerTapCount === 3) {
-                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
-                if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-                footerTapCount = 0;
+        // --- ЛОГИКА ЗАГРУЗКИ ИЗ GOOGLE ТАБЛИЦ ---
+        // Скрипт, который при открытии визитки скачивает данные из вкладок 
+        // и подставляет их вместо зашитого текста.
+        async function fetchGoogleSheet(sheetName) {
+            if (!GOOGLE_SHEET_ID) return null;
+
+            // Умное извлечение ID через регулярное выражение (RegEx) - надежная защита от кривых ссылок
+            let cleanId = GOOGLE_SHEET_ID;
+            const match = cleanId.match(/\/d\/([a-zA-Z0-9-_]+)/);
+            if (match) {
+                cleanId = match[1];
+            }
+
+            // Используем Google Visualization API для прямого чтения без скриптов
+            const url = `https://docs.google.com/spreadsheets/d/${cleanId}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+            try {
+                const res = await fetch(url);
+                const text = await res.text();
+                
+                // Если гугл вернул ошибку (например, доступ закрыт), останавливаем парсинг
+                if (!text.includes('google.visualization.Query.setResponse')) {
+                    console.error("Нет доступа к таблице. Проверьте права 'Все, у кого есть ссылка - Читатель'");
+                    return null;
+                }
+
+                // Google возвращает JSONP, вырезаем чистый JSON
+                const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+                const data = JSON.parse(jsonStr);
+                return data.table.rows;
+            } catch (e) {
+                console.error("Ошибка загрузки вкладки: " + sheetName, e);
+                return null;
             }
         }
 
-        // Инициализация при загрузке
-        window.addEventListener('DOMContentLoaded', initContent);
+        async function loadDynamicData() {
+            if (GOOGLE_SHEET_ID) {
+                try {
+                    // Скачиваем все вкладки одновременно для скорости
+                    const [fireRows, acroRows, campRows, servicesRows, reviewsRows] = await Promise.all([
+                        fetchGoogleSheet(TAB_FIRE),
+                        fetchGoogleSheet(TAB_ACRO),
+                        fetchGoogleSheet(TAB_CAMP),
+                        fetchGoogleSheet(TAB_SERVICES),
+                        fetchGoogleSheet(TAB_REVIEWS_PUB)
+                    ]);
 
+                    // Обновляем Огненные выступления
+                    if (fireRows && fireRows.length > 0) {
+                        APP_DATA.ru.categories[0].posts = fireRows.map(row => ({
+                            title: row.c[0] ? String(row.c[0].v) : "", link: row.c[2] ? String(row.c[2].v) : "#"
+                        })).filter(p => p.title && !p.title.toLowerCase().includes('название') && !p.title.toLowerCase().includes('title'));
+                        
+                        APP_DATA.en.categories[0].posts = fireRows.map(row => ({
+                            title: row.c[1] ? String(row.c[1].v) : (row.c[0] ? String(row.c[0].v) : ""), link: row.c[2] ? String(row.c[2].v) : "#"
+                        })).filter(p => p.title && !p.title.toLowerCase().includes('название') && !p.title.toLowerCase().includes('title'));
+                    }
+
+                    // Обновляем Акробатику
+                    if (acroRows && acroRows.length > 0) {
+                        APP_DATA.ru.categories[1].posts = acroRows.map(row => ({
+                            title: row.c[0] ? String(row.c[0].v) : "", link: row.c[2] ? String(row.c[2].v) : "#"
+                        })).filter(p => p.title && !p.title.toLowerCase().includes('название') && !p.title.toLowerCase().includes('title'));
+                        
+                        APP_DATA.en.categories[1].posts = acroRows.map(row => ({
+                            title: row.c[1] ? String(row.c[1].v) : (row.c[0] ? String(row.c[0].v) : ""), link: row.c[2] ? String(row.c[2].v) : "#"
+                        })).filter(p => p.title && !p.title.toLowerCase().includes('название') && !p.title.toLowerCase().includes('title'));
+                    }
+
+                    // Обновляем Лагерь
+                    if (campRows && campRows.length > 0) {
+                        APP_DATA.ru.categories[2].posts = campRows.map(row => ({
+                            title: row.c[0] ? String(row.c[0].v) : "", link: row.c[2] ? String(row.c[2].v) : "#"
+                        })).filter(p => p.title && !p.title.toLowerCase().includes('название') && !p.title.toLowerCase().includes('title'));
+                        
+                        APP_DATA.en.categories[2].posts = campRows.map(row => ({
+                            title: row.c[1] ? String(row.c[1].v) : (row.c[0] ? String(row.c[0].v) : ""), link: row.c[2] ? String(row.c[2].v) : "#"
+                        })).filter(p => p.title && !p.title.toLowerCase().includes('название') && !p.title.toLowerCase().includes('title'));
+                    }
+
+                    // Обновляем Услуги
+                    if (servicesRows && servicesRows.length > 0) {
+                        APP_DATA.ru.services = servicesRows.map(row => {
+                            const photosStr = row.c[9] ? String(row.c[9].v) : "";
+                            const photosArr = photosStr ? photosStr.split(',').map(s => s.trim()) : [];
+                            return {
+                                title: row.c[0] ? String(row.c[0].v) : "", shortDesc: row.c[2] ? String(row.c[2].v) : "",
+                                fullDesc: row.c[4] ? String(row.c[4].v) : "", oldPrice: row.c[6] ? String(row.c[6].v) : "",
+                                newPrice: row.c[7] ? String(row.c[7].v) : "", buttonLink: row.c[8] ? String(row.c[8].v) : "#",
+                                photo: photosArr.length > 0 ? photosArr[0] : "", photos: photosArr
+                            };
+                        }).filter(s => s.title && !s.title.toLowerCase().includes('название') && !s.title.toLowerCase().includes('title'));
+                        
+                        APP_DATA.en.services = servicesRows.map(row => {
+                            const photosStr = row.c[9] ? String(row.c[9].v) : "";
+                            const photosArr = photosStr ? photosStr.split(',').map(s => s.trim()) : [];
+                            return {
+                                title: row.c[1] ? String(row.c[1].v) : (row.c[0] ? String(row.c[0].v) : ""), 
+                                shortDesc: row.c[3] ? String(row.c[3].v) : (row.c[2] ? String(row.c[2].v) : ""),
+                                fullDesc: row.c[5] ? String(row.c[5].v) : (row.c[4] ? String(row.c[4].v) : ""), 
+                                oldPrice: row.c[6] ? String(row.c[6].v) : "",
+                                newPrice: row.c[7] ? String(row.c[7].v) : "", 
+                                buttonLink: row.c[8] ? String(row.c[8].v) : "#",
+                                photo: photosArr.length > 0 ? photosArr[0] : "", photos: photosArr
+                            };
+                        }).filter(s => s.title && !s.title.toLowerCase().includes('название') && !s.title.toLowerCase().includes('title'));
+                    }
+
+                    // Обновляем Опубликованные отзывы
+                    if (reviewsRows && reviewsRows.length > 0) {
+                        APP_DATA.ru.reviews = reviewsRows.map(row => ({
+                            name: row.c[0] ? String(row.c[0].v) : "Гость", date: row.c[2] ? (row.c[2].f || String(row.c[2].v)) : "Недавно",
+                            stars: row.c[3] ? parseInt(row.c[3].v) : 5, text: row.c[4] ? String(row.c[4].v) : ""
+                        })).filter(r => r.text && !r.name.toLowerCase().includes('имя') && !r.name.toLowerCase().includes('name'));
+                        
+                        APP_DATA.en.reviews = reviewsRows.map(row => ({
+                            name: row.c[1] ? String(row.c[1].v) : (row.c[0] ? String(row.c[0].v) : "Guest"), 
+                            date: row.c[2] ? (row.c[2].f || String(row.c[2].v)) : "Recently",
+                            stars: row.c[3] ? parseInt(row.c[3].v) : 5, 
+                            text: row.c[5] ? String(row.c[5].v) : (row.c[4] ? String(row.c[4].v) : "")
+                        })).filter(r => r.text && !r.name.toLowerCase().includes('имя') && !r.name.toLowerCase().includes('name'));
+                    }
+                    
+                    CONFIG = APP_DATA[currentLang]; // Применяем загруженные данные
+                } catch (e) {
+                    console.error("Критическая ошибка при загрузке данных:", e);
+                }
+            }
+            renderApp(); // Рисуем интерфейс (с таблицей или базовыми данными)
+        }
+
+        window.onload = () => {
+            // МГНОВЕННАЯ ЗАГРУЗКА: Сначала рендерим базовый интерфейс
+            renderApp();
+            
+            // Сразу прячем лоадер, чтобы кнопки не "тормозили"
+            setTimeout(() => {
+                const loader = document.getElementById('app-loader');
+                if(loader) {
+                    loader.classList.add('opacity-0');
+                    setTimeout(() => loader.remove(), 500);
+                }
+            }, 100);
+
+            // Запускаем асинхронную загрузку из Google Таблиц в фоне
+            loadDynamicData();
+            
+            // --- ЛОГИКА 3D-НАКЛОНА (TILT EFFECT) ДЛЯ ГЛАВНОГО ФОТО ---
+            const tiltCard = document.getElementById('tilt-card');
+            const tiltGlare = document.getElementById('tilt-glare');
+            
+            if(tiltCard) {
+                function handleTiltMove(e) {
+                    // Убираем CSS-задержку во время движения, чтобы фото мгновенно следовало за пальцем
+                    tiltCard.style.transition = 'none';
+                    if(tiltGlare) tiltGlare.style.transition = 'none';
+
+                    const rect = tiltCard.getBoundingClientRect();
+                    // Получаем координаты мыши или пальца
+                    const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+                    
+                    const x = clientX - rect.left;
+                    const y = clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    // Вычисляем угол наклона (максимум 12 градусов)
+                    const rotateX = ((y - centerY) / centerY) * -12; 
+                    const rotateY = ((x - centerX) / centerX) * 12;
+                    
+                    // Применяем наклон
+                    tiltCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                    
+                    // Двигаем блик
+                    if(tiltGlare) {
+                        tiltGlare.style.opacity = '1';
+                        const glareX = (x / rect.width) * 100;
+                        const glareY = (y / rect.height) * 100;
+                        tiltGlare.style.background = `radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.4) 0%, transparent 60%)`;
+                    }
+                }
+                
+                function handleTiltLeave() {
+                    // Возвращаем в исходное положение (Включаем плавную анимацию возврата)
+                    tiltCard.style.transition = 'transform 0.5s ease-out';
+                    tiltCard.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                    if(tiltGlare) {
+                        tiltGlare.style.transition = 'opacity 0.5s ease-out';
+                        tiltGlare.style.opacity = '0';
+                    }
+                }
+                
+                // Слушатели для мыши (ПК) и пальцев (Сенсор)
+                tiltCard.addEventListener('mousemove', handleTiltMove);
+                tiltCard.addEventListener('mouseleave', handleTiltLeave);
+                tiltCard.addEventListener('touchmove', handleTiltMove, {passive: true});
+                tiltCard.addEventListener('touchend', handleTiltLeave);
+            }
+
+            // Логика свайпа вниз для закрытия шторок
+            let touchStartY = 0;
+            let touchCurrentY = 0;
+            document.querySelectorAll('.drag-handle').forEach(handle => {
+                handle.addEventListener('touchstart', (e) => {
+                    touchStartY = e.touches[0].clientY;
+                }, {passive: true});
+                handle.addEventListener('touchmove', (e) => {
+                    touchCurrentY = e.touches[0].clientY;
+                    e.preventDefault(); // Фикс №3: Полностью блокируем сдвиг экрана при свайпе за полосочку
+                }, {passive: false}); // Обязательно false для работы preventDefault
+                handle.addEventListener('touchend', (e) => {
+                    if (touchCurrentY > touchStartY + 40) { // Если потянули вниз больше чем на 40px
+                        closeSheet();
+                    }
+                });
+            });
+        };
     </script>
 </body>
 </html>
